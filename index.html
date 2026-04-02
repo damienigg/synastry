@@ -270,6 +270,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
           <input type="hidden" id="tzA">
           <input type="hidden" id="latA" value="42">
           <input type="hidden" id="lonA" value="0">
+          <input type="hidden" id="ianaA" value="UTC">
           <div class="city-list" id="cl-A"></div>
         </div>
       </div>
@@ -310,6 +311,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
           <input type="hidden" id="tzB">
           <input type="hidden" id="latB" value="42">
           <input type="hidden" id="lonB" value="0">
+          <input type="hidden" id="ianaB" value="UTC">
           <div class="city-list" id="cl-B"></div>
         </div>
       </div>
@@ -2489,7 +2491,45 @@ const CITY_CACHE={};       // query → [{n,tz,lat,country,region}]
 const CITY_TIMERS={A:null,B:null};
 const CITY_INFLIGHT={A:null,B:null};
 
+// Convert IANA timezone string to UTC offset at a SPECIFIC date (handles DST correctly)
+function ianaOffsetAtDate(ianaZone, dateStr, timeStr){
+  try{
+    // Build a UTC date from the local date+time string, then measure the offset
+    // by comparing what Intl renders as local time vs what we fed it
+    const [y,mo,d]=dateStr.split('-').map(Number);
+    const [h,mn]=(timeStr||'12:00').split(':').map(Number);
+    // Use a midday time to avoid any midnight DST edge case
+    const utcGuess=new Date(Date.UTC(y,mo-1,d,h,mn,0));
+    const fmt=new Intl.DateTimeFormat('en-CA',{
+      timeZone:ianaZone,
+      year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',hour12:false
+    });
+    const parts=fmt.formatToParts(utcGuess);
+    const get=t=>parseInt(parts.find(p=>p.type===t).value);
+    const localH=get('hour')===24?0:get('hour');
+    const diffH=(h-localH)+((mn-get('minute'))/60);
+    // diffH is (UTC_h - local_h), so offset = -diffH, clamped to ±14
+    let offset=-diffH;
+    if(offset>14)offset-=24;
+    if(offset<-14)offset+=24;
+    return Math.round(offset*4)/4; // round to nearest 15min
+  }catch(e){
+    // Fallback: use January (no DST) as before
+    try{
+      const jan=new Date(Date.UTC(2000,0,15,12,0,0));
+      const fmt=new Intl.DateTimeFormat('en',{timeZone:ianaZone,timeZoneName:'shortOffset'});
+      const parts=fmt.formatToParts(jan);
+      const offsetStr=parts.find(p=>p.type==='timeZoneName')?.value||'UTC+0';
+      const m=offsetStr.match(/[+-](\d+)(?::(\d+))?/);
+      if(!m)return 0;
+      const sign=offsetStr.includes('-')?-1:1;
+      return sign*(parseInt(m[1])+(parseInt(m[2]||0)/60));
+    }catch(e2){return 0;}
+  }
+}
 // Convert IANA timezone string to standard UTC offset in hours (uses January = no DST)
+// Kept for display labels only — do NOT use for chart calculation
 function ianaToStdOffset(tz){
   try{
     const jan=new Date(Date.UTC(2000,0,15,12,0,0));
@@ -2523,13 +2563,13 @@ function renderApiResults(p,results){
     const tzLabel=`UTC${r.tz>=0?'+':''}${r.tz}`;
     const sel=label===currentName;
     const enc=encodeURIComponent(label);
-    return`<div class="city-opt${sel?' selected':''}" data-tz="${r.tz}" data-lat="${r.lat}" data-lon="${r.lon}" data-name="${enc}">
+    return`<div class="city-opt${sel?' selected':''}" data-tz="${r.tz}" data-lat="${r.lat}" data-lon="${r.lon}" data-iana="${encodeURIComponent(r.iana||'UTC')}" data-name="${enc}">
       <span>${label}</span><span class="city-tz" style="${tuUnknown?'display:none':''}">${tzLabel}</span>
     </div>`;
   }).join('');
   list.querySelectorAll('.city-opt[data-name]').forEach(el=>{
     el.addEventListener('click',()=>{
-      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat),parseFloat(el.dataset.lon));
+      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat),parseFloat(el.dataset.lon),decodeURIComponent(el.dataset.iana||'UTC'));
     });
   });
 }
@@ -2557,6 +2597,7 @@ async function fetchCities(p,query){
       lat:parseFloat(r.latitude.toFixed(4)),
       lon:parseFloat(r.longitude.toFixed(4)),
       tz:ianaToStdOffset(r.timezone),
+      iana:r.timezone||'UTC',
     }));
     CITY_CACHE[cacheKey]=results;
     renderApiResults(p,results);
@@ -2606,11 +2647,12 @@ function openCityList(p){
   if(q.trim().length>=2){setCityListMsg(p,'Searching…');positionCityList(p);fetchCities(p,q);}else{list.innerHTML='<div class="city-opt" style="color:var(--silver);font-style:italic;cursor:default;font-size:12px;padding:10px 12px">Type to search cities worldwide…</div>';positionCityList(p);}
 }
 
-function selectCity(p,name,tz,lat,lon){
+function selectCity(p,name,tz,lat,lon,iana){
   document.getElementById(`cs-${p}`).value=name;
   document.getElementById(`tz${p}`).value=tz;
   document.getElementById(`lat${p}`).value=isNaN(lat)?42:lat;
   document.getElementById(`lon${p}`).value=isNaN(lon)?0:lon;
+  document.getElementById(`iana${p}`).value=iana||'UTC';
   document.getElementById(`cl-${p}`).classList.remove('open');
   CITY_FOCUS[p]=-1;
   toggleTU(p);
@@ -2634,7 +2676,7 @@ function cityKey(e,p){
     e.preventDefault();
     if(CITY_FOCUS[p]>=0&&items[CITY_FOCUS[p]]){
       const el=items[CITY_FOCUS[p]];
-      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat),parseFloat(el.dataset.lon));
+      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat),parseFloat(el.dataset.lon),decodeURIComponent(el.dataset.iana||'UTC'));
     }
   } else if(e.key==='Escape'){
     document.getElementById(`cl-${p}`).classList.remove('open');
@@ -3277,8 +3319,12 @@ async function runAll(){
   STATE.profileA=null;
   STATE.profileB=null;
 
-  const tzA=tuA?0:(parseFloat(document.getElementById('tzA').value)||0);
-  const tzB=tuB?0:(parseFloat(document.getElementById('tzB').value)||0);
+  const ianaA=document.getElementById('ianaA').value||'UTC';
+  const ianaB=document.getElementById('ianaB').value||'UTC';
+  const timeStrA=document.getElementById('timeA').value||'12:00';
+  const timeStrB=document.getElementById('timeB').value||'12:00';
+  const tzA=tuA?0:(dA?ianaOffsetAtDate(ianaA,dA,timeStrA):(parseFloat(document.getElementById('tzA').value)||0));
+  const tzB=tuB?0:(dB?ianaOffsetAtDate(ianaB,dB,timeStrB):(parseFloat(document.getElementById('tzB').value)||0));
   const latA=parseFloat(document.getElementById('latA').value)||42;
   const latB=parseFloat(document.getElementById('latB').value)||42;
   const lonA=parseFloat(document.getElementById('lonA').value)||0;
