@@ -269,6 +269,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
           <input type="text" class="city-search" id="cs-A" autocomplete="off" data-i18n-ph="cityPh" oninput="filterCities('A')" onfocus="openCityList('A')" onkeydown="cityKey(event,'A')">
           <input type="hidden" id="tzA">
           <input type="hidden" id="latA" value="42">
+          <input type="hidden" id="lonA" value="0">
           <div class="city-list" id="cl-A"></div>
         </div>
       </div>
@@ -308,6 +309,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
           <input type="text" class="city-search" id="cs-B" autocomplete="off" data-i18n-ph="cityPh" oninput="filterCities('B')" onfocus="openCityList('B')" onkeydown="cityKey(event,'B')">
           <input type="hidden" id="tzB">
           <input type="hidden" id="latB" value="42">
+          <input type="hidden" id="lonB" value="0">
           <div class="city-list" id="cl-B"></div>
         </div>
       </div>
@@ -968,12 +970,12 @@ function moonPos(T){
   const L0=m360(218.3164477+481267.88123421*T-1.5786e-3*T*T);
   return{lon:m360(L0+sL),tL0:L0.toFixed(4),tsL:sL.toFixed(4)};
 }
-function ascPos(T,hour,tz,lat){
+function ascPos(T,tz,lat,lon){
   const JD=2451545+T*36525,GMST=m360(280.46061837+360.98564736629*(JD-2451545)+3.87933e-4*T*T);
-  const LST=m360(GMST+(hour-tz)*15),eps=23.4397-.013*T,er=eps*Math.PI/180,Rr=LST*Math.PI/180,latr=(lat??42)*Math.PI/180;
-  return{lon:m360(Math.atan2(Math.cos(Rr),-Math.sin(Rr)*Math.sin(er)-Math.tan(latr)*Math.cos(er))*180/Math.PI),tGMST:GMST.toFixed(2),tLST:LST.toFixed(2),tEps:eps.toFixed(4),tLat:(lat??42).toFixed(1)};
+  const LST=m360(GMST+lon),eps=23.4397-.013*T,er=eps*Math.PI/180,Rr=LST*Math.PI/180,latr=(lat??42)*Math.PI/180;
+  return{lon:m360(Math.atan2(Math.cos(Rr),-Math.sin(Rr)*Math.sin(er)-Math.tan(latr)*Math.cos(er))*180/Math.PI),tGMST:GMST.toFixed(2),tLST:LST.toFixed(2),tEps:eps.toFixed(4),tLat:(lat??42).toFixed(4),tLon:(lon??0).toFixed(4)};
 }
-function buildChart(dateStr,timeStr,tz,timeUnknown,lat){
+function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   const[y,m,d]=dateStr.split('-').map(Number),[h,mn]=timeStr.split(':').map(Number),hour=h+mn/60;
   const JD=toJD(y,m,d,hour,tz),T=toT(JD);
   const pos={},trace=[];
@@ -991,10 +993,11 @@ function buildChart(dateStr,timeStr,tz,timeUnknown,lat){
     tr(p,`L=${r.tL}° M=${r.tM}° E=${r.tE}° v=${r.tv}°`,`${r.lon.toFixed(4)}° → ${pos[p].sign} ${pos[p].deg}°`);
   }
   const latVal=lat??42;
-  const asc=ascPos(T,hour,tz,latVal);pos.Ascendant=degSign(asc.lon);
-  tr('GMST','280.46061837 + 360.98564736629·(JD−J2000)',`${asc.tGMST}°`);tr('LST','GMST + UT·15',`${asc.tLST}°`);
+  const lonVal=lon??0;
+  const asc=ascPos(T,tz,latVal,lonVal);pos.Ascendant=degSign(asc.lon);
+  tr('GMST','280.46061837 + 360.98564736629·(JD−J2000)',`${asc.tGMST}°`);tr('Longitude λ','City geographic longitude (from geocoding API)',`${asc.tLon}°E`);tr('LST','GMST + λ',`${asc.tLST}°`);
   tr('Obliquity ε','23.4397 − 0.013·T',`${asc.tEps}°`);tr('Latitude φ','City latitude (decimal degrees North)',`${asc.tLat}°N`);
-  tr('Ascendant ↑',`atan2(cosRMC, −sinRMC·sinε − tan${asc.tLat}°·cosε)`,`${asc.lon.toFixed(4)}° → ${pos.Ascendant.sign} ${pos.Ascendant.deg}°`);
+  tr('Ascendant ↑',`atan2(cosLST, −sinLST·sinε − tanφ·cosε)`,`${asc.lon.toFixed(4)}° → ${pos.Ascendant.sign} ${pos.Ascendant.deg}°`);
   return{JD,T,pos,trace,timeUnknown,lat:latVal};
 }
 function getAspect(lA,lB){
@@ -2520,13 +2523,13 @@ function renderApiResults(p,results){
     const tzLabel=`UTC${r.tz>=0?'+':''}${r.tz}`;
     const sel=label===currentName;
     const enc=encodeURIComponent(label);
-    return`<div class="city-opt${sel?' selected':''}" data-tz="${r.tz}" data-lat="${r.lat}" data-name="${enc}">
+    return`<div class="city-opt${sel?' selected':''}" data-tz="${r.tz}" data-lat="${r.lat}" data-lon="${r.lon}" data-name="${enc}">
       <span>${label}</span><span class="city-tz" style="${tuUnknown?'display:none':''}">${tzLabel}</span>
     </div>`;
   }).join('');
   list.querySelectorAll('.city-opt[data-name]').forEach(el=>{
     el.addEventListener('click',()=>{
-      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat));
+      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat),parseFloat(el.dataset.lon));
     });
   });
 }
@@ -2551,7 +2554,8 @@ async function fetchCities(p,query){
     const data=await resp.json();
     const results=(data.results||[]).map(r=>({
       name:r.name,region:r.admin1||'',country:r.country||'',
-      lat:parseFloat(r.latitude.toFixed(2)),
+      lat:parseFloat(r.latitude.toFixed(4)),
+      lon:parseFloat(r.longitude.toFixed(4)),
       tz:ianaToStdOffset(r.timezone),
     }));
     CITY_CACHE[cacheKey]=results;
@@ -2602,10 +2606,11 @@ function openCityList(p){
   if(q.trim().length>=2){setCityListMsg(p,'Searching…');positionCityList(p);fetchCities(p,q);}else{list.innerHTML='<div class="city-opt" style="color:var(--silver);font-style:italic;cursor:default;font-size:12px;padding:10px 12px">Type to search cities worldwide…</div>';positionCityList(p);}
 }
 
-function selectCity(p,name,tz,lat){
+function selectCity(p,name,tz,lat,lon){
   document.getElementById(`cs-${p}`).value=name;
   document.getElementById(`tz${p}`).value=tz;
   document.getElementById(`lat${p}`).value=isNaN(lat)?42:lat;
+  document.getElementById(`lon${p}`).value=isNaN(lon)?0:lon;
   document.getElementById(`cl-${p}`).classList.remove('open');
   CITY_FOCUS[p]=-1;
   toggleTU(p);
@@ -2629,7 +2634,7 @@ function cityKey(e,p){
     e.preventDefault();
     if(CITY_FOCUS[p]>=0&&items[CITY_FOCUS[p]]){
       const el=items[CITY_FOCUS[p]];
-      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat));
+      selectCity(p,decodeURIComponent(el.dataset.name),parseFloat(el.dataset.tz),parseFloat(el.dataset.lat),parseFloat(el.dataset.lon));
     }
   } else if(e.key==='Escape'){
     document.getElementById(`cl-${p}`).classList.remove('open');
@@ -3276,18 +3281,20 @@ async function runAll(){
   const tzB=tuB?0:(parseFloat(document.getElementById('tzB').value)||0);
   const latA=parseFloat(document.getElementById('latA').value)||42;
   const latB=parseFloat(document.getElementById('latB').value)||42;
+  const lonA=parseFloat(document.getElementById('lonA').value)||0;
+  const lonB=parseFloat(document.getElementById('lonB').value)||0;
 
   // ── Compute charts for whichever persons are filled ──
   if(dA){
     setP(5,'Computing chart A…');await sl(80);
-    STATE.chartA=buildChart(dA,document.getElementById('timeA').value,tzA,tuA,latA);
+    STATE.chartA=buildChart(dA,document.getElementById('timeA').value,tzA,tuA,latA,lonA);
     STATE.profileA=buildNatalProfile(STATE.chartA);
   } else {
     STATE.chartA=null;STATE.profileA=null;
   }
   if(dB){
     setP(dA?22:5,'Computing chart B…');await sl(60);
-    STATE.chartB=buildChart(dB,document.getElementById('timeB').value,tzB,tuB,latB);
+    STATE.chartB=buildChart(dB,document.getElementById('timeB').value,tzB,tuB,latB,lonB);
     STATE.profileB=buildNatalProfile(STATE.chartB);
   } else {
     STATE.chartB=null;STATE.profileB=null;
