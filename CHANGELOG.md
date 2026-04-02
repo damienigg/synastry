@@ -4,6 +4,24 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.4.0] — 2026-04-03
+
+### Added
+- **100% interpretation coverage** — all 55 planet-pair × 6 aspect combinations now have bespoke, psychologically-grounded interpretations in English, French, and Italian. Total: 990 entries (was 567 at 57% coverage). The generic aspect fallback is no longer needed.
+- **New planet pairs added:** Ascendant-Uranus, Jupiter-Mercury, Neptune-Venus, Pluto-Saturn, Pluto-Uranus, Pluto-Venus, Uranus-Venus (all 6 aspects × 3 languages = 126 entries), plus Trine/Sextile/Quincunx for 15 previously incomplete pairs (45 entries × 3 languages = 135 entries), plus 9 fully new outer-planet pairs (54 entries × 3 languages = 162 entries).
+- **Test suite enrichment** — 5 new edge-case tests (leap year, 1920/2050 boundaries, midnight UTC, extreme timezones), 3 Moon reference values vs JPL, 3 timezone unit tests, 4 synastry domain range checks, 4 new extreme-latitude ascendant cases (Tromso 69.6°N, Reykjavik 64.1°N, Cape Town, Singapore). Total: 540 tests.
+
+### Removed
+- **All LLM functionality** — removed Anthropic, OpenAI, Gemini, and Ollama integrations entirely. No more Oracle Configuration panel, API key fields, provider selection, system prompts, or LLM confidence scoring. The app now runs purely on the built-in interpreter (~360 lines of code removed).
+- Removed `callLLM()`, `callLLMWithSystem()`, `buildPrompt()`, `buildNatalPrompt()`, `extractJson()`, `stripJson()`, `updateProviderUI()`, `curProvider` global.
+- Removed ~60 I18N keys across 3 languages (LLM labels, tooltips, system prompts, confidence descriptions).
+- Removed LLM-specific CSS (.pills, .pill, .llm-grid, .llmcard).
+
+### Changed
+- Confidence engine simplified: no longer includes LLM self-assessment weighting. Synastry formula now uses astronomical precision (45%), aspect coverage (25%), domain coherence (30%). Natal formula uses astronomical precision (35%), birth time (40%), dignity reliability (15%), retrograde reliability (10%).
+
+---
+
 ## [10.3.0] — 2026-04-02
 
 ### Added

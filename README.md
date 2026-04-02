@@ -1,4 +1,4 @@
-# Synastria v10.3.0
+# Synastria v10.4.0
 
 **Astrological Oracle — Natal Profiles & Traceable Synastral Analysis**
 
@@ -60,29 +60,28 @@ Retrograde detection uses a 1-day finite difference. Direction detection is reli
 
 ## Interpretation engine
 
-### Built-in mode (no API key required)
+Rule-based interpreter with **100% coverage** — all 330 possible planet-pair × aspect combinations have bespoke, psychologically-grounded interpretations in all 3 languages (990 entries total). No generic fallbacks needed.
 
-Rule-based interpreter with 192 bespoke planet-pair interpretations:
+| Coverage | Count |
+|---|---|
+| Planet pairs | 55/55 (all combinations of 11 celestial points) |
+| Aspects per pair | 6 (Conjunction, Trine, Sextile, Square, Opposition, Quincunx) |
+| Interpretations per language | 330 |
+| Total across EN/FR/IT | 990 |
 
-- **100%** of personal planet combinations (Sun, Moon, Mercury, Venus, Mars, Ascendant)
-- **100%** of personal × social/outer hard aspects (Conjunction, Square, Opposition)
-- **~58%** of all 330 possible planet × aspect combinations
-- Remaining combinations fall back to generic aspect-type explanations
+Each interpretation is:
+- **Psychologically grounded** — describes how the aspect manifests in behavior, emotions, and relationships
+- **Plain language** — no unexplained jargon, readable by anyone
+- **Aspect-specific** — each aspect type has distinct meaning (merging, flow, opportunity, friction, polarity, adjustment)
 
-All interpretations are plain-language psychological prose — no astrology knowledge required.
+Additional interpretation data:
+- 12 Sun sign descriptions × 3 languages
+- 12 Moon sign descriptions × 3 languages
+- 12 Ascendant sign descriptions × 3 languages
+- 10 planet dignity interpretations (domicile, exaltation, detriment, fall) × 3 languages
+- 8 lunar phase names × 3 languages
 
-### LLM mode
-
-Connect any of these providers for AI-generated reports:
-
-| Provider | Model | Notes |
-|---|---|---|
-| **Anthropic** | `claude-sonnet-4-6` | API key required |
-| **OpenAI** | `gpt-5.4` | API key required, uses `max_completion_tokens` |
-| **Google Gemini** | `gemini-2.0-flash` | API key required |
-| **Ollama** | `llama3` | Local, no API key; run `OLLAMA_ORIGINS=* ollama serve` |
-
-The LLM receives pre-computed positions, aspects, dignities, and scores as structured data. It interprets — never recalculates. Self-reported confidence is parsed from a JSON block and displayed in the Confidence Index.
+No external API or internet connection is needed for interpretation. Everything runs locally.
 
 ---
 
@@ -90,7 +89,7 @@ The LLM receives pre-computed positions, aspects, dignities, and scores as struc
 
 Every output includes a Confidence Index measuring calculation reliability, not relationship strength.
 
-**Natal metrics:** Astronomical Precision, Birth Time, Dignity Reliability, Retrograde Reliability, Oracle Assessment (LLM only)
+**Natal metrics:** Astronomical Precision, Birth Time, Dignity Reliability, Retrograde Reliability
 
 **Synastry metrics:** Astronomical Precision, Aspect Coverage (out of 121 pairs), Domain Coherence, Oracle Assessment (LLM only)
 
@@ -104,11 +103,11 @@ The project includes a comprehensive pytest-based test suite validated against a
 
 ```bash
 pip install -r requirements.txt
-pytest -v                          # run all 525 tests
-pytest -m structural               # 105 HTML/engine inspection tests
-pytest -m unit                     # 265 unit tests (single Node.js batch)
-pytest -m jpl                      # 142 JPL Horizons validation tests
-pytest -m ascendant                # 13 Swiss Ephemeris ascendant tests
+pytest -v                          # run all 540 tests
+pytest -m structural               # HTML/engine inspection tests
+pytest -m unit                     # unit tests (single Node.js batch)
+pytest -m jpl                      # JPL Horizons validation tests
+pytest -m ascendant                # Swiss Ephemeris ascendant tests
 pytest --no-jpl                    # skip external API tests
 pytest --clear-cache               # clear JPL response cache
 ```
@@ -117,10 +116,11 @@ pytest --clear-cache               # clear JPL response cache
 
 | Category | Tests | Reference | Tolerance |
 |---|---|---|---|
-| Structural (HTML/engine) | 105 | Static inspection | N/A |
-| Unit (all engine functions) | 265 | Self-consistent | Various |
+| Structural (HTML/engine) | ~100 | Static inspection | N/A |
+| Unit (all engine functions) | ~275 | Self-consistent + JPL refs | Various |
+| Edge cases | 5 | Leap year, boundaries, timezones | N/A |
 | JPL Horizons (planet positions) | 142 | JPL DE441 | 0.5°-3° per planet |
-| Swiss Ephemeris (ascendant) | 13 | JPL DE431 via Kerykeion | 2° (actual max: 0.01°) |
+| Swiss Ephemeris (ascendant) | 17 | JPL DE431 via Kerykeion | 2° (actual max: 0.01°) |
 
 Tolerances are configurable in `tolerances.json`.
 
@@ -147,7 +147,7 @@ Language can be switched at any time. Built-in reports re-render immediately.
 
 ## Architecture
 
-The application is a **single HTML file** (~3,500 lines). No build tools, no npm, no backend.
+The application is a **single HTML file** (~3,600 lines). No build tools, no npm, no backend, no external APIs for interpretation.
 
 ```
 index.html
@@ -155,7 +155,6 @@ index.html
 │   └── @media print stylesheet for PDF export
 ├── HTML structure
 │   ├── Input panel (birth data, city search, calendar picker)
-│   ├── Oracle configuration (LLM provider selection)
 │   ├── Results (reports, confidence, traces)
 │   └── Action buttons (Reset, Export PDF)
 └── JavaScript (inline <script>)
@@ -163,7 +162,7 @@ index.html
     ├── Astronomy engine (VSOP87, Brown, secular elements, Kepler)
     ├── Natal profile (aspects, dignities, retrogrades, lunar phase)
     ├── Synastry engine (pair matrix, weighted scoring, 5 domains)
-    ├── Interpretation engine (192 built-in + LLM prompt builders)
+    ├── Interpretation engine (990 bespoke entries, 100% coverage)
     ├── Confidence engine (natal + synastry composite scores)
     └── UI (calendar, city search, collapsible panels, SVG rings)
 ```
@@ -175,6 +174,7 @@ tests/
 ├── conftest.py              # session fixtures, CLI options, report plugin
 ├── test_structural.py       # HTML/engine structural inspection
 ├── test_unit.py             # batch engine tests via Node.js
+├── test_edge_cases.py       # date/timezone/boundary edge cases
 ├── test_jpl.py              # JPL Horizons planet validation
 ├── test_ascendant.py        # Swiss Ephemeris ascendant validation
 └── helpers/
@@ -188,10 +188,10 @@ tests/
 
 ## Privacy
 
-- All calculations happen **entirely in your browser** — no birth data is sent to any server
-- City search sends only the city name to open-meteo (no birth data)
-- LLM mode sends computed chart data (positions, aspects, scores) to the selected provider — **no raw birth dates or times**, only derived astronomical data
-- API keys are stored only in browser session memory, never persisted
+- All calculations and interpretations happen **entirely in your browser** — no birth data is ever sent to any server
+- City search sends only the typed city name to open-meteo (no birth data)
+- No external APIs are used for interpretation — everything is built-in
+- The app works fully offline (except for city geocoding)
 
 ---
 
