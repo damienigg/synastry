@@ -52,7 +52,7 @@ def test_no_hardcoded_llmscore_fallback(html_path):
 
 def test_version_badge(html_path):
     html = html_path.read_text(encoding='utf-8')
-    assert 'ver-badge">v10.2.0' in html
+    assert 'ver-badge">v10.3.0' in html
 
 
 def test_buildchart_returns_time_unknown(engine_js):
