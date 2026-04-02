@@ -360,6 +360,26 @@ def _build_cases():
         {'fn':'builtinNatalReport','args':['1990-03-21','12:00',0,True,48.9,2.35,'en'],
          'name':'builtinNatalReport: timeUnknown → warns about Moon/Ascendant','check':'natal_report_tu_warn',
          'name_arg':'TestTU'},
+
+        # ── 26. More Moon reference values ────────────────────────────────────
+        {'fn':'moonPos','args':[T('2000-01-01')],'name':'moonPos J2000 ≈ 223.3° (JPL)','exp':223.3,'tol':1.0,'angle':True},
+        {'fn':'moonPos','args':[T('2010-06-21')],'name':'moonPos 2010-06-21 ≈ 209.9° (JPL)','exp':209.9,'tol':1.0,'angle':True},
+        {'fn':'moonPos','args':[T('1980-04-21')],'name':'moonPos 1980-04-21 ≈ 114.3° (JPL)','exp':114.3,'tol':1.0,'angle':True},
+
+        # ── 27. Timezone handling ─────────────────────────────────────────────
+        {'fn':'toJD','args':[2000,1,1,12,-5],'name':'toJD: tz=-5 shifts JD by +5/24','exp':2451545.0+5/24,'tol':1e-4},
+        {'fn':'toJD','args':[2000,1,1,0,0],'name':'toJD: midnight = JD - 0.5','exp':2451544.5,'tol':1e-4},
+        {'fn':'toJD','args':[2000,1,1,23,0],'name':'toJD: 23:00 UTC','exp':2451545.0+11/24,'tol':1e-4},
+
+        # ── 28. Additional synastry score domain range checks ─────────────────
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
+         'name':'scoreSyn couple A: harmony ∈ [0,100]','check':'score_val_range','domain':'harmony'},
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
+         'name':'scoreSyn couple A: passion ∈ [0,100]','check':'score_val_range','domain':'passion'},
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
+         'name':'scoreSyn couple A: mental ∈ [0,100]','check':'score_val_range','domain':'mental'},
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
+         'name':'scoreSyn couple A: karmic ∈ [0,100]','check':'score_val_range','domain':'karmic'},
     ]
 
 
@@ -650,6 +670,13 @@ def evaluate_unit_case(case, nr, asc_store):
         p = _p(); ok = p is not None and p.get('langTest', False); detail = f"langTest={p.get('langTest') if p else None}, length={p.get('length') if p else None}"
     elif check == 'natal_report_tu_warn':
         p = _p(); ok = p is not None and p.get('hasText'); detail = f"hasText={p.get('hasText') if p else None}"
+    elif check == 'score_val_range':
+        p = _p()
+        sc = p.get('scores', {}) if p else {}
+        domain = case['domain']
+        val = sc.get(domain)
+        ok = val is not None and 0 <= val <= 100
+        detail = f"{domain}={val}"
     else:
         ok = True; detail = str(_p())
 
