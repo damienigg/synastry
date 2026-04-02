@@ -207,8 +207,52 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 .cal-m.selected,.cal-y.selected{background:rgba(212,168,67,.2);color:var(--gold)}
 .cal-years{grid-template-columns:repeat(4,1fr)}
 .cal-y{font-size:12px}
+/* ACTION BUTTONS */
+.action-bar{display:flex;justify-content:center;gap:14px;margin:18px 0 0}
+.actbtn{position:relative;display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:var(--r);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:all .3s;overflow:hidden}
+.actbtn::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s}
+.actbtn:hover::before{opacity:1}
+.btn-reset{background:linear-gradient(135deg,rgba(196,96,122,.12),rgba(196,96,122,.04));border:1px solid rgba(196,96,122,.3);color:var(--rose)}
+.btn-reset::before{background:linear-gradient(135deg,rgba(196,96,122,.18),transparent)}
+.btn-reset:hover{border-color:var(--rose);box-shadow:0 0 22px rgba(196,96,122,.18)}
+.btn-export{background:linear-gradient(135deg,rgba(74,143,212,.12),rgba(74,143,212,.04));border:1px solid rgba(74,143,212,.3);color:var(--azure)}
+.btn-export::before{background:linear-gradient(135deg,rgba(74,143,212,.18),transparent)}
+.btn-export:hover{border-color:var(--azure);box-shadow:0 0 22px rgba(74,143,212,.18)}
+/* PRINT / PDF */
+@media print{
+  body{background:#fff!important;color:#1a1a2e!important;font-size:12pt}
+  #sf,.lang-bar,.ver-badge,.ctabtn,.action-bar,.pbar-wrap,.plog,#prog,.box-chevron,.tip-icon,#tip-global,.city-list,.date-cal{display:none!important}
+  .w{max-width:100%;padding:0 20px}
+  .panel,.pcard,.confpanel,.evcard,.ccard{background:#fff!important;border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
+  .panel::before{display:none}
+  .box-body.collapsed{display:block!important}
+  .box-hdr{cursor:default}
+  .ptitle,.plabel,.conftitle,.tsec-title,.ring-lbl,.ccard-lbl,.cglabel,.cgpct,.flagtitle,.llmcard-l,.box-chevron{color:#444!important}
+  .rbody,.evcard .evd,.cnote,.flag,.cgdesc{color:#222!important}
+  .rbody h3{color:#1a1a2e!important}
+  h1,.sigil{color:#1a1a2e!important;text-shadow:none!important;filter:none!important;animation:none!important}
+  .tagline,.hline{color:#666!important}
+  .banner{background:none!important;border:1px solid #ccc!important}
+  .banner .bttl{color:#1a1a2e!important;text-shadow:none!important}
+  .banner .bsub{color:#666!important}
+  .chip{border:1px solid #999!important;color:#333!important;background:rgba(0,0,0,.05)!important}
+  .tt th,.tt td{color:#222!important;border-bottom:1px solid #ddd!important}
+  .mono{color:#444!important}
+  .va{color:#a04060!important}.vb{color:#2060a0!important}.vn{color:#208060!important}
+  .gdeg{color:#886020!important}
+  .cgscore{color:#1a1a2e!important}
+  .cbfill{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  svg circle,svg text{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .rings svg{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .love-sig{color:#888!important;opacity:1!important}
+  .tcontent{display:block!important}
+  .tabs{display:none!important}
+  #res{display:block!important}
+  header{padding:20px 0 16px}
+  @page{margin:15mm 12mm;size:A4}
+}
 /* RESPONSIVE */
-@media(max-width:640px){.couple-grid,.confgrid,.llm-grid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}}
+@media(max-width:640px){.couple-grid,.confgrid,.llm-grid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}.action-bar{flex-direction:column;align-items:center}}
 </style>
 </head>
 <body>
@@ -363,6 +407,10 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 <div class="cta">
   <button class="ctabtn" id="calcBtn" onclick="runAll()"><span>✦</span><span data-i18n="cast"></span><span>✦</span></button>
 </div>
+<div class="action-bar">
+  <button class="actbtn btn-reset" onclick="resetAll()"><span>↺</span><span data-i18n="resetAll"></span></button>
+  <button class="actbtn btn-export" id="exportBtn" onclick="exportPDF()" style="display:none"><span>⬡</span><span data-i18n="exportPdf"></span></button>
+</div>
 <div id="prog" style="display:none">
   <div class="pbar-wrap"><div class="pbar" id="pbar"></div></div>
   <div class="plog" id="plog"></div>
@@ -491,7 +539,7 @@ const I18N = {
     ollamaUrl:"Ollama Base URL",model:"Model",maxTokens:"Max Tokens",
     oraclePromptLabel:"Oracle Prompt",
     noneNote:"Built-in interpreter active — the report is generated from pre-defined astrological rules applied to your calculated data. No external API is called. The built-in rules cover 100% of personal planet combinations (Sun, Moon, Mercury, Venus, Mars, Ascendant) and ~58% of all possible planet/aspect pairings. Connecting an LLM provider may yield richer, more nuanced interpretations for the remaining combinations.",
-    cast:"Cast the Charts",
+    cast:"Cast the Charts",resetAll:"Reset",exportPdf:"Export PDF",
     tabNatal:"Natal Charts",tabSynastry:"Synastry Aspects",tabScores:"Score Breakdown",tabRaw:"Raw Data",
     confidenceIndex:"◈ Confidence Index",oracleReport:"✦ Oracle Report",
     confHigh:"High confidence",confGood:"Good confidence",confMod:"Moderate confidence",confLow:"Low confidence",confVeryLow:"Very low confidence",
@@ -578,7 +626,7 @@ const I18N = {
     ollamaUrl:"URL Ollama",model:"Modèle",maxTokens:"Tokens max",
     oraclePromptLabel:"Prompt de l'Oracle",
     noneNote:"Interpréteur intégré actif — le rapport est généré à partir de règles astrologiques prédéfinies appliquées à vos données calculées. Aucune API externe n'est sollicitée. Les règles intégrées couvrent 100% des combinaisons planètes personnelles (Soleil, Lune, Mercure, Vénus, Mars, Ascendant) et ~58% de toutes les paires planète/aspect possibles. Connecter un fournisseur LLM peut produire des interprétations plus riches pour les combinaisons restantes.",
-    cast:"Dresser les Thèmes",
+    cast:"Dresser les Thèmes",resetAll:"Réinitialiser",exportPdf:"Exporter PDF",
     tabNatal:"Thèmes Nataux",tabSynastry:"Aspects Synastrie",tabScores:"Détail des Scores",tabRaw:"Données Brutes",
     confidenceIndex:"◈ Indice de Confiance",oracleReport:"✦ Rapport de l'Oracle",
     confHigh:"Haute confiance",confGood:"Bonne confiance",confMod:"Confiance modérée",confLow:"Faible confiance",confVeryLow:"Très faible confiance",
@@ -665,7 +713,7 @@ const I18N = {
     ollamaUrl:"URL Ollama",model:"Modello",maxTokens:"Token max",
     oraclePromptLabel:"Prompt dell'Oracolo",
     noneNote:"Interprete integrato attivo — il rapporto è generato da regole astrologiche predefinite applicate ai dati calcolati. Nessuna API esterna viene contattata. Le regole integrate coprono il 100% delle combinazioni pianeti personali (Sole, Luna, Mercurio, Venere, Marte, Ascendente) e ~58% di tutte le possibili coppie pianeta/aspetto. Collegare un provider LLM può produrre interpretazioni più ricche per le combinazioni rimanenti.",
-    cast:"Tracciare i Temi",
+    cast:"Tracciare i Temi",resetAll:"Ripristina",exportPdf:"Esporta PDF",
     tabNatal:"Temi Natali",tabSynastry:"Aspetti Sinastrici",tabScores:"Dettaglio Punteggi",tabRaw:"Dati Grezzi",
     confidenceIndex:"◈ Indice di Fiducia",oracleReport:"✦ Rapporto dell'Oracolo",
     confHigh:"Alta fiducia",confGood:"Buona fiducia",confMod:"Fiducia moderata",confLow:"Bassa fiducia",confVeryLow:"Fiducia molto bassa",
@@ -3466,6 +3514,75 @@ async function runAll(){
   }
 
   btn.disabled=false;
+  document.getElementById('exportBtn').style.display='';
+}
+
+// ── RESET ALL ──
+function resetAll(){
+  // Clear inputs
+  ['nameA','nameB'].forEach(id=>{document.getElementById(id).value='';});
+  ['dateA','dateB'].forEach(id=>{document.getElementById(id).value='';});
+  ['timeA','timeB'].forEach(id=>{document.getElementById(id).value='12:00';document.getElementById(id).disabled=false;});
+  ['tuA','tuB'].forEach(id=>{document.getElementById(id).checked=false;});
+  ['cs-A','cs-B'].forEach(id=>{document.getElementById(id).value='';});
+  ['tzA','tzB'].forEach(id=>{document.getElementById(id).value='';});
+  ['latA','latB'].forEach(id=>{document.getElementById(id).value='42';});
+  ['lonA','lonB'].forEach(id=>{document.getElementById(id).value='0';});
+  ['ianaA','ianaB'].forEach(id=>{document.getElementById(id).value='UTC';});
+  // Reset calendar state
+  CAL_STATE.A={year:1990,month:2,day:null,view:'day'};
+  CAL_STATE.B={year:1988,month:6,day:null,view:'day'};
+  const dlA=document.getElementById('dlabel-A'),dlB=document.getElementById('dlabel-B');
+  if(dlA){dlA.value='';dlA.classList.remove('invalid');}
+  if(dlB){dlB.value='';dlB.classList.remove('invalid');}
+  // Hide results
+  document.getElementById('res').style.display='none';
+  document.getElementById('prog').style.display='none';
+  document.getElementById('exportBtn').style.display='none';
+  ['report-sec','conf-sec','natal-report-A-sec','natal-data-A-sec','natal-report-B-sec','natal-data-B-sec','solo-notice'].forEach(id=>{document.getElementById(id).style.display='none';});
+  // Clear result content
+  ['rbody','banner','rings','tab-natal','tab-syn','tab-scores','tab-raw','natal-report-A-body','natal-data-A-body','natal-report-B-body','natal-data-B-body'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+  const ev=document.getElementById('evcards');if(ev)ev.innerHTML='';
+  // Reset state
+  STATE={chartA:null,chartB:null,syn:null,scoreData:null,nameA:'A',nameB:'B',builtinMode:false,soloMode:false,profileA:null,profileB:null};
+  // Scroll to top
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── EXPORT PDF ──
+function exportPDF(){
+  // Expand all collapsed sections before printing
+  const collapsed=[];
+  document.querySelectorAll('.box-body.collapsed').forEach(el=>{
+    collapsed.push(el);
+    el.classList.remove('collapsed');
+    el.classList.add('expanded');
+  });
+  document.querySelectorAll('.box-hdr.collapsed').forEach(el=>{
+    el.classList.remove('collapsed');
+    el._wasCollapsed=true;
+  });
+  // Expand all trace sections
+  document.querySelectorAll('.cbody').forEach(el=>{
+    if(el.style.display==='none'){el.style.display='';el._wasHidden=true;}
+  });
+  // Print
+  setTimeout(()=>{
+    window.print();
+    // Restore collapsed state after print dialog closes
+    setTimeout(()=>{
+      collapsed.forEach(el=>{
+        el.classList.add('collapsed');
+        el.classList.remove('expanded');
+      });
+      document.querySelectorAll('.box-hdr').forEach(el=>{
+        if(el._wasCollapsed){el.classList.add('collapsed');delete el._wasCollapsed;}
+      });
+      document.querySelectorAll('.cbody').forEach(el=>{
+        if(el._wasHidden){el.style.display='none';delete el._wasHidden;}
+      });
+    },500);
+  },100);
 }
 
 // ── LLM call with explicit system prompt (for natal mode) ──
