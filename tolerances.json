@@ -1,7 +1,7 @@
 {
   "_comment": "JPL Horizons comparison tolerances in degrees. Adjust per planet as needed.",
   "Sun":     0.5,
-  "Moon":    5.0,
+  "Moon":    0.5,
   "Mercury": 0.5,
   "Venus":   0.5,
   "Mars":    0.5,

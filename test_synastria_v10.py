@@ -52,6 +52,27 @@ C_RESET = "\033[0m"
 def col(c, s):
     return f"{c}{s}{C_RESET}"
 
+_ANSI_RE = re.compile(r'\033\[[0-9;]*m')
+def _strip_ansi(text):
+    return _ANSI_RE.sub('', text)
+
+class _TeeWriter:
+    """Duplicates stdout to a file, stripping ANSI codes for the file copy."""
+    def __init__(self, log_path, original):
+        self._file = open(log_path, 'w', encoding='utf-8')
+        self._orig = original
+    def write(self, s):
+        self._orig.write(s)
+        self._file.write(_strip_ansi(s))
+    def flush(self):
+        self._orig.flush()
+        self._file.flush()
+    def close_log(self):
+        self._file.close()
+    # forward any other attribute to the original stdout
+    def __getattr__(self, name):
+        return getattr(self._orig, name)
+
 # ── FAILURE REGISTRY (populated throughout the run) ───────────────────────────
 _ALL_FAILURES = []   # list of (section, name, detail)
 _asc_store = {}      # storage for cross-test ascendant comparison
@@ -379,7 +400,7 @@ def jpl_query(planet, date_str, cache, verbose=False):
 # Loaded from tolerances.json (next to this script). Falls back to defaults if missing.
 _TOL_DEFAULTS = {
     'Sun':     0.5,
-    'Moon':    5.0,
+    'Moon':    0.5,
     'Mercury': 0.5,
     'Venus':   0.5,
     'Mars':    0.5,
@@ -1335,6 +1356,14 @@ def main():
     ap.add_argument('--no-jpl',      action='store_true')
     args = ap.parse_args()
 
+    import datetime
+    _report_dir = Path(__file__).parent / 'reports'
+    _report_dir.mkdir(exist_ok=True)
+    _report_name = f"test_report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    _report_path = _report_dir / _report_name
+    _tee = _TeeWriter(_report_path, sys.stdout)
+    sys.stdout = _tee
+
     print(col(C_BOLD+C_CYAN, "\n✦ Synastria v10 — Comprehensive Astronomy Engine Test Suite"))
     print(col(C_DIM, "  Extracts JS from HTML → Node.js → validates vs JPL Horizons\n"))
 
@@ -1399,6 +1428,10 @@ def main():
     if all_ok: print(col(C_BOLD+C_OK,  "✓ ALL TESTS PASSED"))
     else:      print(col(C_BOLD+C_FAIL, "✗ SOME TESTS FAILED"))
     print()
+    print(col(C_DIM, f"  Report saved to: {_report_path.resolve()}"))
+    print()
+    sys.stdout = _tee._orig
+    _tee.close_log()
     return 0 if all_ok else 1
 
 # ── FAILED TEST RECAP ─────────────────────────────────────────────────────────
