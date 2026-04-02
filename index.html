@@ -3172,8 +3172,10 @@ async function callLLM(prompt){
     if(!r.ok)throw new Error(`Anthropic ${r.status}`);return(await r.json()).content[0].text;
   }
   if(curProvider==='openai'){
-    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify({model,max_completion_tokens:maxTok,messages:[{role:'system',content:sys},{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error(`OpenAI ${r.status}`);return(await r.json()).choices[0].message.content;
+    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify({model,max_completion_tokens:maxTok,reasoning_effort:'none',messages:[{role:'system',content:sys},{role:'user',content:prompt}]})});
+    if(!r.ok){const b=await r.text().catch(()=>'');throw new Error(`OpenAI ${r.status}: ${b.slice(0,200)}`);}
+    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content');
+    return j.choices[0].message.content;
   }
   if(curProvider==='gemini'){
     const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,{method:'POST',headers,body:JSON.stringify({contents:[{parts:[{text:sys+'\n\n'+prompt}]}],generationConfig:{maxOutputTokens:maxTok}})});
@@ -3589,8 +3591,10 @@ async function callLLMWithSystem(prompt,sys){
     if(!r.ok)throw new Error(`Anthropic ${r.status}`);return(await r.json()).content[0].text;
   }
   if(curProvider==='openai'){
-    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify({model,max_completion_tokens:maxTok,messages:[{role:'system',content:sys},{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error(`OpenAI ${r.status}`);return(await r.json()).choices[0].message.content;
+    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify({model,max_completion_tokens:maxTok,reasoning_effort:'none',messages:[{role:'system',content:sys},{role:'user',content:prompt}]})});
+    if(!r.ok){const b=await r.text().catch(()=>'');throw new Error(`OpenAI ${r.status}: ${b.slice(0,200)}`);}
+    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content');
+    return j.choices[0].message.content;
   }
   if(curProvider==='gemini'){
     const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,{method:'POST',headers,body:JSON.stringify({contents:[{parts:[{text:sys+'\n\n'+prompt}]}],generationConfig:{maxOutputTokens:maxTok}})});
