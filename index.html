@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Synastria v10.3.0</title>
+<title>Synastria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;500&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
@@ -260,7 +260,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 <div id="sf"><canvas id="sc"></canvas></div>
 <div class="w">
 
-<div class="ver-badge">v10.3.0</div>
+<div class="ver-badge" id="ver-badge"></div>
 <div class="lang-bar">
   <button class="lang-btn active" onclick="setLang('en')">EN</button>
   <button class="lang-btn" onclick="setLang('fr')">FR</button>
@@ -271,7 +271,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
   <span class="sigil">✦</span>
   <h1>Synastria</h1>
   <p class="tagline" data-i18n="tagline"></p>
-  <div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;color:var(--silver);opacity:.4;margin-top:8px">VERSION 10.2.0</div>
+  <div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;color:var(--silver);opacity:.4;margin-top:8px" id="ver-header"></div>
   <div class="hline"></div>
 </header>
 
@@ -510,6 +510,14 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 
 <script>
 'use strict';
+// ═══════════════════════════════════════════════════
+// VERSION — single source of truth
+// ═══════════════════════════════════════════════════
+const APP_VERSION='10.3.0';
+document.title=`Synastria v${APP_VERSION}`;
+document.getElementById('ver-badge').textContent=`v${APP_VERSION}`;
+document.getElementById('ver-header').textContent=`VERSION ${APP_VERSION}`;
+
 // ═══════════════════════════════════════════════════
 // I18N
 // ═══════════════════════════════════════════════════

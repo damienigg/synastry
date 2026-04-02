@@ -50,9 +50,28 @@ def test_no_hardcoded_llmscore_fallback(html_path):
     assert 'llmScore ?? 70' not in html
 
 
-def test_version_badge(html_path):
+def test_version_constant(html_path):
+    """APP_VERSION constant exists and badge/header render dynamically from it."""
     html = html_path.read_text(encoding='utf-8')
-    assert 'ver-badge">v10.3.0' in html
+    m = re.search(r"const APP_VERSION='([^']+)'", html)
+    assert m, "APP_VERSION constant not found in index.html"
+    version = m.group(1)
+    # Verify the version string looks valid (semver-like)
+    assert re.match(r'^\d+\.\d+\.\d+$', version), f"Invalid version format: {version}"
+    # Verify dynamic rendering elements exist
+    assert 'id="ver-badge"' in html
+    assert 'id="ver-header"' in html
+
+def test_version_matches_version_md(html_path, project_root):
+    """APP_VERSION in index.html must match VERSION.md."""
+    html = html_path.read_text(encoding='utf-8')
+    m = re.search(r"const APP_VERSION='([^']+)'", html)
+    assert m, "APP_VERSION constant not found"
+    app_version = m.group(1)
+    version_md = (project_root / 'VERSION.md').read_text()
+    m2 = re.search(r'\*\*(.+?)\*\*', version_md)
+    assert m2, "Cannot parse version from VERSION.md"
+    assert app_version == m2.group(1), f"index.html has {app_version}, VERSION.md has {m2.group(1)}"
 
 
 def test_buildchart_returns_time_unknown(engine_js):
