@@ -87,11 +87,13 @@ No external API or internet connection is needed for interpretation. Everything 
 
 ## Confidence Index
 
-Every output includes a Confidence Index measuring calculation reliability, not relationship strength.
+Every output includes a Confidence Index measuring calculation reliability, not relationship strength. Only warnings are shown — no "everything OK" clutter.
 
-**Natal metrics:** Astronomical Precision, Birth Time, Dignity Reliability, Retrograde Reliability
+**Natal:** Astronomical Precision (45%) + Birth Time (55%)
 
-**Synastry metrics:** Astronomical Precision, Aspect Coverage (out of 121 pairs), Domain Coherence, Oracle Assessment (LLM only)
+**Synastry:** Astronomical Precision (50%) + Domain Coherence (50%)
+
+Warnings appear only when relevant: unknown birth time, tight outer-planet aspects (orb ≤2°), high domain variance.
 
 ---
 
