@@ -973,7 +973,7 @@ function moonPos(T){
 function ascPos(T,tz,lat,lon){
   const JD=2451545+T*36525,GMST=m360(280.46061837+360.98564736629*(JD-2451545)+3.87933e-4*T*T);
   const LST=m360(GMST+lon),eps=23.4397-.013*T,er=eps*Math.PI/180,Rr=LST*Math.PI/180,latr=(lat??42)*Math.PI/180;
-  return{lon:m360(Math.atan2(Math.cos(Rr),-Math.sin(Rr)*Math.sin(er)-Math.tan(latr)*Math.cos(er))*180/Math.PI),tGMST:GMST.toFixed(2),tLST:LST.toFixed(2),tEps:eps.toFixed(4),tLat:(lat??42).toFixed(4),tLon:(lon??0).toFixed(4)};
+  return{lon:m360(Math.atan2(Math.cos(Rr),-(Math.sin(Rr)*Math.cos(er)+Math.tan(latr)*Math.sin(er)))*180/Math.PI),tGMST:GMST.toFixed(2),tLST:LST.toFixed(2),tEps:eps.toFixed(4),tLat:(lat??42).toFixed(4),tLon:(lon??0).toFixed(4)};
 }
 function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   const[y,m,d]=dateStr.split('-').map(Number),[h,mn]=timeStr.split(':').map(Number),hour=h+mn/60;
@@ -997,7 +997,7 @@ function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   const asc=ascPos(T,tz,latVal,lonVal);pos.Ascendant=degSign(asc.lon);
   tr('GMST','280.46061837 + 360.98564736629·(JD−J2000)',`${asc.tGMST}°`);tr('Longitude λ','City geographic longitude (from geocoding API)',`${asc.tLon}°E`);tr('LST','GMST + λ',`${asc.tLST}°`);
   tr('Obliquity ε','23.4397 − 0.013·T',`${asc.tEps}°`);tr('Latitude φ','City latitude (decimal degrees North)',`${asc.tLat}°N`);
-  tr('Ascendant ↑',`atan2(cosLST, −sinLST·sinε − tanφ·cosε)`,`${asc.lon.toFixed(4)}° → ${pos.Ascendant.sign} ${pos.Ascendant.deg}°`);
+  tr('Ascendant ↑',`atan2(cosLST, −(sinLST·cosε + tanφ·sinε))`,`${asc.lon.toFixed(4)}° → ${pos.Ascendant.sign} ${pos.Ascendant.deg}°`);
   return{JD,T,pos,trace,timeUnknown,lat:latVal};
 }
 function getAspect(lA,lB){
