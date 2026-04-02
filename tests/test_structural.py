@@ -44,12 +44,6 @@ def test_city_time_unknown_i18n(html_path):
     assert n_ctu >= 3, f"cityTimeUnknown: {n_ctu} occurrences (expected >= 3)"
 
 
-def test_no_hardcoded_llmscore_fallback(html_path):
-    html = html_path.read_text(encoding='utf-8')
-    assert 'llmScore??70' not in html
-    assert 'llmScore ?? 70' not in html
-
-
 def test_version_constant(html_path):
     """APP_VERSION constant exists and badge/header render dynamically from it."""
     html = html_path.read_text(encoding='utf-8')
@@ -104,7 +98,7 @@ def test_computeconf_formula_coefficients(engine_js):
     'function buildNatalAspects', 'function buildNatalProfile',
     'function lunarPhase', 'function elementTally', 'function modalityTally',
     'function dignityScores', 'function retrogradeFlags',
-    'function builtinNatalReport', 'function buildNatalPrompt',
+    'function builtinNatalReport',
     'const ELEM_MAP', 'const MOD_MAP', 'const DIGNITY', 'const PHASE_NAMES',
 ])
 def test_natal_profile_functions(engine_js, html_path, fn):
@@ -127,7 +121,7 @@ def test_phase_names_languages(engine_js, lang):
         f"PHASE_NAMES missing '{lang}' key"
 
 
-@pytest.mark.parametrize("key", ['soloOnlyMsg', 'natalProfileBox', 'natalSystemPrompt', 'soloTitle'])
+@pytest.mark.parametrize("key", ['soloOnlyMsg', 'natalProfileBox', 'soloTitle'])
 def test_natal_i18n_keys(html_path, key):
     html = html_path.read_text(encoding='utf-8')
     n = html.count(key)
@@ -160,7 +154,7 @@ def test_solo_mode_detection(html_path):
 
 
 @pytest.mark.parametrize("key", [
-    'soloOnlyMsg', 'natalSystemPrompt', 'soloTitle',
+    'soloOnlyMsg', 'soloTitle',
     'natalOracleReport', 'natalDataTitle', 'natalProfileBox',
 ])
 def test_solo_i18n_keys(html_path, key):
@@ -181,11 +175,6 @@ def test_solo_notice_element(html_path):
 def test_natal_split_boxes(html_path, element_id):
     html = html_path.read_text(encoding='utf-8')
     assert element_id in html, f"{element_id} not found in HTML"
-
-
-def test_call_llm_with_system_defined(html_path):
-    html = html_path.read_text(encoding='utf-8')
-    assert 'function callLLMWithSystem' in html
 
 
 def test_rerender_natal_builtin_defined(html_path):

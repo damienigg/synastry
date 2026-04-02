@@ -71,12 +71,6 @@ select option{background:#0f0c22;color:var(--star)}
 .city-opt .city-tz{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;color:var(--silver);flex-shrink:0;margin-left:8px}
 .city-list::-webkit-scrollbar{width:4px}
 .city-list::-webkit-scrollbar-thumb{background:var(--mist);border-radius:2px}
-/* LLM */
-.llm-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.pills{display:flex;gap:7px;flex-wrap:wrap}
-.pill{padding:5px 14px;border:1px solid var(--border);border-radius:16px;font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;cursor:pointer;transition:all .2s;color:var(--silver);background:transparent}
-.pill:hover{border-color:var(--gold);color:var(--gold)}
-.pill.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,.1)}
 .hidden{display:none!important}
 /* CTA */
 .cta{text-align:center;margin:28px 0}
@@ -155,10 +149,6 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 .flagtitle{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;color:var(--azure);margin-bottom:10px}
 .flag{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--pale)}
 .flag:last-child{border-bottom:none}
-.llmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:14px}
-.llmcard{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center}
-.llmcard-l{font-family:'Cinzel',serif;font-size:7px;letter-spacing:.2em;color:var(--silver);margin-bottom:3px}
-.llmcard-v{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600}
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--void)}::-webkit-scrollbar-thumb{background:var(--mist);border-radius:3px}
 .ibadge{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid var(--silver);color:var(--silver);font-size:9px;text-align:center;line-height:12px;cursor:help;margin-left:4px;font-family:'Cinzel',serif;vertical-align:middle}
@@ -227,7 +217,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
   .panel::before{display:none}
   .box-body.collapsed{display:block!important}
   .box-hdr{cursor:default}
-  .ptitle,.plabel,.conftitle,.tsec-title,.ring-lbl,.ccard-lbl,.cglabel,.cgpct,.flagtitle,.llmcard-l,.box-chevron{color:#444!important}
+  .ptitle,.plabel,.conftitle,.tsec-title,.ring-lbl,.ccard-lbl,.cglabel,.cgpct,.flagtitle,.box-chevron{color:#444!important}
   .rbody,.evcard .evd,.cnote,.flag,.cgdesc{color:#222!important}
   .rbody h3{color:#1a1a2e!important}
   h1,.sigil{color:#1a1a2e!important;text-shadow:none!important;filter:none!important;animation:none!important}
@@ -252,7 +242,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
   @page{margin:15mm 12mm;size:A4}
 }
 /* RESPONSIVE */
-@media(max-width:640px){.couple-grid,.confgrid,.llm-grid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}.action-bar{flex-direction:column;align-items:center}}
+@media(max-width:640px){.couple-grid,.confgrid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}.action-bar{flex-direction:column;align-items:center}}
 </style>
 </head>
 <body>
@@ -363,41 +353,6 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
   </div>
 </div>
 
-<!-- LLM CONFIG -->
-<div class="panel">
-  <div class="ptitle" data-i18n="oracleConfig"></div>
-  <div class="fg">
-    <label><span data-i18n="provider"></span><span class="tip" data-tip-key="tipProvider"><span class="tip-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:inherit"><circle cx="7.5" cy="7.5" r="6.75" stroke="currentColor" stroke-width="1.1"/><path d="M5.8 5.6c0-.94.76-1.7 1.7-1.7.94 0 1.7.76 1.7 1.7 0 .7-.42 1.3-1.02 1.58L7.5 7.6v1.1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7.5" cy="10.5" r=".55" fill="currentColor"/></svg></span></span></label>
-    <div class="pills">
-      <button class="pill active" data-provider="none" data-i18n="provNone"></button>
-      <button class="pill" data-provider="anthropic">Anthropic</button>
-      <button class="pill" data-provider="openai">OpenAI</button>
-      <button class="pill" data-provider="gemini">Gemini</button>
-      <button class="pill" data-provider="ollama">Ollama</button>
-    </div>
-  </div>
-  <div id="llm-fields" class="hidden">
-    <div id="api-key-row" class="fg">
-      <label><span data-i18n="apiKey"></span><span class="tip" data-tip-key="tipApiKey"><span class="tip-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:inherit"><circle cx="7.5" cy="7.5" r="6.75" stroke="currentColor" stroke-width="1.1"/><path d="M5.8 5.6c0-.94.76-1.7 1.7-1.7.94 0 1.7.76 1.7 1.7 0 .7-.42 1.3-1.02 1.58L7.5 7.6v1.1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7.5" cy="10.5" r=".55" fill="currentColor"/></svg></span></span></label>
-      <input type="password" id="apiKey" data-i18n-ph="apiKeyPh">
-    </div>
-    <div id="ollama-row" class="fg hidden">
-      <label><span data-i18n="ollamaUrl"></span><span class="tip" data-tip-key="tipOllama"><span class="tip-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:inherit"><circle cx="7.5" cy="7.5" r="6.75" stroke="currentColor" stroke-width="1.1"/><path d="M5.8 5.6c0-.94.76-1.7 1.7-1.7.94 0 1.7.76 1.7 1.7 0 .7-.42 1.3-1.02 1.58L7.5 7.6v1.1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7.5" cy="10.5" r=".55" fill="currentColor"/></svg></span></span></label>
-      <input type="text" id="ollamaUrl" value="http://localhost:11434">
-    </div>
-    <div class="llm-grid">
-      <div class="fg">
-        <label><span data-i18n="model"></span><span class="tip" data-tip-key="tipModel"><span class="tip-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:inherit"><circle cx="7.5" cy="7.5" r="6.75" stroke="currentColor" stroke-width="1.1"/><path d="M5.8 5.6c0-.94.76-1.7 1.7-1.7.94 0 1.7.76 1.7 1.7 0 .7-.42 1.3-1.02 1.58L7.5 7.6v1.1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7.5" cy="10.5" r=".55" fill="currentColor"/></svg></span></span></label>
-        <input type="text" id="modelName" value="claude-opus-4-5">
-      </div>
-      <div class="fg">
-        <label><span data-i18n="maxTokens"></span><span class="tip" data-tip-key="tipTokens"><span class="tip-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:inherit"><circle cx="7.5" cy="7.5" r="6.75" stroke="currentColor" stroke-width="1.1"/><path d="M5.8 5.6c0-.94.76-1.7 1.7-1.7.94 0 1.7.76 1.7 1.7 0 .7-.42 1.3-1.02 1.58L7.5 7.6v1.1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7.5" cy="10.5" r=".55" fill="currentColor"/></svg></span></span></label>
-        <input type="number" id="maxTokens" value="3000" min="500" max="8000">
-      </div>
-    </div>
-  </div>
-  <div id="none-note" class="fg" style="font-family:'EB Garamond',serif;font-size:14px;color:var(--silver);font-style:italic;padding:10px;border:1px solid var(--border);border-radius:var(--r)"><span data-i18n="noneNote"></span></div>
-</div>
 
 <!-- CTA -->
 <div class="cta">
@@ -528,40 +483,25 @@ const I18N = {
     tipTime:"Birth time improves Moon accuracy (Moon moves ~0.55°/h) and enables Ascendant calculation. If unknown, check the box below — noon will be used and confidence reduced.",
     tipCity:"Sets the UTC offset to convert local birth time to UTC. When time is unknown only the city's latitude is used — for the Ascendant calculation.",
     city:"City / Timezone",cityTimeUnknown:"Birth City",
-    tipProvider:"Choose your LLM. 'None' uses the built-in rule-based interpreter — no API key needed, works offline. Cloud providers offer richer narrative but require an API key.",
-    tipApiKey:"Your provider API key. Never shared or stored — used only for the single API call when you cast the charts.",
-    tipOllama:"Base URL of your local Ollama instance. Run 'OLLAMA_ORIGINS=* ollama serve' to allow browser access.",
-    tipModel:"Model name to use. Larger models produce better astrological narratives. Check your provider's documentation for available model names.",
-    tipTokens:"Maximum tokens the LLM can generate. 2000–3000 is enough for a full report. Higher values slow down the response.",
     displayName:"Display Name",namePh:"e.g. Luna",namePh2:"e.g. Sol",
     birthDate:"Birth Date",birthTime:"Birth Time",
     timeUnknown:"Time unknown — noon used, confidence reduced",
-    city:"City / Timezone",oracleConfig:"⚙ Oracle Configuration",
-    provider:"LLM Provider",provNone:"None (built-in)",
-    apiKey:"API Key",apiKeyPh:"sk-ant-... / sk-... / AIza...",
-    ollamaUrl:"Ollama Base URL",model:"Model",maxTokens:"Max Tokens",
-    noneNote:"Built-in interpreter active — the report is generated from pre-defined astrological rules applied to your calculated data. No external API is called. The built-in rules cover 100% of personal planet combinations (Sun, Moon, Mercury, Venus, Mars, Ascendant) and ~58% of all possible planet/aspect pairings. Connecting an LLM provider may yield richer, more nuanced interpretations for the remaining combinations.",
     cast:"Cast the Charts",resetAll:"Reset",exportPdf:"Export PDF",
     tabNatal:"Natal Charts",tabSynastry:"Synastry Aspects",tabScores:"Score Breakdown",tabRaw:"Raw Data",
     confidenceIndex:"◈ Confidence Index",oracleReport:"✦ Oracle Report",
     confHigh:"High confidence",confGood:"Good confidence",confMod:"Moderate confidence",confLow:"Low confidence",confVeryLow:"Very low confidence",
-    confGlobalDesc:"Composite across astronomical precision (35%), aspect coverage (20%), domain coherence (20%), oracle assessment (25%)",
-    confGlobalDescBuiltin:"Composite across astronomical precision (45%), aspect coverage (25%), domain coherence (30%) — no LLM assessment",
-    confAstro:"Astronomical Precision",confCov:"Aspect Coverage",confCoh:"Domain Coherence",confLLM:"Oracle Assessment",
+    confGlobalDesc:"Composite across astronomical precision (45%), aspect coverage (25%), domain coherence (30%)",
+    confAstro:"Astronomical Precision",confCov:"Aspect Coverage",confCoh:"Domain Coherence",
     confAstroNote:"Penalized for unknown birth time and outer planet simplified formulas (±2–3° vs Swiss Ephemeris ±0.01°).",
     confCovNote:"aspects found out of 121 possible pairs. Sparse charts yield less reliable scoring.",
     confCohNote:"Standard deviation across 5 domains. Low variance = consistent picture.",
-    confLLMNote:"Self-reported confidence from the LLM per report section.",
-    confLLMBuiltin:"Built-in interpreter — no LLM self-assessment available.",
     confNatalTitle:"Natal Chart Confidence",
-    confNatalAstro:"Astronomical Precision",confNatalTime:"Birth Time",confNatalDignity:"Dignity Reliability",confNatalRetro:"Retrograde Reliability",confNatalOracle:"Oracle Assessment",
+    confNatalAstro:"Astronomical Precision",confNatalTime:"Birth Time",confNatalDignity:"Dignity Reliability",confNatalRetro:"Retrograde Reliability",
     confNatalAstroNote:"Penalized for outer planet simplified formulas (±2–3° vs Swiss Ephemeris ±0.01°).",
     confNatalTimeNote:"Birth time known — Moon and Ascendant at full precision.",
     confNatalTimeWarn:"Birth time unknown — Moon uncertain ±6°, Ascendant unreliable. Score reflects this limitation.",
     confNatalDignityNote:"All 10 planets have dignity scores. Outer planet dignities are generational, not personal.",
     confNatalRetroNote:"Retrograde detection uses 1-day finite difference — reliable for inner planets, approximate for slow outer planets.",
-    confNatalOracleNote:"Self-reported confidence from the LLM per report section.",
-    confNatalOracleBuiltin:"Built-in interpreter — no LLM self-assessment available.",
     flagNatalOk:"Birth time known — all placements at full precision.",
     flagNatalTU:"Birth time unknown — Moon ±6°, Ascendant unreliable.",
     flagNatalSlow:"Uranus/Neptune/Pluto use a simplified secular formula (JPL-verified: Neptune ≤1°, Uranus/Pluto ≤2°). These planets move slowly — a 1–2° error rarely changes the sign, only the exact degree.",
@@ -580,12 +520,8 @@ const I18N = {
     flagAspFound:" aspects found out of 121 possible pairs",
     flagStdHigh:"High domain variance (σ=",flagStdLow:"Low domain variance (σ=",flagStdMid:"Moderate domain variance (σ=",
     flagStdSuffix:") — chart presents contradictory energies",flagStdSuffixL:") — consistent picture",flagStdSuffixM:") — some areas differ",
-    flagHall:"LLM flagged hallucination risk: ",flagLowConf:"LLM low confidence: ",
-    flagLLMOk:"LLM reported no hallucination risks",
-    scoresNote:"Scores computed locally and sent to the LLM as grounding data. The oracle must treat them as authoritative and must not re-derive or contradict them.",
-    scoresNoteBuiltin:"Scores used directly by the built-in interpreter.",
-    rawNote:"Full computed dataset including scores, aspect weights, and confidence was sent to the LLM as grounding context.",
-    diagFlags:"DIAGNOSTIC FLAGS",llmBySection:"LLM CONFIDENCE BY SECTION",
+    scoresNote:"Scores used directly by the built-in interpreter.",
+    diagFlags:"DIAGNOSTIC FLAGS",
     ringLove:"Love",ringHarmony:"Harmony",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmic",
     compatTitles:["Stellar Union","Harmonious Bond","Complex Weave","Challenging Path","Deep Tension"],
     aspDescs:{Conjunction:"Powerful merging of energies — intensifying and unifying.",Trine:"Flowing, harmonious connection bringing ease and grace.",Sextile:"Opportune link fostering growth and mutual support.",Square:"Dynamic tension creating friction that catalyzes transformation.",Opposition:"Magnetic polarity requiring integration of contrasting energies.",Quincunx:"Awkward angle demanding continual adjustment and awareness."},
@@ -600,8 +536,6 @@ const I18N = {
     natalProfileBox:"◉ Natal Profile",natalProfileCollapsed:"Natal chart & aspects (collapsed)",
     natalOracleReport:"✦ Natal Oracle Report",natalDataTitle:"◉ Chart Data",
     soloOnlyMsg:"Solo mode — enter a second birth date to compute compatibility.",
-    natalSystemPrompt:`You are writing a natal astrology report for a general audience — not for astrologers. Your reader may know nothing about astrology. Every placement must be explained in plain psychological language: what it means for how this person thinks, feels, behaves, and relates to others.\n\nYou will receive pre-computed data: planetary positions with their signs, natal aspects with orbs, elemental balance, modalities, dignities, retrograde flags, and lunar phase. You will also receive interpretive context for each placement — use it as the foundation of your prose.\n\nRules:\n1. Never invent placements, aspects, or positions not in the provided data.\n2. Make no gender assumptions — use neutral language throughout.\n3. For every claim, ground it in a specific placement from the data.\n4. Explain the WHY behind each placement: what does this mean emotionally, psychologically, behaviourally?\n5. Avoid jargon. "Sun in Aries" is acceptable, but immediately follow it with what that means in human terms.\n6. Outer planets (Uranus, Neptune, Pluto) are generational — note this when discussing them.\n7. If birth time was unknown, clearly state that Moon position is approximate and Ascendant is unavailable.\n\nStructure — write each as a flowing paragraph, not bullet points:\n### Core Identity — ☉ Sun\n### Inner World — ☽ Moon & Lunar Phase\n### Persona — ↑ Ascendant\n### Planetary Strengths\n### Planetary Challenges\n### Harmonious Natal Aspects\n### Dynamic Natal Tensions\n### Retrograde Planets\n### Synthesis\n\nEnd with this exact JSON block (no text after it):\n{"confidence":{"overall":85,"identity":80,"emotional":82,"social":78,"challenges":75},"low_confidence_placements":[],"hallucination_risks":[]}`,
-    oracleSystemPrompt:`You are a master astrologer and skilled narrator. You will receive a complete pre-computed astrological dataset: natal positions, synastry aspects with exact orbs and weighted harmony scores, domain compatibility scores (0-100), and a confidence index.\n\nYour role is strictly to NARRATE and INTERPRET this data — not to re-score, re-calculate, or contradict it. The numbers are authoritative. Every claim in your report must be grounded in a specific figure or aspect from the dataset. If an aspect is flagged with a precision warning, acknowledge the uncertainty.\n\nRules:\n1. Treat all provided scores as final — do not invent higher or lower values.\n2. For every interpretive claim, cite the exact aspect (planets, type, orb) or score that supports it.\n3. Make no gender assumptions. Analysis applies equally to any couple.\n4. If two aspects contradict each other, name both and explain the tension.\n5. Do not mention aspects that are not in the provided list.\n\nStructure: Overall → Love & Romance → Communication → Challenges → Growth Potential → Synthesis.\n\nEnd your response with this exact JSON block (no text after it):\n{"confidence":{"overall":85,"love":78,"communication":90,"challenges":72,"growth":88},"low_confidence_aspects":[],"hallucination_risks":[]}`,
   },
   fr:{
     tagline:"Oracle Astrologique — Profils Nataux & Analyse Synastrique Traçable",
@@ -613,40 +547,25 @@ const I18N = {
     tipTime:"L'heure améliore la précision de la Lune (~0,55°/h) et permet le calcul de l'Ascendant. Si inconnue, cochez la case — midi sera utilisé et la confiance réduite.",
     tipCity:"Définit le décalage UTC pour l'heure locale. Quand l'heure est inconnue, seule la latitude de la ville est utilisée — pour le calcul de l'Ascendant.",
     city:"Ville / Fuseau horaire",cityTimeUnknown:"Ville de Naissance",
-    tipProvider:"Choisissez votre LLM. 'Aucun' utilise l'interpréteur intégré — sans clé API, fonctionne hors ligne. Les fournisseurs cloud offrent un récit plus riche.",
-    tipApiKey:"Votre clé API. Jamais partagée ni stockée — utilisée uniquement lors de l'appel API au moment du calcul.",
-    tipOllama:"URL de base de votre instance Ollama locale. Lancez 'OLLAMA_ORIGINS=* ollama serve' pour autoriser l'accès navigateur.",
-    tipModel:"Nom du modèle à utiliser. Les modèles plus grands produisent de meilleures narratives. Consultez la documentation de votre fournisseur.",
-    tipTokens:"Tokens maximum que le LLM peut générer. 2000–3000 suffisent pour un rapport complet.",
     displayName:"Prénom (affichage)",namePh:"ex. Luna",namePh2:"ex. Sol",
     birthDate:"Date de Naissance",birthTime:"Heure de Naissance",
     timeUnknown:"Heure inconnue — midi utilisé, confiance réduite",
-    city:"Ville / Fuseau horaire",oracleConfig:"⚙ Configuration de l'Oracle",
-    provider:"Fournisseur LLM",provNone:"Aucun (intégré)",
-    apiKey:"Clé API",apiKeyPh:"sk-ant-... / sk-... / AIza...",
-    ollamaUrl:"URL Ollama",model:"Modèle",maxTokens:"Tokens max",
-    noneNote:"Interpréteur intégré actif — le rapport est généré à partir de règles astrologiques prédéfinies appliquées à vos données calculées. Aucune API externe n'est sollicitée. Les règles intégrées couvrent 100% des combinaisons planètes personnelles (Soleil, Lune, Mercure, Vénus, Mars, Ascendant) et ~58% de toutes les paires planète/aspect possibles. Connecter un fournisseur LLM peut produire des interprétations plus riches pour les combinaisons restantes.",
     cast:"Dresser les Thèmes",resetAll:"Réinitialiser",exportPdf:"Exporter PDF",
     tabNatal:"Thèmes Nataux",tabSynastry:"Aspects Synastrie",tabScores:"Détail des Scores",tabRaw:"Données Brutes",
     confidenceIndex:"◈ Indice de Confiance",oracleReport:"✦ Rapport de l'Oracle",
     confHigh:"Haute confiance",confGood:"Bonne confiance",confMod:"Confiance modérée",confLow:"Faible confiance",confVeryLow:"Très faible confiance",
-    confGlobalDesc:"Composite : précision astronomique (35%), couverture des aspects (20%), cohérence des domaines (20%), évaluation oracle (25%)",
-    confGlobalDescBuiltin:"Composite : précision astronomique (45%), couverture des aspects (25%), cohérence des domaines (30%) — sans évaluation LLM",
-    confAstro:"Précision Astronomique",confCov:"Couverture Aspectuelle",confCoh:"Cohérence des Domaines",confLLM:"Évaluation Oracle",
+    confGlobalDesc:"Composite : précision astronomique (45%), couverture des aspects (25%), cohérence des domaines (30%)",
+    confAstro:"Précision Astronomique",confCov:"Couverture Aspectuelle",confCoh:"Cohérence des Domaines",
     confAstroNote:"Pénalisé pour heure inconnue et formules simplifiées des planètes lentes (±2–3° vs Swiss Ephemeris ±0,01°).",
     confCovNote:"aspects trouvés sur 121 paires possibles. Les thèmes peu fournis sont moins fiables.",
     confCohNote:"Écart-type entre 5 domaines. Faible variance = image cohérente.",
-    confLLMNote:"Confiance auto-déclarée par le LLM par section du rapport.",
-    confLLMBuiltin:"Interpréteur intégré — pas d'auto-évaluation LLM disponible.",
     confNatalTitle:"Confiance du Thème Natal",
-    confNatalAstro:"Précision Astronomique",confNatalTime:"Heure de Naissance",confNatalDignity:"Fiabilité des Dignités",confNatalRetro:"Fiabilité des Rétrogrades",confNatalOracle:"Évaluation Oracle",
+    confNatalAstro:"Précision Astronomique",confNatalTime:"Heure de Naissance",confNatalDignity:"Fiabilité des Dignités",confNatalRetro:"Fiabilité des Rétrogrades",
     confNatalAstroNote:"Pénalisé pour les formules simplifiées des planètes lentes (±2–3° vs Swiss Ephemeris ±0,01°).",
     confNatalTimeNote:"Heure connue — Lune et Ascendant à pleine précision.",
     confNatalTimeWarn:"Heure inconnue — Lune incertaine ±6°, Ascendant peu fiable. Le score reflète cette limitation.",
     confNatalDignityNote:"Les 10 planètes ont des scores de dignité. Les dignités des planètes lentes sont générationnelles, pas personnelles.",
     confNatalRetroNote:"La détection des rétrogrades utilise une différence finie d'1 jour — fiable pour les planètes intérieures, approximative pour les lentes.",
-    confNatalOracleNote:"Confiance auto-déclarée par le LLM par section du rapport.",
-    confNatalOracleBuiltin:"Interpréteur intégré — pas d'auto-évaluation LLM disponible.",
     flagNatalOk:"Heure connue — tous les placements à pleine précision.",
     flagNatalTU:"Heure inconnue — Lune ±6°, Ascendant peu fiable.",
     flagNatalSlow:"Uranus/Neptune/Pluton utilisent une formule séculaire simplifiée (vérifié JPL : Neptune ≤1°, Uranus/Pluton ≤2°). Ces planètes se déplacent lentement — une erreur de 1–2° change rarement le signe, seulement le degré exact.",
@@ -665,12 +584,8 @@ const I18N = {
     flagAspFound:" aspects trouvés sur 121 paires possibles",
     flagStdHigh:"Forte variance inter-domaines (σ=",flagStdLow:"Faible variance inter-domaines (σ=",flagStdMid:"Variance modérée (σ=",
     flagStdSuffix:") — le thème présente des énergies contradictoires",flagStdSuffixL:") — image cohérente",flagStdSuffixM:") — certains domaines diffèrent",
-    flagHall:"Le LLM signale un risque d'hallucination : ",flagLowConf:"Faible confiance LLM : ",
-    flagLLMOk:"Le LLM n'a signalé aucun risque d'hallucination",
-    scoresNote:"Scores calculés localement et envoyés au LLM comme données de référence. L'oracle doit les traiter comme autoritatifs et ne pas les recalculer ni les contredire.",
-    scoresNoteBuiltin:"Scores utilisés directement par l'interpréteur intégré.",
-    rawNote:"L'ensemble complet des données calculées (scores, poids des aspects, indice de confiance) a été envoyé au LLM comme contexte de référence.",
-    diagFlags:"DIAGNOSTICS",llmBySection:"CONFIANCE LLM PAR SECTION",
+    scoresNote:"Scores utilisés directement par l'interpréteur intégré.",
+    diagFlags:"DIAGNOSTICS",
     ringLove:"Amour",ringHarmony:"Harmonie",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmique",
     compatTitles:["Union Stellaire","Lien Harmonieux","Tissu Complexe","Chemin Difficile","Tension Profonde"],
     aspDescs:{Conjunction:"Fusion puissante des énergies — intensifiante et unificatrice.",Trine:"Connexion harmonieuse et fluide, apportant aisance et grâce.",Sextile:"Lien opportun favorisant la croissance et le soutien mutuel.",Square:"Tension dynamique créant une friction qui catalyse la transformation.",Opposition:"Polarité magnétique nécessitant l'intégration d'énergies contrastées.",Quincunx:"Angle délicat exigeant des ajustements continus."},
@@ -685,8 +600,6 @@ const I18N = {
     natalProfileBox:"◉ Profil Natal",natalProfileCollapsed:"Thème natal & aspects (replié)",
     natalOracleReport:"✦ Rapport de l'Oracle Natal",natalDataTitle:"◉ Données du Thème",
     soloOnlyMsg:"Mode solo — entrez une deuxième date de naissance pour calculer la compatibilité.",
-    natalSystemPrompt:`Vous rédigez un rapport de thème natal pour un public général — pas pour des astrologues. Votre lecteur peut ne rien connaître à l'astrologie. Chaque placement doit être expliqué en langage psychologique clair : ce que cela signifie pour la façon dont cette personne pense, ressent, se comporte et se relie aux autres.\n\nVous recevrez des données pré-calculées : positions planétaires avec leurs signes, aspects nataux avec orbes, équilibre élémentaire, modalités, dignités, indicateurs de rétrogradation et phase lunaire. Vous recevrez également un contexte interprétatif pour chaque placement — utilisez-le comme fondation de votre prose.\n\nRègles :\n1. N'inventez jamais des placements, aspects ou positions absents des données.\n2. Ne faites aucune hypothèse de genre — utilisez un langage neutre.\n3. Pour chaque affirmation, ancrez-la dans un placement spécifique des données.\n4. Expliquez le POURQUOI de chaque placement : que signifie-t-il émotionnellement, psychologiquement, comportementalement ?\n5. Évitez le jargon. \"Soleil en Bélier\" est acceptable, mais suivez immédiatement d'une explication en termes humains.\n6. Les planètes lentes (Uranus, Neptune, Pluton) sont générationnelles — signalez-le.\n7. Si l'heure de naissance était inconnue, indiquez clairement que la position de la Lune est approximative et que l'Ascendant n'est pas disponible.\n\nStructure — rédigez chaque section en paragraphe fluide, pas en puces :\n### Identité Centrale — ☉ Soleil\n### Monde Intérieur — ☽ Lune & Phase Lunaire\n### Persona — ↑ Ascendant\n### Forces Planétaires\n### Défis Planétaires\n### Aspects Nataux Harmonieux\n### Tensions Natales Dynamiques\n### Planètes Rétrogrades\n### Synthèse\n\nTerminez avec ce JSON exact (rien après) :\n{"confidence":{"overall":85,"identity":80,"emotional":82,"social":78,"challenges":75},"low_confidence_placements":[],"hallucination_risks":[]}`,
-    oracleSystemPrompt:`Vous êtes un maître astrologue et narrateur expert. Vous recevrez un jeu de données astrologique entièrement pré-calculé : positions natales, aspects synastrique avec orbes exacts et scores d'harmonie pondérés, scores de compatibilité par domaine (0-100), et un indice de confiance.\n\nVotre rôle est strictement de NARRER et INTERPRÉTER ces données — non de les recalculer, de les rescorer ou de les contredire. Les chiffres font autorité. Chaque affirmation doit être ancrée dans un chiffre ou un aspect précis du jeu de données.\n\nRègles :\n1. Traitez tous les scores fournis comme définitifs — n'inventez pas de valeurs différentes.\n2. Pour chaque affirmation interprétative, citez l'aspect exact (planètes, type, orbe) ou le score qui l'étaye.\n3. Ne faites aucune hypothèse de genre.\n4. Si deux aspects se contredisent, nommez les deux et expliquez la tension.\n5. Ne mentionnez pas d'aspects absents de la liste fournie.\n\nStructure : Vue d'ensemble → Amour & Romance → Communication → Défis → Potentiel de Croissance → Synthèse.\n\nTerminez avec ce JSON exact (rien après) :\n{"confidence":{"overall":85,"love":78,"communication":90,"challenges":72,"growth":88},"low_confidence_aspects":[],"hallucination_risks":[]}`,
   },
   it:{
     tagline:"Oracolo Astrologico — Profili Natali & Analisi Sinastriale Tracciabile",
@@ -698,31 +611,18 @@ const I18N = {
     tipTime:"L'ora migliora la precisione della Luna (~0,55°/h) e consente il calcolo dell'Ascendente. Se sconosciuta, spunta la casella — si userà mezzogiorno e la confidenza sarà ridotta.",
     tipCity:"Imposta l'offset UTC per l'ora locale. Quando l'ora è sconosciuta, viene usata solo la latitudine della città — per il calcolo dell'Ascendente.",
     city:"Città / Fuso orario",cityTimeUnknown:"Città di Nascita",
-    tipProvider:"Scegli il tuo LLM. 'Nessuno' usa l'interprete integrato — senza chiave API, funziona offline. I provider cloud offrono narrazioni più ricche.",
-    tipApiKey:"La tua chiave API. Mai condivisa né memorizzata — usata solo per la singola chiamata API al momento del calcolo.",
-    tipOllama:"URL base della tua istanza Ollama locale. Avvia 'OLLAMA_ORIGINS=* ollama serve' per consentire l'accesso dal browser.",
-    tipModel:"Nome del modello da usare. I modelli più grandi producono narrazioni astrologiche migliori.",
-    tipTokens:"Token massimi che il LLM può generare. 2000–3000 sono sufficienti per un rapporto completo.",
     displayName:"Nome (visualizzazione)",namePh:"es. Luna",namePh2:"es. Sol",
     birthDate:"Data di Nascita",birthTime:"Ora di Nascita",
     timeUnknown:"Ora sconosciuta — si usa mezzogiorno, confidenza ridotta",
-    city:"Città / Fuso orario",oracleConfig:"⚙ Configurazione Oracolo",
-    provider:"Provider LLM",provNone:"Nessuno (integrato)",
-    apiKey:"Chiave API",apiKeyPh:"sk-ant-... / sk-... / AIza...",
-    ollamaUrl:"URL Ollama",model:"Modello",maxTokens:"Token max",
-    noneNote:"Interprete integrato attivo — il rapporto è generato da regole astrologiche predefinite applicate ai dati calcolati. Nessuna API esterna viene contattata. Le regole integrate coprono il 100% delle combinazioni pianeti personali (Sole, Luna, Mercurio, Venere, Marte, Ascendente) e ~58% di tutte le possibili coppie pianeta/aspetto. Collegare un provider LLM può produrre interpretazioni più ricche per le combinazioni rimanenti.",
     cast:"Tracciare i Temi",resetAll:"Ripristina",exportPdf:"Esporta PDF",
     tabNatal:"Temi Natali",tabSynastry:"Aspetti Sinastrici",tabScores:"Dettaglio Punteggi",tabRaw:"Dati Grezzi",
     confidenceIndex:"◈ Indice di Fiducia",oracleReport:"✦ Rapporto dell'Oracolo",
     confHigh:"Alta fiducia",confGood:"Buona fiducia",confMod:"Fiducia moderata",confLow:"Bassa fiducia",confVeryLow:"Fiducia molto bassa",
-    confGlobalDesc:"Composito: precisione astronomica (35%), copertura aspetti (20%), coerenza domini (20%), valutazione oracolo (25%)",
-    confGlobalDescBuiltin:"Composito: precisione astronomica (45%), copertura aspetti (25%), coerenza domini (30%) — senza valutazione LLM",
-    confAstro:"Precisione Astronomica",confCov:"Copertura Aspetti",confCoh:"Coerenza Domini",confLLM:"Valutazione Oracolo",
+    confGlobalDesc:"Composito: precisione astronomica (45%), copertura aspetti (25%), coerenza domini (30%)",
+    confAstro:"Precisione Astronomica",confCov:"Copertura Aspetti",confCoh:"Coerenza Domini",
     confAstroNote:"Penalizzato per ora sconosciuta e formule semplificate dei pianeti lenti (±2–3° vs Swiss Ephemeris ±0,01°).",
     confCovNote:"aspetti trovati su 121 coppie possibili. Temi scarsi sono meno affidabili.",
     confCohNote:"Deviazione standard tra 5 domini. Bassa varianza = quadro coerente.",
-    confLLMNote:"Confidenza auto-dichiarata dal LLM per sezione del rapporto.",
-    confLLMBuiltin:"Interprete integrato — nessuna autovalutazione LLM disponibile.",
     flagAOk:"Partner A: ora nota — Luna e Ascendente a piena precisione",
     flagAWarn:"Partner A: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
     flagBOk:"Partner B: ora nota — Luna e Ascendente a piena precisione",
@@ -736,17 +636,13 @@ const I18N = {
     flagAspFound:" aspetti trovati su 121 coppie possibili",
     flagStdHigh:"Alta varianza inter-domini (σ=",flagStdLow:"Bassa varianza inter-domini (σ=",flagStdMid:"Varianza moderata (σ=",
     flagStdSuffix:") — il tema presenta energie contraddittorie",flagStdSuffixL:") — quadro coerente",flagStdSuffixM:") — alcuni domini differiscono",
-    flagHall:"LLM segnala rischio allucinazione: ",flagLowConf:"Bassa confidenza LLM: ",
-    flagLLMOk:"LLM non ha segnalato rischi di allucinazione",
     flagNatalOk:"Ora nota — tutti i posizionamenti a piena precisione.",
     flagNatalTU:"Ora sconosciuta — Luna ±6°, Ascendente inaffidabile.",
     flagNatalSlow:"Urano/Nettuno/Plutone usano una formula secolare semplificata (verificato JPL: Nettuno ≤1°, Urano/Plutone ≤2°). Questi pianeti si muovono lentamente — un errore di 1–2° raramente cambia il segno, solo il grado esatto.",
     flagNatalRetro:"La direzione retrograda dei pianeti lenti è affidabile — la differenza finita a 1 giorno rileva correttamente il segno del moto anche con ±2° di incertezza di posizione, poiché il moto giornaliero è ~0,01–0,04°/g.",
     flagNatalGenerational:"Urano, Nettuno, Plutone sono generazionali — interpretare come temi collettivi, non tratti personali.",
-    scoresNote:"Punteggi calcolati localmente e inviati al LLM come dati di riferimento. L'oracolo deve trattarli come autoritativi e non ricalcolarli né contraddirli.",
-    scoresNoteBuiltin:"Punteggi usati direttamente dall'interprete integrato.",
-    rawNote:"L'intero dataset calcolato (punteggi, pesi degli aspetti, indice di fiducia) è stato inviato al LLM come contesto di riferimento.",
-    diagFlags:"FLAG DIAGNOSTICI",llmBySection:"CONFIDENZA LLM PER SEZIONE",
+    scoresNote:"Punteggi usati direttamente dall'interprete integrato.",
+    diagFlags:"FLAG DIAGNOSTICI",
     ringLove:"Amore",ringHarmony:"Armonia",ringPassion:"Passione",ringMental:"Mentale",ringKarmic:"Karmico",
     compatTitles:["Unione Stellare","Legame Armonioso","Intreccio Complesso","Percorso Difficile","Tensione Profonda"],
     aspDescs:{Conjunction:"Potente fusione di energie — intensificante e unificante.",Trine:"Connessione armoniosa e fluida, che porta facilità e grazia.",Sextile:"Collegamento opportuno che favorisce crescita e sostegno reciproco.",Square:"Tensione dinamica che crea attrito catalizzando la trasformazione.",Opposition:"Polarità magnetica che richiede l'integrazione di energie contrastanti.",Quincunx:"Angolo delicato che richiede continui aggiustamenti."},
@@ -761,8 +657,6 @@ const I18N = {
     natalProfileBox:"◉ Profilo Natale",natalProfileCollapsed:"Tema natale & aspetti (compresso)",
     natalOracleReport:"✦ Rapporto dell'Oracolo Natale",natalDataTitle:"◉ Dati del Tema",
     soloOnlyMsg:"Modalità solo — inserisci una seconda data di nascita per calcolare la compatibilità.",
-    natalSystemPrompt:`Stai scrivendo un rapporto di tema natale per un pubblico generale — non per astrologi. Il tuo lettore potrebbe non sapere nulla di astrologia. Ogni posizionamento deve essere spiegato in linguaggio psicologico semplice: cosa significa per come questa persona pensa, sente, si comporta e si relaziona con gli altri.\n\nRiceverai dati pre-calcolati: posizioni planetarie con i loro segni, aspetti natali con orbi, equilibrio elementale, modalità, dignità, indicatori di retrogradazione e fase lunare. Riceverai anche il contesto interpretativo per ogni posizionamento — usalo come fondamento della tua prosa.\n\nRegole:\n1. Non inventare posizionamenti, aspetti o posizioni non presenti nei dati.\n2. Non fare supposizioni di genere — usa linguaggio neutro.\n3. Per ogni affermazione, ancorala a un posizionamento specifico dei dati.\n4. Spiega il PERCHÉ di ogni posizionamento: cosa significa emotivamente, psicologicamente, comportamentalmente?\n5. Evita il gergo. "Sole in Ariete" è accettabile, ma seguilo immediatamente con una spiegazione in termini umani.\n6. I pianeti lenti (Urano, Nettuno, Plutone) sono generazionali — segnalalo.\n7. Se l'ora di nascita era sconosciuta, indica chiaramente che la posizione della Luna è approssimativa e l'Ascendente non è disponibile.\n\nStruttura — scrivi ogni sezione come paragrafo scorrevole, non elenchi puntati:\n### Identità Centrale — ☉ Sole\n### Mondo Interiore — ☽ Luna & Fase Lunare\n### Persona — ↑ Ascendente\n### Forze Planetarie\n### Sfide Planetarie\n### Aspetti Natali Armoniosi\n### Tensioni Natali Dinamiche\n### Pianeti Retrogradi\n### Sintesi\n\nTermina con questo JSON esatto (niente dopo):\n{"confidence":{"overall":85,"identity":80,"emotional":82,"social":78,"challenges":75},"low_confidence_placements":[],"hallucination_risks":[]}`,
-    oracleSystemPrompt:`Sei un maestro astrologo e narratore esperto. Riceverai un dataset astrologico completamente pre-calcolato: posizioni natali, aspetti sinastrici con orbi esatti e punteggi di armonia ponderati, punteggi di compatibilità per dominio (0-100), e un indice di fiducia.\n\nIl tuo ruolo è esclusivamente NARRARE e INTERPRETARE questi dati — non ricalcolarli, riscorare o contraddirli. I numeri sono autoritativi. Ogni affermazione deve essere ancorata a una cifra o un aspetto specifico del dataset.\n\nRegole:\n1. Tratta tutti i punteggi forniti come definitivi — non inventare valori diversi.\n2. Per ogni affermazione interpretativa, cita l'aspetto esatto (pianeti, tipo, orbe) o il punteggio che la supporta.\n3. Non fare supposizioni di genere.\n4. Se due aspetti si contraddicono, nominali entrambi e spiega la tensione.\n5. Non menzionare aspetti assenti dalla lista fornita.\n\nStruttura: Panoramica → Amore & Romanticismo → Comunicazione → Sfide → Potenziale di Crescita → Sintesi.\n\nTermina con questo JSON esatto (niente dopo):\n{"confidence":{"overall":85,"love":78,"communication":90,"challenges":72,"growth":88},"low_confidence_aspects":[],"hallucination_risks":[]}`,
   }
 };
 
@@ -2310,36 +2204,6 @@ function builtinNatalReport(profile,name,lang){
   return`### ${ST.id}\n\n${secs.identity}\n\n### ${ST.inner}\n\n${secs.inner}\n\n### ${ST.persona}\n\n${secs.persona}\n\n### ${ST.str}\n\n${secs.strengths}\n\n### ${ST.ch}\n\n${secs.challenges}\n\n### ${ST.asp_h}\n\n${secs.aspects_h}\n\n### ${ST.asp_c}\n\n${secs.aspects_c}\n\n### ${ST.retro}\n\n${secs.retro}\n\n### ${ST.syn}\n\n${secs.synthesis}`;
 }
 
-function buildNatalPrompt(profile,name){
-  const langName={en:'English',fr:'French',it:'Italian'}[LANG]||'English';
-  const SIGN_MEANING={Aries:'pioneering, assertive, energetically direct — natural initiator, leads with courage and sometimes impatience',Taurus:'steadfast, sensory, deeply patient — builds security, values the enduring over the fleeting',Gemini:'intellectually restless, communicative, versatile — connects ideas and people, thrives on variety',Cancer:'emotionally perceptive, nurturing, protective — deeply attuned to undercurrents of feeling',Leo:'expressive, generous, radiant — leads from the heart, needs to be seen and genuinely appreciated',Virgo:'discerning, precise, quietly devoted — craftsperson of detail, finds meaning in being of real use',Libra:'harmonising, aesthetically attuned, relationship-oriented — seeks equilibrium and beauty in all exchanges',Scorpio:'intensely perceptive, transformative, private — dives beneath the surface, rarely satisfied with the obvious',Sagittarius:'expansive, philosophically curious, freedom-loving — perpetual seeker of meaning and wider horizons',Capricorn:'disciplined, strategic, quietly ambitious — understands that lasting achievement is built slowly',Aquarius:'original, socially aware, intellectually independent — questions convention, envisions progressive possibilities',Pisces:'imaginative, empathic, spiritually porous — absorbs emotional atmosphere, lives close to the ineffable'};
-  const ASP_MEANING={Conjunction:'these two energies merge and amplify each other — powerful focus, one intensifies the other',Trine:'a flowing, natural ease between these principles — talent that feels like second nature',Sextile:'an opportune connection that rewards conscious effort — creative potential available when activated',Square:'dynamic friction between two energies wanting different things — real drive and growth, but recurring tension',Opposition:'a polarity seeking integration — often experienced through others; challenge is to hold both sides',Quincunx:'an awkward angle of adjustment — these areas feel perpetually out of sync, requiring ongoing recalibration'};
-  const DIG_MEANING={domicile:'fully at home — operates with comfort and confidence, natural qualities flow without obstruction',exaltation:'elevated and at its finest — heightened gifts, but occasionally an idealistic edge',detriment:'working against its natural grain — requires conscious effort but can develop into hard-won strength',fall:'energy somewhat muted or expressed in uncharacteristic ways — depth and self-awareness can transform this'};
-  const PHASE_MEANING=['New Moon: oriented toward fresh starts and self-generated momentum — instinct over precedent','Waxing Crescent: the builder — motivated by establishing something new, pushing through early resistance','First Quarter: decisive under pressure — strong will to overcome obstacles rather than negotiate them','Waxing Gibbous: the refiner — finds purpose in perfecting and developing before sharing','Full Moon: maximum illumination — emotions vivid and expressed openly, relationships central to identity','Waning Gibbous: the disseminator — driven to share what has been learned, meaning from passing on experience','Last Quarter: internal revolutionary — senses existing structures need questioning; cycles end internally first','Waning Crescent: the mystic — introverted, contemplative, draws on deep reserves, seeks solitude to regenerate'];
-  const RETRO_MEANING={Mercury:'thinking and communication turn inward — a reflective, re-examining mind that processes and revises rather than broadcasts',Venus:'values and relational patterns run deeper than they appear — attraction and pleasure are more complex and internal',Mars:'drive and assertion are internalised — energy builds quietly and releases on personal terms',Jupiter:'growth happens through introspection — wisdom is earned internally rather than absorbed from outside',Saturn:'discipline and structure are self-defined rather than externally imposed — complex relationship with authority',Uranus:'rebellious independence operates below the surface — change comes from within before manifesting outwardly',Neptune:'imagination and spiritual sensitivity are intensely private — the dissolving of boundaries happens in inner life first',Pluto:'transformation is deeply internal and slow-burning — power struggles happen within before surfacing externally'};
-  const fmtPos=Object.entries(profile.pos).map(([pl,pos])=>{
-    const dig=profile.dignities[pl];
-    const digStr=dig&&dig.label?` [${dig.label}: ${DIG_MEANING[dig.label]||dig.label}]`:'';
-    const retro=profile.retrogrades[pl]?` [retrograde: ${RETRO_MEANING[pl]||'energy internalised'}]`:'';
-    const slow=SLOW_P.has(pl)?' [outer planet — generational ±2-3° precision]':'';
-    const meaning=SIGN_MEANING[pos.sign]?` → ${SIGN_MEANING[pos.sign]}`:'';
-    return`  ${PSYM[pl]||'↑'} ${pl} in ${pos.sign} ${pos.deg}°${meaning}${digStr}${retro}${slow}`;
-  }).join('\n');
-  const fmtAspects=profile.aspects.length?profile.aspects.map(a=>{
-    const meaning=ASP_MEANING[a.asp.name]||a.asp.name;
-    const fl=a.slowA||a.slowB?' [outer-planet ±2-3°]':'';
-    return`  ${a.asp.sym} ${a.pA}(${a.sA}) — ${a.asp.name} — ${a.pB}(${a.sB}) | orb:${a.asp.orb_actual}° | h:${a.asp.h} | meaning: ${meaning}${fl}`;
-  }).join('\n'):'  (none found)';
-  const fmtElem=Object.entries(profile.elements).map(([e,n])=>`${e}:${n}`).join(' ');
-  const fmtMod=Object.entries(profile.modalities).map(([m,n])=>`${m}:${n}`).join(' ');
-  const retros=Object.entries(profile.retrogrades).filter(([,r])=>r).map(([pl])=>pl);
-  const fmtRetro=retros.length?retros.map(pl=>`  ${PSYM[pl]||''}${pl}: ${RETRO_MEANING[pl]||'energy internalised'}`).join('\n'):'  none';
-  const phaseName=profile.lunarPhase.names[LANG]||profile.lunarPhase.names.en;
-  const phaseMeaning=PHASE_MEANING[profile.lunarPhase.idx]||'';
-  const warn=profile.timeUnknown?`⚠ BIRTH TIME UNKNOWN — Moon position uncertain by ±6°. Ascendant cannot be reliably calculated. Make this clear in your report.\n\n`:'';
-  return`${warn}═══ NATAL CHART DATA FOR: ${name} ═══\nWrite the report in ${langName}. Use the interpretive context provided below — do not invent your own astrological meanings.\n\n── PLANETARY POSITIONS (with psychological meanings) ──\n${fmtPos}\n\n── NATAL ASPECTS (${profile.aspects.length} found, with meanings) ──\nFormat: aspect | orb | harmony h(-1=challenging,+1=harmonious) | psychological meaning\n${fmtAspects}\n\n── ELEMENTAL BALANCE ──\n${fmtElem} (total 11 — 10 planets + Ascendant)\n\n── MODALITIES ──\n${fmtMod}\n\n── LUNAR PHASE ──\n${phaseName} (${profile.lunarPhase.angle}°)\nMeaning: ${phaseMeaning}\n\n── RETROGRADE PLANETS ──\n${fmtRetro}\n\n═══ WRITING INSTRUCTIONS ═══\nUse the provided meanings as your interpretive foundation. Expand them into warm, flowing paragraphs. Explain in plain language what each placement means for ${name}'s psychology, emotional life, and behaviour. Avoid technical jargon without explanation. Every claim must trace to a specific placement above.`;
-}
-
 function renderNatalProfileBox(profile,name,slot,color,reportText,expanded){
   // ── 1. Oracle report box — narrative only, no gauge ──
   const rSec=document.getElementById(`natal-report-${slot}-sec`);
@@ -2407,7 +2271,6 @@ function renderNatalProfileBox(profile,name,slot,color,reportText,expanded){
 
 // ── Re-render natal report text in new language (built-in mode) ──
 function rerenderNatalBuiltin(){
-  if(!STATE.builtinMode)return;
   if(STATE.profileA){
     const txt=builtinNatalReport(STATE.profileA,STATE.nameA,LANG);
     const el=document.getElementById('rbody-natal-A');
@@ -2421,8 +2284,7 @@ function rerenderNatalBuiltin(){
 }
 
 let LANG='en';
-let STATE={chartA:null,chartB:null,syn:null,scoreData:null,nameA:'A',nameB:'B',builtinMode:false,soloMode:false,profileA:null,profileB:null};
-let curProvider='none';
+let STATE={chartA:null,chartB:null,syn:null,scoreData:null,nameA:'A',nameB:'B',soloMode:false,profileA:null,profileB:null};
 
 // ── i18n ──
 function t(key){return I18N[LANG][key]||I18N.en[key]||key}
@@ -2432,7 +2294,6 @@ function setLang(lang){
   document.documentElement.lang=lang;
   applyI18N();
   buildCityDropdowns();
-  updateProviderUI();
 
   // Refresh solo-mode notice text
   const soloNotice=document.getElementById('solo-notice');
@@ -2447,8 +2308,8 @@ function setLang(lang){
     if(rTitle&&rTitle.textContent)rTitle.textContent=`${t('natalOracleReport')} — ${name}`;
     if(dTitle&&dTitle.textContent)dTitle.textContent=`${t('natalDataTitle')} — ${name}`;
   });
-  // If results are showing and we used built-in mode in dual mode, re-render compat report
-  if(STATE.builtinMode&&STATE.chartA&&STATE.chartB&&STATE.scoreData&&!STATE.soloMode){
+  // If results are showing in dual mode, re-render compat report
+  if(STATE.chartA&&STATE.chartB&&STATE.scoreData&&!STATE.soloMode){
     const text=builtinReport(STATE.chartA,STATE.chartB,STATE.syn,STATE.scoreData.scores,STATE.nameA,STATE.nameB,LANG);
     const sc=STATE.scoreData.scores;
     const ov=sc.overall,compatIdx=ov>=80?0:ov>=65?1:ov>=50?2:ov>=35?3:4;
@@ -2465,7 +2326,7 @@ function setLang(lang){
     });
     document.getElementById('rbody').innerHTML=fmtHTML(text);
     document.getElementById('rings').innerHTML=RING_DEFS.map(r=>ring(ringLabel(r),sc[r.k],r.c)).join('');
-    renderConf(computeConf(STATE.chartA,STATE.chartB,STATE.syn,null));
+    renderConf(computeConf(STATE.chartA,STATE.chartB,STATE.syn));
   }
 }
 function applyI18N(){
@@ -2733,26 +2594,6 @@ function cityKey(e,p){
 },{passive:true}));
 function onCityChange(p){}
 
-// ── Provider switching ──
-document.querySelectorAll('.pill[data-provider]').forEach(pill=>{
-  pill.addEventListener('click',()=>{
-    document.querySelectorAll('.pill[data-provider]').forEach(p=>p.classList.remove('active'));
-    pill.classList.add('active');curProvider=pill.dataset.provider;
-    updateProviderUI();
-  });
-});
-function updateProviderUI(){
-  const isNone=curProvider==='none';
-  document.getElementById('llm-fields').classList.toggle('hidden',isNone);
-  document.getElementById('none-note').classList.toggle('hidden',!isNone);
-  if(!isNone){
-    const m={anthropic:'claude-sonnet-4-6',openai:'gpt-5.4',gemini:'gemini-2.0-flash',ollama:'llama3'};
-    document.getElementById('modelName').value=m[curProvider]||'';
-    document.getElementById('api-key-row').classList.toggle('hidden',curProvider==='ollama');
-    document.getElementById('ollama-row').classList.toggle('hidden',curProvider!=='ollama');
-  
-  }
-}
 
 // ── Misc ──
 // ── CUSTOM DATE PICKER ──
@@ -3014,24 +2855,24 @@ function renderSynastry(){
   document.getElementById('tab-synastry').innerHTML=`<div class="tsec"><div class="tsec-title">Synastry — ${nameA} × ${nameB}</div><table class="tt"><thead><tr><th>${nameA}</th><th>Lon</th><th>${nameB}</th><th>Lon</th><th>Δ°</th><th>Aspect</th><th>Orb</th><th>H</th><th>⚑</th></tr></thead><tbody>${rows}</tbody></table><div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;color:var(--silver);margin-top:10px">${syn.filter(p=>!p.asp).length} pairs without major aspect</div></div>`;
 }
 function renderScores(){
-  const{scoreData}=STATE,isNone=curProvider==='none';
-  const note=isNone?t('scoresNoteBuiltin'):t('scoresNote');
+  const{scoreData}=STATE;
+  const note=t('scoresNote');
   const detRows=scoreData.details.map(d=>`<tr><td>${d.key}</td><td>${d.asp}</td><td style="color:${d.h>0?'var(--emerald)':'var(--rose)'}">${d.h}</td><td>${d.w}</td><td class="vn">${d.c}</td></tr>`).join('');
   const scRows=Object.entries(scoreData.scores).map(([k,v])=>`<tr><td style="text-transform:capitalize">${k}</td><td class="gdeg">${v}</td><td class="mono">((Σh·w / Σw) × 0.5 + 0.5) × 100</td></tr>`).join('');
   document.getElementById('tab-scores').innerHTML=`<div style="font-family:'EB Garamond',serif;font-size:14px;color:var(--silver);font-style:italic;margin-bottom:18px;padding:12px;border:1px solid rgba(212,168,67,.15);background:rgba(212,168,67,.03);border-radius:var(--r)">${note}</div><div class="tsec"><div class="tsec-title">Weighted Aspects</div><table class="tt"><thead><tr><th>Pair</th><th>Aspect</th><th>Harmony h</th><th>Weight w</th><th>h·w</th></tr></thead><tbody>${detRows}</tbody></table></div><div class="tsec"><div class="tsec-title">Normalized Scores</div><table class="tt"><thead><tr><th>Domain</th><th>Score</th><th>Formula</th></tr></thead><tbody>${scRows}</tbody></table></div>`;
 }
 function renderRaw(){
   const{chartA,chartB,syn,scoreData,nameA,nameB}=STATE;
-  const raw={computed_at:new Date().toISOString(),lang:LANG,provider:curProvider,
+  const raw={computed_at:new Date().toISOString(),lang:LANG,
     partner_A:{name:nameA,time_unknown:chartA.timeUnknown,positions:chartA.pos,JD:chartA.JD,T:chartA.T},
     partner_B:{name:nameB,time_unknown:chartB.timeUnknown,positions:chartB.pos,JD:chartB.JD,T:chartB.T},
     synastry:syn.filter(p=>p.asp).map(p=>({pair:`${p.pA}-${p.pB}`,asp:p.asp.name,diff:p.asp.diff,orb:p.asp.orb_actual,h:p.asp.h,flags:{slow:p.slowA||p.slowB,moon_uncertain:(p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown)}})),
-    local_scores:scoreData.scores,note:t('rawNote'),sent_to_llm:curProvider!=='none'?'full dataset including scores, aspect weights, confidence index, and precision flags':'n/a (built-in mode)'};
+    local_scores:scoreData.scores};
   document.getElementById('tab-raw').innerHTML=`<div class="tsec"><div class="tsec-title">Raw JSON</div><pre style="font-family:'Courier New',monospace;font-size:11px;color:var(--pale);white-space:pre-wrap;max-height:480px;overflow-y:auto;padding:10px;background:rgba(0,0,0,.3);border-radius:var(--r)">${JSON.stringify(raw,null,2)}</pre></div>`;
 }
 
 // ── Confidence ──
-function computeNatalConf(profile,name,llmJ){
+function computeNatalConf(profile,name){
   const flags=[];
   // ── Astronomical precision ──
   let astro=100;
@@ -3064,22 +2905,12 @@ function computeNatalConf(profile,name,llmJ){
     retroScore=Math.max(70,100-slowRetros*10);
     flags.push({i:'ℹ️',tx:t('flagNatalRetro')});
   } else flags.push({i:'✅',tx:t('confNatalRetroNote')});
-  // ── Oracle assessment ──
-  let oracleScore=null,llmSec=null;
-  if(llmJ){
-    llmSec=llmJ.confidence||null;
-    (llmJ.hallucination_risks||[]).forEach(r=>flags.push({i:'🔴',tx:t('flagHall')+`"${r}"`}));
-    if(!(llmJ.hallucination_risks||[]).length)flags.push({i:'✅',tx:t('flagLLMOk')});
-    if(llmSec){const vs=Object.values(llmSec).filter(v=>typeof v==='number');oracleScore=Math.round(vs.reduce((a,b)=>a+b)/vs.length);}
-  }
   const astroF=Math.max(50,astro);
-  const global=oracleScore!==null
-    ? Math.round(astroF*.30+timeScore*.30+digScore*.15+retroScore*.10+oracleScore*.15)
-    : Math.round(astroF*.35+timeScore*.40+digScore*.15+retroScore*.10);
-  return{mode:'natal',global,astro:astroF,timeScore,digScore,retroScore,oracleScore,flags,llmSec,name};
+  const global=Math.round(astroF*.35+timeScore*.40+digScore*.15+retroScore*.10);
+  return{mode:'natal',global,astro:astroF,timeScore,digScore,retroScore,flags,name};
 }
 
-function computeConf(cA,cB,syn,llmJ){
+function computeConf(cA,cB,syn){
   const flags=[];
   let astro=100;
   if(cA.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagAWarn')});}else flags.push({i:'✅',tx:t('flagAOk')});
@@ -3105,25 +2936,15 @@ function computeConf(cA,cB,syn,llmJ){
   if(std>25)flags.push({i:'⚠️',tx:t('flagStdHigh')+std.toFixed(0)+t('flagStdSuffix')});
   else if(std<10)flags.push({i:'✅',tx:t('flagStdLow')+std.toFixed(0)+t('flagStdSuffixL')});
   else flags.push({i:'ℹ️',tx:t('flagStdMid')+std.toFixed(0)+t('flagStdSuffixM')});
-  let llmScore=null,llmSec=null;
-  if(llmJ){
-    llmSec=llmJ.confidence||null;
-    (llmJ.hallucination_risks||[]).forEach(r=>flags.push({i:'🔴',tx:t('flagHall')+`"${r}"`}));
-    (llmJ.low_confidence_aspects||[]).forEach(r=>flags.push({i:'🟡',tx:t('flagLowConf')+`"${r}"`}));
-    if(!(llmJ.hallucination_risks||[]).length&&!(llmJ.low_confidence_aspects||[]).length)flags.push({i:'✅',tx:t('flagLLMOk')});
-    if(llmSec){const vs=Object.values(llmSec).filter(v=>typeof v==='number');llmScore=Math.round(vs.reduce((a,b)=>a+b)/vs.length);}
-  }
-  const global=llmScore!==null
-    ? Math.round(astroF*.35+cov*.20+coher*.20+llmScore*.25)
-    : Math.round(astroF*.45+cov*.25+coher*.30);
-  return{mode:'synastry',global,astro:astroF,cov,coher,llmScore,flags,llmSec,std:std.toFixed(0),found};
+  const global=Math.round(astroF*.45+cov*.25+coher*.30);
+  return{mode:'synastry',global,astro:astroF,cov,coher,flags,std:std.toFixed(0),found};
 }
 function confCard(label,val,color,note){
   const dv=val!==null?`${val}%`:'—',bw=val||0;
   return`<div class="ccard"><div class="ccard-hdr"><span class="ccard-lbl">${label}</span><span class="ccard-val" style="color:${color}">${dv}</span></div><div class="cbar"><div class="cbfill" style="width:${bw}%;background:${color}"></div></div><div class="cnote">${note}</div></div>`;
 }
 function renderConf(conf){
-  const{global,flags,llmSec}=conf,gc=cColor(global);
+  const{global,flags}=conf,gc=cColor(global);
   const R=90,CX=110,CY=110,SW=14,totalArc=Math.PI*1.5,startA=Math.PI*.75;
   const toXY=(a,r)=>({x:CX+r*Math.cos(a),y:CY+r*Math.sin(a)});
   const arc=(sa,sweep,r)=>{const s=toXY(sa,r),e=toXY(sa+sweep,r),lg=sweep>Math.PI?1:0;return`M${s.x.toFixed(2)} ${s.y.toFixed(2)} A${r} ${r} 0 ${lg} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;};
@@ -3132,29 +2953,24 @@ function renderConf(conf){
   const gauge=`<svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ag" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="${gc}66"/><stop offset="100%" stop-color="${gc}"/></linearGradient><filter id="gf" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${ticks}<path d="${arc(startA,totalArc,R)}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="${SW}" stroke-linecap="round"/>${global>0?`<path d="${arc(startA,filled,R)}" fill="none" stroke="url(#ag)" stroke-width="${SW}" stroke-linecap="round" filter="url(#gf)"/><circle cx="${dot.x.toFixed(2)}" cy="${dot.y.toFixed(2)}" r="6" fill="${gc}" filter="url(#gf)"/>`:''}</svg>`;
   let cardsHTML='',modeTitle='',modeDesc='';
   if(conf.mode==='natal'){
-    const{astro,timeScore,digScore,retroScore,oracleScore,name}=conf;
+    const{astro,timeScore,digScore,retroScore,name}=conf;
     modeTitle=`${t('confNatalTitle')}${name?' — '+name:''}`;
-    modeDesc=oracleScore!==null
-      ?`Astro (35%) + birth time (40%) + dignities (15%) + retrogrades (10%) + oracle (15%)`
-      :`Astro (35%) + birth time (40%) + dignities (15%) + retrogrades (10%) — no LLM assessment`;
+    modeDesc=`Astro (35%) + birth time (40%) + dignities (15%) + retrogrades (10%)`;
     cardsHTML=
       confCard(t('confNatalAstro'),astro,cColor(astro),t('confNatalAstroNote'))+
       confCard(t('confNatalTime'),timeScore,cColor(timeScore),timeScore===100?t('confNatalTimeNote'):t('confNatalTimeWarn'))+
       confCard(t('confNatalDignity'),digScore,cColor(digScore),t('confNatalDignityNote'))+
-      confCard(t('confNatalRetro'),retroScore,cColor(retroScore),t('confNatalRetroNote'))+
-      confCard(t('confNatalOracle'),oracleScore,oracleScore!==null?cColor(oracleScore):'var(--silver)',oracleScore!==null?t('confNatalOracleNote'):curProvider==='none'?t('confNatalOracleBuiltin'):t('confNatalOracleNote'));
+      confCard(t('confNatalRetro'),retroScore,cColor(retroScore),t('confNatalRetroNote'));
   } else {
-    const{astro,cov,coher,llmScore,std,found}=conf;
+    const{astro,cov,coher,std,found}=conf;
     modeTitle=t('confidenceIndex');
-    modeDesc=llmScore!==null?t('confGlobalDesc'):t('confGlobalDescBuiltin');
+    modeDesc=t('confGlobalDesc');
     cardsHTML=
       confCard(t('confAstro'),astro,cColor(astro),t('confAstroNote'))+
       confCard(t('confCov'),cov,cColor(cov),found+' '+t('confCovNote'))+
-      confCard(t('confCoh'),coher,cColor(coher),t('confCohNote')+' σ='+std)+
-      confCard(t('confLLM'),llmScore,llmScore!==null?cColor(llmScore):'var(--silver)',llmScore!==null?t('confLLMNote'):curProvider==='none'?t('confLLMBuiltin'):t('confLLMNote'));
+      confCard(t('confCoh'),coher,cColor(coher),t('confCohNote')+' σ='+std);
   }
   let html=`<div class="confglobal"><div class="cggauge">${gauge}<div class="cggauge-inner"><div class="cgscore" style="color:${gc};text-shadow:0 0 36px ${gc}55">${global}<span style="font-size:30px;opacity:.6;letter-spacing:-.02em">%</span></div></div></div><div class="cglabel">${cLabel(global)}</div><div class="cgdesc" style="font-size:12px;color:var(--silver);max-width:340px;text-align:center;margin:4px auto 0">${modeDesc}</div></div><div class="confgrid">${cardsHTML}</div>`;
-  if(llmSec)html+=`<div style="margin-top:16px"><div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;color:var(--azure);margin-bottom:10px">${t('llmBySection')}</div><div class="llmgrid">${Object.entries(llmSec).map(([sec,val])=>{const c=cColor(val);return`<div class="llmcard"><div class="llmcard-l">${sec.toUpperCase()}</div><div class="llmcard-v" style="color:${c}">${val}%</div><div class="cbar" style="margin-top:5px"><div class="cbfill" style="width:${val}%;background:${c}"></div></div></div>`}).join('')}</div></div>`;
   if(flags.length)html+=`<div class="flags"><div class="flagtitle">${t('diagFlags')}</div>${flags.map(f=>`<div class="flag"><span style="flex-shrink:0">${f.i}</span><span>${f.tx}</span></div>`).join('')}</div>`;
   const titleEl=document.querySelector('#conf-sec .conftitle');
   if(titleEl)titleEl.textContent=modeTitle;
@@ -3162,122 +2978,8 @@ function renderConf(conf){
   document.getElementById('conf-sec').style.display='block';
 }
 
-// ── LLM call ──
-async function callLLM(prompt){
-  const key=document.getElementById('apiKey').value.trim(),model=document.getElementById('modelName').value.trim();
-  const maxTok=parseInt(document.getElementById('maxTokens').value)||3000,sys=I18N[LANG]?.oracleSystemPrompt||I18N.en.oracleSystemPrompt;
-  const headers={'Content-Type':'application/json'};
-  if(curProvider==='anthropic'){
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{...headers,'x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model,max_tokens:maxTok,system:sys,messages:[{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error(`Anthropic ${r.status}`);return(await r.json()).content[0].text;
-  }
-  if(curProvider==='openai'){
-    // GPT-5 bug: reasoning_effort:'none' is ignored when max_completion_tokens is set,
-    // causing the model to spend all tokens on reasoning → empty content.
-    // Workaround: omit max_completion_tokens for GPT-5+ models.
-    const isGpt5=model.startsWith('gpt-5');
-    const body={model,messages:[{role:'system',content:sys},{role:'user',content:prompt}]};
-    if(isGpt5)body.reasoning_effort='none'; else body.max_completion_tokens=maxTok;
-    let r;
-    try{r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify(body)});}
-    catch(e){throw new Error(`OpenAI network error — if opening from file://, try serving via: python3 -m http.server 8000`);}
-    if(!r.ok){const b=await r.text().catch(()=>'');throw new Error(`OpenAI ${r.status}: ${b.slice(0,200)}`);}
-    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content — check model name and API key');
-    return j.choices[0].message.content;
-  }
-  if(curProvider==='gemini'){
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,{method:'POST',headers,body:JSON.stringify({contents:[{parts:[{text:sys+'\n\n'+prompt}]}],generationConfig:{maxOutputTokens:maxTok}})});
-    if(!r.ok)throw new Error(`Gemini ${r.status}`);return(await r.json()).candidates[0].content.parts[0].text;
-  }
-  if(curProvider==='ollama'){
-    const base=document.getElementById('ollamaUrl').value.trim();
-    const r=await fetch(`${base}/api/chat`,{method:'POST',headers,body:JSON.stringify({model,messages:[{role:'system',content:sys},{role:'user',content:prompt}],stream:false})});
-    if(!r.ok)throw new Error(`Ollama ${r.status}`);return(await r.json()).message.content;
-  }
-  throw new Error('Unknown provider');
-}
-function buildPrompt(){
-  const{chartA,chartB,syn,scoreData,nameA,nameB}=STATE;
-  const sc=scoreData.scores;
-
-  // ── 1. Data quality warnings ──
-  const warns=[];
-  if(chartA.timeUnknown)warns.push(`⚠ ${nameA}: birth time unknown — Moon position uncertain ±6°, Ascendant unreliable`);
-  if(chartB.timeUnknown)warns.push(`⚠ ${nameB}: birth time unknown — Moon position uncertain ±6°, Ascendant unreliable`);
-
-  // ── 2. Natal positions (all planets + Ascendant) ──
-  const fmtPos=chart=>[...PLANETS,'Ascendant'].map(p=>{
-    const pos=chart.pos[p];if(!pos)return'';
-    const prec=SLOW_P.has(p)?` [±2-3° formula precision]`:'';
-    return`  ${(PSYM[p]||'↑')+' '+p}: ${pos.sign} ${pos.deg}° (ecliptic ${pos.lon.toFixed(3)}°)${prec}`;
-  }).filter(Boolean).join('\n');
-
-  // ── 3. Synastry aspects with full computed data ──
-  const fmtAspects=syn.filter(p=>p.asp).map(p=>{
-    const k=`${p.pA}-${p.pB}`;
-    const w=SW[k]||.4;
-    const flags=[];
-    if(p.slowA||p.slowB)flags.push('outer-planet ±2-3° precision');
-    if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))flags.push('Moon position uncertain');
-    const domains=Object.entries(SD).filter(([,keys])=>keys.includes(k)).map(([d])=>d).join(',');
-    return`  ${p.asp.sym} ${nameA}'s ${p.pA}(${p.sA}) — ${p.asp.name} — ${nameB}'s ${p.pB}(${p.sB})`
-      +`  |orb:${p.asp.orb_actual}°  harmony:${p.asp.h>0?'+':''}${p.asp.h}  weight:${w}  score_contribution:${(w*p.asp.h).toFixed(3)}`
-      +(domains?`  domains:[${domains}]`:'')
-      +(flags.length?`  ⚠[${flags.join('; ')}]`:'');
-  }).join('\n');
-
-  // ── 4. Score breakdown ──
-  const fmtScores=Object.entries(sc).map(([k,v])=>`  ${k}: ${v}/100`).join('\n');
-
-  // ── 5. Confidence index ──
-  const found=syn.filter(p=>p.asp).length;
-  const dv=[sc.love,sc.harmony,sc.passion,sc.mental,sc.karmic];
-  const mn=dv.reduce((a,b)=>a+b)/dv.length;
-  const std=Math.sqrt(dv.map(v=>(v-mn)**2).reduce((a,b)=>a+b)/dv.length);
-  let astroConf=100;
-  if(chartA.timeUnknown)astroConf-=15;
-  if(chartB.timeUnknown)astroConf-=15;
-  astroConf=Math.max(40,astroConf);
-  const covConf=Math.round(found/121*100);
-  const cohConf=Math.max(20,Math.round(100-std));
-
-  // ── 6. Aspect weight reference (so LLM knows what matters most) ──
-  const topPairs=scoreData.details.slice().sort((a,b)=>Math.abs(parseFloat(b.c))-Math.abs(parseFloat(a.c))).slice(0,8);
-  const fmtTop=topPairs.map(d=>`  ${d.key}: ${d.asp}, h=${d.h}, w=${d.w}, contribution=${d.c}`).join('\n');
-
-  return`${warns.length?'═══ DATA QUALITY WARNINGS ═══\n'+warns.join('\n')+'\n\n':''}═══ COMPUTED ASTROLOGICAL DATASET ═══
-These values were computed by a local ephemeris engine. Treat them as ground truth.
-
-── PARTNER A: ${nameA} (JD=${chartA.JD.toFixed(2)}, T=${chartA.T.toFixed(6)}) ──
-${fmtPos(chartA)}
-
-── PARTNER B: ${nameB} (JD=${chartB.JD.toFixed(2)}, T=${chartB.T.toFixed(6)}) ──
-${fmtPos(chartB)}
-
-── SYNASTRY ASPECTS (${found} found out of 121 possible pairs) ──
-Format: symbol planet_A — aspect_type — planet_B | orb | harmony(-1 to +1) | weight | score_contribution | domains | flags
-${fmtAspects}
-
-── COMPATIBILITY SCORES (computed, authoritative) ──
-Formula: ((Σ harmony×weight / Σ weight) × 0.5 + 0.5) × 100
-${fmtScores}
-
-── TOP WEIGHTED PAIRS (strongest signal, positive or negative) ──
-${fmtTop}
-
-── CONFIDENCE INDEX ──
-  Astronomical precision: ${astroConf}% (penalized for unknown time and outer planet formulas)
-  Aspect coverage: ${covConf}% (${found}/121 pairs have a major aspect)
-  Domain coherence: ${cohConf}% (σ=${std.toFixed(1)} across 5 domains — low=consistent, high=contradictory)
-
-═══ INSTRUCTION ═══
-Write the compatibility report using ONLY the data above. Do not invent aspects, do not change scores, do not introduce planets or positions not listed. Every interpretive claim must cite its supporting aspect or score. Write your response in ${{'en':'English','fr':'French','it':'Italian'}[LANG]||'English'}.`;
-}
-function extractJson(text){try{const m=text.match(/\{[\s\S]*?"confidence"[\s\S]*?\}/);if(m)return JSON.parse(m[0]);}catch(e){}return null;}
-function stripJson(text){return text.replace(/\{[\s\S]*?"confidence"[\s\S]*$/,'').trim();}
-
 // ── Render report ──
-function renderReport(text,llmJ){
+function renderReport(text){
   const{scoreData,nameA,nameB,syn,chartA,chartB}=STATE,sc=scoreData.scores;
   const ov=sc.overall,compatIdx=ov>=80?0:ov>=65?1:ov>=50?2:ov>=35?3:4;
   const compatName=t('compatTitles')[compatIdx]||I18N.en.compatTitles[compatIdx];
@@ -3321,10 +3023,10 @@ function renderReport(text,llmJ){
     if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))fl.push('<span style="color:var(--amber);font-size:10px">~t</span>');
     return`<div class="evcard"><div class="eva">${aspChip(p.asp)} <span style="color:var(--silver);font-size:12px;margin-left:6px">${PSYM[p.pA]||'↑'}${p.pA} × ${PSYM[p.pB]||'↑'}${p.pB}</span> ${fl.join(' ')}</div><div class="evd">${aspDescs[p.asp.name]||''}</div></div>`;
   }).join('');
-  document.getElementById('rbody').innerHTML=fmtHTML(stripJson(text));
+  document.getElementById('rbody').innerHTML=fmtHTML(text);
   document.getElementById('report-sec').style.display='block';
   // Report box already set expanded by runAll's setBox('report',true)
-  const conf=computeConf(chartA,chartB,syn,llmJ);
+  const conf=computeConf(chartA,chartB,syn);
   renderConf(conf);
   // Scroll to report (first box)
   document.getElementById('report-sec').scrollIntoView({behavior:'smooth',block:'start'});
@@ -3366,7 +3068,6 @@ async function runAll(){
 
   STATE.nameA=document.getElementById('nameA').value||'Partner A';
   STATE.nameB=document.getElementById('nameB').value||'Partner B';
-  STATE.builtinMode=false;
   STATE.soloMode=soloMode;
   STATE.profileA=null;
   STATE.profileB=null;
@@ -3423,26 +3124,16 @@ async function runAll(){
     buildTabButtons();renderNatal();
     if(dA){STATE.chartB=null;}else{STATE.chartA=null;}
 
-    setP(80,'Consulting oracle…');await sl(60);
+    setP(80,'Applying built-in rules…');await sl(60);
     try{
-      let reportText,llmJ=null;
-      if(curProvider==='none'){
-        setP(95,'Applying built-in rules…');await sl(80);
-        STATE.builtinMode=true;
-        reportText=builtinNatalReport(activeProfile,activeName,LANG);
-      } else {
-        STATE.builtinMode=false;
-        setP(90,'Awaiting LLM…');
-        const sys=I18N[LANG]?.natalSystemPrompt||I18N.en.natalSystemPrompt;
-        reportText=await callLLMWithSystem(buildNatalPrompt(activeProfile,activeName),sys);
-        llmJ=extractJson(reportText);
-      }
+      setP(95,'Applying built-in rules…');await sl(80);
+      const reportText=builtinNatalReport(activeProfile,activeName,LANG);
       setP(100,'Complete.');
-      renderNatalProfileBox(activeProfile,activeName,activeSlot,color,stripJson(reportText),true);
+      renderNatalProfileBox(activeProfile,activeName,activeSlot,color,reportText,true);
       setBox(`natal-report-${activeSlot}`,true);
       setBox(`natal-data-${activeSlot}`,true);
       // Show confidence index (natal mode, expanded)
-      const nConf=computeNatalConf(activeProfile,activeName,llmJ?extractJson(reportText):null);
+      const nConf=computeNatalConf(activeProfile,activeName);
       renderConf(nConf);
       setBox('conf',true);
       setBox('traces',false);
@@ -3450,7 +3141,7 @@ async function runAll(){
     } catch(err){
       setP(100,`Error: ${err.message}`);
       renderNatalProfileBox(activeProfile,activeName,activeSlot,color,`<p style="color:var(--rose);font-style:italic">Oracle error: ${err.message}</p>`,true);
-      const nConf=computeNatalConf(activeProfile,activeName,null);
+      const nConf=computeNatalConf(activeProfile,activeName);
       renderConf(nConf);setBox('conf',true);setBox('traces',false);
     }
 
@@ -3466,18 +3157,10 @@ async function runAll(){
     // Build natal profiles (background, collapsed)
     setP(75,'Building natal profiles…');await sl(60);
     try{
-      let nTextA,nTextB;
-      if(curProvider==='none'){
-        STATE.builtinMode=true;
-        nTextA=builtinNatalReport(STATE.profileA,STATE.nameA,LANG);
-        nTextB=builtinNatalReport(STATE.profileB,STATE.nameB,LANG);
-      } else {
-        const sys=I18N[LANG]?.natalSystemPrompt||I18N.en.natalSystemPrompt;
-        nTextA=stripJson(await callLLMWithSystem(buildNatalPrompt(STATE.profileA,STATE.nameA),sys));
-        nTextB=stripJson(await callLLMWithSystem(buildNatalPrompt(STATE.profileB,STATE.nameB),sys));
-      }
-      renderNatalProfileBox(STATE.profileA,STATE.nameA,'A','var(--rose)',stripJson(nTextA),false);
-      renderNatalProfileBox(STATE.profileB,STATE.nameB,'B','var(--azure)',stripJson(nTextB),false);
+      const nTextA=builtinNatalReport(STATE.profileA,STATE.nameA,LANG);
+      const nTextB=builtinNatalReport(STATE.profileB,STATE.nameB,LANG);
+      renderNatalProfileBox(STATE.profileA,STATE.nameA,'A','var(--rose)',nTextA,false);
+      renderNatalProfileBox(STATE.profileB,STATE.nameB,'B','var(--azure)',nTextB,false);
       setBox('natal-report-A',false);setBox('natal-data-A',false);
       setBox('natal-report-B',false);setBox('natal-data-B',false);
     } catch(err){
@@ -3487,22 +3170,13 @@ async function runAll(){
     }
 
     // Main compatibility report
-    setP(82,'Consulting oracle…');await sl(80);
+    setP(82,'Applying built-in rules…');await sl(80);
     setBox('report',true);setBox('conf',true);setBox('traces',false);
     try{
-      let reportText,llmJ=null;
-      if(curProvider==='none'){
-        setP(95,'Applying built-in rules…');await sl(100);
-        STATE.builtinMode=true;
-        reportText=builtinReport(STATE.chartA,STATE.chartB,STATE.syn,STATE.scoreData.scores,STATE.nameA,STATE.nameB,LANG);
-      } else {
-        STATE.builtinMode=false;
-        setP(90,'Awaiting LLM…');
-        reportText=await callLLM(buildPrompt());
-        llmJ=extractJson(reportText);
-      }
+      setP(95,'Applying built-in rules…');await sl(100);
+      const reportText=builtinReport(STATE.chartA,STATE.chartB,STATE.syn,STATE.scoreData.scores,STATE.nameA,STATE.nameB,LANG);
       setP(100,'Complete.');
-      renderReport(reportText,llmJ);
+      renderReport(reportText);
     } catch(err){
       setP(100,`Error: ${err.message}`);
       document.getElementById('rbody').innerHTML=`<p style="color:var(--rose);font-style:italic">Oracle error: ${err.message}</p>`;
@@ -3511,7 +3185,7 @@ async function runAll(){
       document.getElementById('evcards').innerHTML='';
       document.getElementById('report-sec').style.display='block';
       setBox('report',true);
-      renderConf(computeConf(STATE.chartA,STATE.chartB,STATE.syn,null));
+      renderConf(computeConf(STATE.chartA,STATE.chartB,STATE.syn));
       setBox('conf',true);
       document.getElementById('report-sec').scrollIntoView({behavior:'smooth'});
     }
@@ -3548,7 +3222,7 @@ function resetAll(){
   ['rbody','banner','rings','tab-natal','tab-syn','tab-scores','tab-raw','natal-report-A-body','natal-data-A-body','natal-report-B-body','natal-data-B-body'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
   const ev=document.getElementById('evcards');if(ev)ev.innerHTML='';
   // Reset state
-  STATE={chartA:null,chartB:null,syn:null,scoreData:null,nameA:'A',nameB:'B',builtinMode:false,soloMode:false,profileA:null,profileB:null};
+  STATE={chartA:null,chartB:null,syn:null,scoreData:null,nameA:'A',nameB:'B',soloMode:false,profileA:null,profileB:null};
   // Scroll to top
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3589,38 +3263,6 @@ function exportPDF(){
   },100);
 }
 
-// ── LLM call with explicit system prompt (for natal mode) ──
-async function callLLMWithSystem(prompt,sys){
-  const key=document.getElementById('apiKey').value.trim(),model=document.getElementById('modelName').value.trim();
-  const maxTok=parseInt(document.getElementById('maxTokens').value)||3000;
-  const headers={'Content-Type':'application/json'};
-  if(curProvider==='anthropic'){
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{...headers,'x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model,max_tokens:maxTok,system:sys,messages:[{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error(`Anthropic ${r.status}`);return(await r.json()).content[0].text;
-  }
-  if(curProvider==='openai'){
-    const isGpt5=model.startsWith('gpt-5');
-    const body={model,messages:[{role:'system',content:sys},{role:'user',content:prompt}]};
-    if(isGpt5)body.reasoning_effort='none'; else body.max_completion_tokens=maxTok;
-    let r;
-    try{r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify(body)});}
-    catch(e){throw new Error(`OpenAI network error — if opening from file://, try serving via: python3 -m http.server 8000`);}
-    if(!r.ok){const b=await r.text().catch(()=>'');throw new Error(`OpenAI ${r.status}: ${b.slice(0,200)}`);}
-    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content — check model name and API key');
-    return j.choices[0].message.content;
-  }
-  if(curProvider==='gemini'){
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,{method:'POST',headers,body:JSON.stringify({contents:[{parts:[{text:sys+'\n\n'+prompt}]}],generationConfig:{maxOutputTokens:maxTok}})});
-    if(!r.ok)throw new Error(`Gemini ${r.status}`);return(await r.json()).candidates[0].content.parts[0].text;
-  }
-  if(curProvider==='ollama'){
-    const base=document.getElementById('ollamaUrl').value.trim();
-    const r=await fetch(`${base}/api/chat`,{method:'POST',headers,body:JSON.stringify({model,messages:[{role:'system',content:sys},{role:'user',content:prompt}],stream:false})});
-    if(!r.ok)throw new Error(`Ollama ${r.status}`);return(await r.json()).message.content;
-  }
-  throw new Error('Unknown provider');
-}
-
 // ── INIT ──
 (function init(){
   // Default UTC+0 — neutral baseline; user selects actual birth city
@@ -3628,7 +3270,6 @@ async function callLLMWithSystem(prompt,sys){
   document.getElementById('tzB').value='0';
   buildCityDropdowns();
   applyI18N();
-  updateProviderUI();
   // Dates start empty — user fills in birth data
 })();
 </script>
