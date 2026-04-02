@@ -376,12 +376,10 @@ def jpl_query(planet, date_str, cache, verbose=False):
     return lon, False
 
 # ── TOLERANCES ────────────────────────────────────────────────────────────────
-# User-specified tolerances:
-#   Sun to Mars → 0.5°  |  Jupiter → 2°  |  Saturn → 3°
-#   Uranus → 2°          |  Neptune → 1°  |  Pluto  → 2°
-TOL = {
+# Loaded from tolerances.json (next to this script). Falls back to defaults if missing.
+_TOL_DEFAULTS = {
     'Sun':     0.5,
-    'Moon':    5.0,   # Brown 16-term; kept wide
+    'Moon':    5.0,
     'Mercury': 0.5,
     'Venus':   0.5,
     'Mars':    0.5,
@@ -391,6 +389,20 @@ TOL = {
     'Neptune': 1.0,
     'Pluto':   2.0,
 }
+_TOL_FILE = Path(__file__).parent / 'tolerances.json'
+def _load_tolerances():
+    if _TOL_FILE.exists():
+        try:
+            data = json.loads(_TOL_FILE.read_text())
+            merged = dict(_TOL_DEFAULTS)
+            for k in merged:
+                if k in data:
+                    merged[k] = float(data[k])
+            return merged
+        except Exception as e:
+            print(f"  Warning: could not parse {_TOL_FILE}: {e} — using defaults")
+    return dict(_TOL_DEFAULTS)
+TOL = _load_tolerances()
 
 # ── TEST DATES ────────────────────────────────────────────────────────────────
 DATES_CORE = [
@@ -1332,7 +1344,9 @@ def main():
 
     try:    engine_js = extract_engine(html_path)
     except ValueError as ex: print(col(C_FAIL,f"ERROR: {ex}")); return 1
-    print(col(C_DIM, f"  Engine : {len(engine_js):,} chars extracted\n"))
+    print(col(C_DIM, f"  Engine : {len(engine_js):,} chars extracted"))
+    tol_src = str(_TOL_FILE.resolve()) if _TOL_FILE.exists() else "defaults (tolerances.json not found)"
+    print(col(C_DIM, f"  Toler. : {tol_src}\n"))
 
     try:    node_bin = find_node(); print(col(C_DIM, f"  Node   : {node_bin}\n"))
     except FileNotFoundError as ex: print(col(C_FAIL,f"\nERROR: {ex}")); return 1
