@@ -488,7 +488,7 @@ def run_structural(html_path, engine_js, verbose):
 
     ck("No hardcoded llmScore??70 fallback",
        'llmScore??70' not in html and 'llmScore ?? 70' not in html)
-    ck("Version badge is v10", 'ver-badge">v10' in html or '>v10<' in html)
+    ck("Version badge is v10.2.0", 'ver-badge">v10.2.0' in html)
     ck("buildChart return includes timeUnknown",
        bool(re.search(r'return\{JD,T,pos,trace,timeUnknown', engine_js)))
 
