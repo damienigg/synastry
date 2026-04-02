@@ -54,6 +54,7 @@ def col(c, s):
 
 # ── FAILURE REGISTRY (populated throughout the run) ───────────────────────────
 _ALL_FAILURES = []   # list of (section, name, detail)
+_asc_store = {}      # storage for cross-test ascendant comparison
 
 def _record_failures(section, tests):
     for name, ok, detail in tests:
@@ -149,10 +150,10 @@ const out = cases.map(c => {
             got=JSON.stringify({sign:r.sign,sym:r.sym,deg:r.deg,lon:r.lon});
         }
         else if (c.fn==='ascPos'){
-            const[T,hour,tz,lat]=c.args;
-            const r=ascPos(T,hour,tz,lat);
+            const[T,lat,lon]=c.args;
+            const r=ascPos(T,lat,lon);
             got=JSON.stringify({lon:parseFloat(r.lon.toFixed(6)),gmst:parseFloat(r.tGMST),
-                lst:parseFloat(r.tLST),eps:parseFloat(r.tEps),lat:parseFloat(r.tLat)});
+                lst:parseFloat(r.tLST),eps:parseFloat(r.tEps),lat:parseFloat(r.tLat),lonGeo:parseFloat(r.tLon)});
         }
         else if (c.fn==='getAspectsConst'){
             got=JSON.stringify(ASPECTS.map(a=>({name:a.name,angle:a.angle,orb:a.orb,h:a.h,sym:a.sym})));
@@ -169,8 +170,8 @@ const out = cases.map(c => {
                 orb_actual:parseFloat(r.orb_actual),diff:parseFloat(r.diff)}):'null';
         }
         else if (c.fn==='buildChart'){
-            const[ds,ts,tz,tu,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,tu||false,lat);
+            const[ds,ts,tz,tu,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,tu||false,lat,lon);
             const posOut={};
             for(const[k,v] of Object.entries(ch.pos))
                 posOut[k]={lon:parseFloat(v.lon.toFixed(6)),sign:v.sign,deg:v.deg,sym:v.sym};
@@ -179,9 +180,9 @@ const out = cases.map(c => {
                 planets:Object.keys(ch.pos),pos:posOut,nTrace:ch.trace.length});
         }
         else if (c.fn==='buildSynastry'){
-            const[dsA,tsA,tzA,latA,dsB,tsB,tzB,latB]=c.args;
-            const cA=buildChart(dsA,tsA,tzA||0,false,latA||42);
-            const cB=buildChart(dsB,tsB,tzB||0,false,latB||42);
+            const[dsA,tsA,tzA,latA,lonA,dsB,tsB,tzB,latB,lonB]=c.args;
+            const cA=buildChart(dsA,tsA,tzA||0,false,latA||42,lonA||0);
+            const cB=buildChart(dsB,tsB,tzB||0,false,latB||42,lonB||0);
             const pairs=buildSynastry(cA,cB);
             const aspPairs=pairs.filter(p=>p.asp);
             got=JSON.stringify({nPairs:pairs.length,nAspects:aspPairs.length,
@@ -190,25 +191,25 @@ const out = cases.map(c => {
                 aspects:aspPairs.map(p=>({pair:`${p.pA}-${p.pB}`,asp:p.asp.name,orb:parseFloat(p.asp.orb_actual),h:p.asp.h}))});
         }
         else if (c.fn==='scoreSyn'){
-            const[dsA,tsA,tzA,latA,dsB,tsB,tzB,latB]=c.args;
-            const cA=buildChart(dsA,tsA,tzA||0,false,latA||42);
-            const cB=buildChart(dsB,tsB,tzB||0,false,latB||42);
+            const[dsA,tsA,tzA,latA,lonA,dsB,tsB,tzB,latB,lonB]=c.args;
+            const cA=buildChart(dsA,tsA,tzA||0,false,latA||42,lonA||0);
+            const cB=buildChart(dsB,tsB,tzB||0,false,latB||42,lonB||0);
             const pairs=buildSynastry(cA,cB);
             const sd=scoreSyn(pairs);
             got=JSON.stringify({scores:sd.scores,nDetails:sd.details.length,
                 detailKeys:sd.details.length?Object.keys(sd.details[0]):[]});
         }
         else if (c.fn==='scoreSynFormula'){
-            const cA=buildChart('2000-01-01','12:00',0,false,42);
-            const cB=buildChart('2000-01-01','12:00',0,false,42);
+            const cA=buildChart('2000-01-01','12:00',0,false,42,0);
+            const cB=buildChart('2000-01-01','12:00',0,false,42,0);
             const pairs=buildSynastry(cA,cB);
             const sd=scoreSyn(pairs);
             got=JSON.stringify({harmony:sd.scores.harmony,overall:sd.scores.overall});
         }
         // ── Natal profile ─────────────────────────────────────────────────────
         else if (c.fn==='buildNatalAspects'){
-            const[ds,ts,tz,tu,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,tu||false,lat||42);
+            const[ds,ts,tz,tu,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,tu||false,lat||42,lon||0);
             const asps=buildNatalAspects(ch);
             got=JSON.stringify({
                 nAspects:asps.length,
@@ -217,34 +218,34 @@ const out = cases.map(c => {
             });
         }
         else if (c.fn==='lunarPhase'){
-            const[ds,ts,tz,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,false,lat||42);
+            const[ds,ts,tz,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,false,lat||42,lon||0);
             const lp=lunarPhase(ch);
             got=JSON.stringify({angle:lp.angle,idx:lp.idx,nameEn:lp.names.en,nameFr:lp.names.fr,nameIt:lp.names.it});
         }
         else if (c.fn==='elementTally'){
-            const[ds,ts,tz,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,false,lat||42);
+            const[ds,ts,tz,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,false,lat||42,lon||0);
             got=JSON.stringify(elementTally(ch));
         }
         else if (c.fn==='modalityTally'){
-            const[ds,ts,tz,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,false,lat||42);
+            const[ds,ts,tz,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,false,lat||42,lon||0);
             got=JSON.stringify(modalityTally(ch));
         }
         else if (c.fn==='dignityScores'){
-            const[ds,ts,tz,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,false,lat||42);
+            const[ds,ts,tz,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,false,lat||42,lon||0);
             got=JSON.stringify(dignityScores(ch));
         }
         else if (c.fn==='retrogradeFlags'){
-            const[ds,ts,tz,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,false,lat||42);
+            const[ds,ts,tz,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,false,lat||42,lon||0);
             got=JSON.stringify(retrogradeFlags(ch));
         }
         else if (c.fn==='buildNatalProfile'){
-            const[ds,ts,tz,tu,lat]=c.args;
-            const ch=buildChart(ds,ts,tz||0,tu||false,lat||42);
+            const[ds,ts,tz,tu,lat,lon]=c.args;
+            const ch=buildChart(ds,ts,tz||0,tu||false,lat||42,lon||0);
             const p=buildNatalProfile(ch);
             got=JSON.stringify({
                 nAspects:    p.aspects.length,
@@ -266,8 +267,8 @@ const out = cases.map(c => {
             });
         }
         else if (c.fn==='builtinNatalReport'){
-            const[ds,ts,tz,tu,lat,lang]=c.args;
-            const ch=buildChart(ds,ts,tz||0,tu||false,lat||42);
+            const[ds,ts,tz,tu,lat,lon,lang]=c.args;
+            const ch=buildChart(ds,ts,tz||0,tu||false,lat||42,lon||0);
             const p=buildNatalProfile(ch);
             const name=c.name_arg||'TestPerson';
             const text=builtinNatalReport(p,name,lang||'en');
@@ -281,9 +282,9 @@ const out = cases.map(c => {
             });
         }
         else if (c.fn==='computeConf'){
-            const[dsA,tsA,tzA,tuA,latA,dsB,tsB,tzB,tuB,latB]=c.args;
-            const cA=buildChart(dsA,tsA,tzA||0,tuA||false,latA||42);
-            const cB=buildChart(dsB,tsB,tzB||0,tuB||false,latB||42);
+            const[dsA,tsA,tzA,tuA,latA,lonA,dsB,tsB,tzB,tuB,latB,lonB]=c.args;
+            const cA=buildChart(dsA,tsA,tzA||0,tuA||false,latA||42,lonA||0);
+            const cB=buildChart(dsB,tsB,tzB||0,tuB||false,latB||42,lonB||0);
             const pairs=buildSynastry(cA,cB);
             const sd=scoreSyn(pairs);
             STATE.scoreData={scores:sd.scores};
@@ -579,6 +580,16 @@ def run_unit(engine_js, verbose):
         # ── 6. planetPos — all 8 planets in [0,360) ───────────────────────────
         *[{'fn':'planetPos','args':[p,0.0],'name':f'planetPos {p} at J2000 ∈ [0,360)','range':[0,360]}
           for p in ['Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']],
+        # planetPos reference values at J2000 epoch (2000-01-01 12:00 TT)
+        # Sources: JPL Horizons geocentric ecliptic longitude
+        {'fn':'planetPos','args':['Mercury',0.0],'name':'planetPos Mercury J2000 ≈ 271.2°','exp':271.2,'tol':1.5,'angle':True},
+        {'fn':'planetPos','args':['Venus',0.0],'name':'planetPos Venus J2000 ≈ 241.3°','exp':241.3,'tol':1.5,'angle':True},
+        {'fn':'planetPos','args':['Mars',0.0],'name':'planetPos Mars J2000 ≈ 327.2°','exp':327.2,'tol':1.5,'angle':True},
+        {'fn':'planetPos','args':['Jupiter',0.0],'name':'planetPos Jupiter J2000 ≈ 25.3°','exp':25.3,'tol':3.0,'angle':True},
+        {'fn':'planetPos','args':['Saturn',0.0],'name':'planetPos Saturn J2000 ≈ 40.4°','exp':40.4,'tol':4.0,'angle':True},
+        {'fn':'planetPos','args':['Uranus',0.0],'name':'planetPos Uranus J2000 ≈ 314.8°','exp':314.8,'tol':3.0,'angle':True},
+        {'fn':'planetPos','args':['Neptune',0.0],'name':'planetPos Neptune J2000 ≈ 303.5°','exp':303.5,'tol':2.0,'angle':True},
+        {'fn':'planetPos','args':['Pluto',0.0],'name':'planetPos Pluto J2000 ≈ 251.4°','exp':251.4,'tol':3.0,'angle':True},
         # ── 7. ASPECTS constant ───────────────────────────────────────────────
         {'fn':'getAspectsConst','args':[],'name':'ASPECTS: exactly 6 entries','check':'asp_count'},
         {'fn':'getAspectsConst','args':[],'name':'ASPECTS: names correct','check':'asp_names',
@@ -611,15 +622,32 @@ def run_unit(engine_js, verbose):
         {'fn':'degSign','args':[60.0],'name':'degSign(60°) sym = ♊','check':'sym_exact','exp_sym':'♊'},
         # lon pass-through
         {'fn':'degSign','args':[123.456],'name':'degSign(123.456°) lon = 123.456','check':'lon_exact','exp_lon':123.456},
-        # ── 10. ascPos ────────────────────────────────────────────────────────
-        {'fn':'ascPos','args':[0.0,12.0,0,42.0],'name':'ascPos GMST at J2000 ≈ 280.46°','check':'gmst_j2000'},
-        {'fn':'ascPos','args':[0.0,12.0,0,42.0],'name':'ascPos obliquity ε at J2000 ≈ 23.44°','check':'eps_j2000'},
-        {'fn':'ascPos','args':[T('2000-01-01'),12.0,0,48.9],'name':'ascPos lon ∈ [0,360) Paris lat','check':'asc_range'},
-        {'fn':'ascPos','args':[T('2000-06-15'),6.0,0,51.5],'name':'ascPos lon ∈ [0,360) London lat','check':'asc_range'},
-        {'fn':'ascPos','args':[T('2000-06-15'),6.0,0,-33.9],'name':'ascPos lon ∈ [0,360) Sydney lat','check':'asc_range'},
-        {'fn':'ascPos','args':[T('2000-06-15'),6.0,0,0.0],'name':'ascPos lon ∈ [0,360) equator','check':'asc_range'},
-        {'fn':'ascPos','args':[0.0,12.0,0,51.5],'name':'ascPos lat stored = 51.5','check':'asc_lat','exp_lat':51.5},
-        {'fn':'ascPos','args':[0.0,12.0,2,42.0],'name':'ascPos tz=+2 → lst ∈ [0,360)','check':'asc_range'},
+        # ── 10. ascPos(T, lat, lon) ───────────────────────────────────────────
+        # Signature: ascPos(T, lat, lon) — lat/lon are geographic coords
+        {'fn':'ascPos','args':[0.0,42.0,0.0],'name':'ascPos GMST at J2000 ≈ 280.46°','check':'gmst_j2000'},
+        {'fn':'ascPos','args':[0.0,42.0,0.0],'name':'ascPos obliquity ε at J2000 ≈ 23.44°','check':'eps_j2000'},
+        {'fn':'ascPos','args':[T('2000-01-01'),48.9,2.35],'name':'ascPos lon ∈ [0,360) Paris','check':'asc_range'},
+        {'fn':'ascPos','args':[T('2000-06-15'),51.5,-0.12],'name':'ascPos lon ∈ [0,360) London','check':'asc_range'},
+        {'fn':'ascPos','args':[T('2000-06-15'),-33.9,151.2],'name':'ascPos lon ∈ [0,360) Sydney','check':'asc_range'},
+        {'fn':'ascPos','args':[T('2000-06-15'),0.0,0.0],'name':'ascPos lon ∈ [0,360) equator/Greenwich','check':'asc_range'},
+        {'fn':'ascPos','args':[0.0,51.5,-0.12],'name':'ascPos lat stored = 51.5','check':'asc_lat','exp_lat':51.5},
+        {'fn':'ascPos','args':[0.0,42.0,30.0],'name':'ascPos lon=30° → LST = GMST+30','check':'asc_lst_offset','exp_lon':30.0},
+        # Reference value tests: ascendant at known date/location
+        # J2000 epoch, lat=0 (equator), lon=0 (Greenwich): GMST≈280.46°, LST≈280.46°
+        # ASC = atan2(cos(LST), -(sin(LST)*cos(eps)+tan(0)*sin(eps)))
+        #     = atan2(cos(280.46°), -sin(280.46°)*cos(23.44°))
+        #     ≈ atan2(0.1816, 0.9032) ≈ 11.38° (Aries)
+        {'fn':'ascPos','args':[0.0,0.0,0.0],'name':'ascPos J2000 equator/Greenwich ≈ 11°','check':'asc_ref','exp_asc':11.38,'tol':2.0},
+        # J2000 epoch, lat=48.9 (Paris), lon=2.35
+        # LST ≈ 280.46+2.35 = 282.81°, with latitude tilt → ASC shifts
+        {'fn':'ascPos','args':[0.0,48.9,2.35],'name':'ascPos J2000 Paris ≈ 26.8°','check':'asc_ref','exp_asc':26.8,'tol':2.0},
+        # High latitude (Stockholm 59.3°N, 18.07°E)
+        {'fn':'ascPos','args':[0.0,59.3,18.07],'name':'ascPos J2000 Stockholm','check':'asc_range'},
+        # Southern hemisphere (Buenos Aires -34.6°, -58.38°)
+        {'fn':'ascPos','args':[0.0,-34.6,-58.38],'name':'ascPos J2000 Buenos Aires','check':'asc_range'},
+        # Verify longitude affects LST: same lat, different lon should give different ascendant
+        {'fn':'ascPos','args':[0.0,42.0,0.0],'name':'ascPos lon=0 for diff test','check':'asc_store','store_key':'asc_lon0'},
+        {'fn':'ascPos','args':[0.0,42.0,90.0],'name':'ascPos lon=90 differs from lon=0','check':'asc_diff_lon','ref_key':'asc_lon0'},
         # ── 11. SW weight table (all 26 keys) ─────────────────────────────────
         *[{'fn':'getSWVal','args':[k],'name':f'SW[{k}] = {v}','check':'sw_val','exp_sw':v}
           for k,v in [
@@ -720,60 +748,63 @@ def run_unit(engine_js, verbose):
         {'fn':'buildChart','args':['2000-01-01','12:00',0,False,42],'name':'buildChart: trace has ≥ 10 rows','check':'bc_trace'},
         {'fn':'buildChart','args':['2000-01-01','12:00',0,False,42],'name':'buildChart: JD ≈ 2451545','check':'bc_jd'},
         {'fn':'buildChart','args':['2000-01-01','12:00',0,False,42],'name':'buildChart: T ≈ 0','check':'bc_T'},
+        # buildChart with explicit longitude — Ascendant should differ from lon=0
+        {'fn':'buildChart','args':['2000-01-01','12:00',0,False,48.9,2.35],'name':'buildChart Paris (lon=2.35): Ascendant valid','check':'bc_lons_valid'},
+        {'fn':'buildChart','args':['2000-01-01','12:00',0,False,-33.9,151.2],'name':'buildChart Sydney (lon=151.2): Ascendant valid','check':'bc_lons_valid'},
         # ── 15. buildSynastry ─────────────────────────────────────────────────
-        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'buildSynastry: exactly 121 pairs (11×11)','check':'syn_pairs'},
-        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'buildSynastry: all pairs have pA/pB/lA/lB/sA/sB/slowA/slowB','check':'syn_fields'},
-        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'buildSynastry: nAspects ∈ [0,121]','check':'syn_asp_range'},
-        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'buildSynastry: all aspect h values ∈ [-1,1]','check':'syn_h_range'},
-        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'buildSynastry','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'buildSynastry: all orb_actual ≥ 0','check':'syn_orb_pos'},
-        {'fn':'buildSynastry','args':['2000-01-01','12:00',0,42,'2000-01-01','12:00',0,42],
+        {'fn':'buildSynastry','args':['2000-01-01','12:00',0,42,0,'2000-01-01','12:00',0,42,0],
          'name':'buildSynastry self: 11 exact same-planet Conjunctions','check':'syn_self'},
-        {'fn':'buildSynastry','args':['2000-01-01','12:00',0,42,'2000-01-01','12:00',0,42],
+        {'fn':'buildSynastry','args':['2000-01-01','12:00',0,42,0,'2000-01-01','12:00',0,42,0],
          'name':'buildSynastry self: same-planet Conjunction orb = 0.00','check':'syn_self_orb'},
-        {'fn':'buildSynastry','args':['2000-01-01','12:00',0,42,'2000-01-01','12:00',0,42],
+        {'fn':'buildSynastry','args':['2000-01-01','12:00',0,42,0,'2000-01-01','12:00',0,42,0],
          'name':'buildSynastry: Uranus/Neptune/Pluto pairs carry slowA or slowB=true','check':'syn_slow_flag'},
         # ── 16. scoreSyn — all 6 domains ──────────────────────────────────────
-        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
-         'name':'scoreSyn couple A: overall=54 (frozen)','check':'score_val','domain':'overall','exp_score':54},
-        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
+         'name':'scoreSyn couple A: overall=56 (frozen)','check':'score_val','domain':'overall','exp_score':56},
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'scoreSyn couple A: love=54 (frozen)','check':'score_val','domain':'love','exp_score':54},
-        {'fn':'scoreSyn','args':['1990-03-21','12:00',0,42,'1988-07-15','12:00',0,42],
+        {'fn':'scoreSyn','args':['1990-03-21','12:00',0,42,0,'1988-07-15','12:00',0,42,0],
          'name':'scoreSyn couple B: all 6 domains in [0,100]','check':'scores_range'},
-        {'fn':'scoreSyn','args':['1990-03-21','12:00',0,42,'1988-07-15','12:00',0,42],
+        {'fn':'scoreSyn','args':['1990-03-21','12:00',0,42,0,'1988-07-15','12:00',0,42,0],
          'name':'scoreSyn couple B: exactly 6 domain keys','check':'score_keys'},
         {'fn':'scoreSynFormula','args':[],'name':'scoreSyn self: harmony=100 (norm formula s==m)','check':'formula_harm'},
         {'fn':'scoreSynFormula','args':[],'name':'scoreSyn self: overall > 50 (conjunctions dominate)','check':'formula_ov'},
-        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'scoreSyn: details array non-empty','check':'score_details'},
-        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,'1982-08-13','12:00',0,42],
+        {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
          'name':'scoreSyn: detail records have key/asp/h/w/c','check':'score_detail_fields'},
         # ── 17. computeConf ───────────────────────────────────────────────────
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: global ∈ [0,100]','check':'conf_range','key':'global'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: astro ∈ [0,100]','check':'conf_range','key':'astro'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: cov ∈ [0,100]','check':'conf_range','key':'cov'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: coher ∈ [0,100]','check':'conf_range','key':'coher'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,True,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,True,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: one TU → astro ≤ 85','check':'conf_one_tu'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,True,42,'1988-07-15','12:00',0,True,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,True,42,0,'1988-07-15','12:00',0,True,42,0],
          'name':'computeConf: both TU → astro ≤ 70','check':'conf_two_tu'},
-        {'fn':'computeConf','args':['2000-01-01','12:00',0,False,42,'2000-01-01','12:00',0,False,42],
+        {'fn':'computeConf','args':['2000-01-01','12:00',0,False,42,0,'2000-01-01','12:00',0,False,42,0],
          'name':'computeConf self: cov > 0 (found/121 pairs form aspects)','check':'conf_self_cov'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: found ≥ 0','check':'conf_found'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: llmScore=null (no LLM input)','check':'conf_no_llm'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: global = round(astro×0.45 + cov×0.25 + coher×0.30)','check':'conf_formula'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,'1988-07-15','12:00',0,False,42],
+        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: flags array non-empty','check':'conf_flags'},
 
         # ── 18. buildNatalAspects ──────────────────────────────────────────────
@@ -890,16 +921,16 @@ def run_unit(engine_js, verbose):
          'name':'buildNatalProfile: timeUnknown=true stored','check':'profile_tu'},
 
         # ── 25. builtinNatalReport ────────────────────────────────────────────
-        {'fn':'builtinNatalReport','args':['1990-03-21','14:30',1,False,48.9,'en'],
+        {'fn':'builtinNatalReport','args':['1990-03-21','14:30',1,False,48.9,2.35,'en'],
          'name':'builtinNatalReport EN: non-empty text with ### headings','check':'natal_report_basic',
          'name_arg':'Aries'},
-        {'fn':'builtinNatalReport','args':['1990-03-21','14:30',1,False,48.9,'fr'],
+        {'fn':'builtinNatalReport','args':['1990-03-21','14:30',1,False,48.9,2.35,'fr'],
          'name':'builtinNatalReport FR: contains French language content','check':'natal_report_lang',
          'name_arg':'Bélier'},
-        {'fn':'builtinNatalReport','args':['1990-03-21','14:30',1,False,48.9,'it'],
+        {'fn':'builtinNatalReport','args':['1990-03-21','14:30',1,False,48.9,2.35,'it'],
          'name':'builtinNatalReport IT: contains Italian language content','check':'natal_report_lang',
          'name_arg':'Ariete'},
-        {'fn':'builtinNatalReport','args':['1990-03-21','12:00',0,True,48.9,'en'],
+        {'fn':'builtinNatalReport','args':['1990-03-21','12:00',0,True,48.9,2.35,'en'],
          'name':'builtinNatalReport: timeUnknown → warns about Moon/Ascendant','check':'natal_report_tu_warn',
          'name_arg':'TestTU'},
     ]
@@ -964,6 +995,25 @@ def run_unit(engine_js, verbose):
             p=_p(); lon=p.get('lon') if p else None; ok=lon is not None and 0<=lon<360; detail=f"lon={lon}"
         elif check=='asc_lat':
             p=_p(); lat=p.get('lat') if p else None; ok=lat is not None and abs(lat-case['exp_lat'])<0.001; detail=f"lat={lat}"
+        elif check=='asc_lst_offset':
+            p=_p(); gmst=p.get('gmst'); lst=p.get('lst')
+            exp_lon=case['exp_lon']
+            if gmst is not None and lst is not None:
+                diff=lst-gmst;
+                if diff<-180: diff+=360
+                if diff>180: diff-=360
+                ok=abs(diff-exp_lon)<0.01; detail=f"LST={lst}, GMST={gmst}, diff={diff:.2f}, exp_lon={exp_lon}"
+            else: ok=False; detail="missing gmst/lst"
+        elif check=='asc_ref':
+            p=_p(); lon=p.get('lon') if p else None; tol=case.get('tol',2.0)
+            ok=lon is not None and abs(lon-case['exp_asc'])<tol; detail=f"asc={lon}, exp≈{case['exp_asc']}±{tol}"
+        elif check=='asc_store':
+            p=_p(); lon=p.get('lon') if p else None; _asc_store[case.get('store_key','')]=lon; ok=lon is not None and 0<=lon<360; detail=f"stored lon={lon}"
+        elif check=='asc_diff_lon':
+            p=_p(); lon=p.get('lon') if p else None; ref=_asc_store.get(case.get('ref_key',''))
+            if lon is not None and ref is not None:
+                ok=abs(lon-ref)>1.0; detail=f"lon={lon}, ref={ref}, diff={abs(lon-ref):.2f} (expect >1°)"
+            else: ok=False; detail=f"lon={lon}, ref={ref}"
         elif check=='sw_val':
             v=float(got_raw) if got_raw not in (None,'null') else None; ok=v is not None and abs(v-case['exp_sw'])<1e-6; detail=f"SW={v}, exp={case['exp_sw']}"
         elif check=='sd_domains':
