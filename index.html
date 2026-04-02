@@ -490,37 +490,24 @@ const I18N = {
     tabNatal:"Natal Charts",tabSynastry:"Synastry Aspects",tabScores:"Score Breakdown",tabRaw:"Raw Data",
     confidenceIndex:"◈ Confidence Index",oracleReport:"✦ Oracle Report",
     confHigh:"High confidence",confGood:"Good confidence",confMod:"Moderate confidence",confLow:"Low confidence",confVeryLow:"Very low confidence",
-    confGlobalDesc:"Composite across astronomical precision (45%), aspect coverage (25%), domain coherence (30%)",
-    confAstro:"Astronomical Precision",confCov:"Aspect Coverage",confCoh:"Domain Coherence",
-    confAstroNote:"Penalized for unknown birth time and outer planet simplified formulas (±2–3° vs Swiss Ephemeris ±0.01°).",
-    confCovNote:"aspects found out of 121 possible pairs. Sparse charts yield less reliable scoring.",
+    confGlobalDesc:"Astronomical precision (50%) + domain coherence (50%)",
+    confAstro:"Astronomical Precision",confCoh:"Domain Coherence",
+    confAstroNote:"Penalized for unknown birth time and tight outer-planet aspects.",
     confCohNote:"Standard deviation across 5 domains. Low variance = consistent picture.",
     confNatalTitle:"Natal Chart Confidence",
-    confNatalAstro:"Astronomical Precision",confNatalTime:"Birth Time",confNatalDignity:"Dignity Reliability",confNatalRetro:"Retrograde Reliability",
-    confNatalAstroNote:"Penalized for outer planet simplified formulas (±2–3° vs Swiss Ephemeris ±0.01°).",
+    confNatalDesc:"Astronomical precision (45%) + birth time (55%)",
+    confNatalAstro:"Astronomical Precision",confNatalTime:"Birth Time",
+    confNatalAstroNote:"Outer planets use simplified secular formulas (JPL-verified ≤2°).",
     confNatalTimeNote:"Birth time known — Moon and Ascendant at full precision.",
-    confNatalTimeWarn:"Birth time unknown — Moon uncertain ±6°, Ascendant unreliable. Score reflects this limitation.",
-    confNatalDignityNote:"All 10 planets have dignity scores. Outer planet dignities are generational, not personal.",
-    confNatalRetroNote:"Retrograde detection uses 1-day finite difference — reliable for inner planets, approximate for slow outer planets.",
-    flagNatalOk:"Birth time known — all placements at full precision.",
+    confNatalTimeWarn:"Birth time unknown — Moon uncertain ±6°, Ascendant unreliable.",
     flagNatalTU:"Birth time unknown — Moon ±6°, Ascendant unreliable.",
-    flagNatalSlow:"Uranus/Neptune/Pluto use a simplified secular formula (JPL-verified: Neptune ≤1°, Uranus/Pluto ≤2°). These planets move slowly — a 1–2° error rarely changes the sign, only the exact degree.",
-    flagNatalRetro:"Retrograde direction for outer planets is reliable — the 1-day finite difference detects motion sign correctly even with ±2° position uncertainty, since daily motion is ~0.01–0.04°/day.",
-    flagNatalGenerational:"Uranus, Neptune, Pluto are generational — interpret as collective themes, not personal traits.",
-    flagAOk:"Partner A: time known — Moon and Ascendant at full precision",
+    flagNatalSlow:"Outer planets use simplified formulas (JPL-verified ≤2°). This rarely affects sign placement.",
     flagAWarn:"Partner A: time unknown — Moon uncertain ±6°, Ascendant unreliable",
-    flagBOk:"Partner B: time known — Moon and Ascendant at full precision",
     flagBWarn:"Partner B: time unknown — Moon uncertain ±6°, Ascendant unreliable",
-    flagSlow:" aspect(s) involve Uranus/Neptune/Pluto — simplified formulas ±2–3° error",
-    flagSlowTight:" outer-planet aspect(s) have orb ≤2° — position uncertainty (Neptune ≤1°, Uranus/Pluto ≤2°) may affect these tight aspects.",
-    flagSlowLoose:" outer-planet aspect(s) detected — all with orb >2°, so position uncertainty is unlikely to affect the result.",
-    flagMoon:" Moon aspect(s) may be incorrect due to unknown birth time",
-    flagSparse:"Only few aspects found — sparse synastry, scoring less reliable",
-    flagRich:" aspects — rich dataset",
-    flagAspFound:" aspects found out of 121 possible pairs",
-    flagStdHigh:"High domain variance (σ=",flagStdLow:"Low domain variance (σ=",flagStdMid:"Moderate domain variance (σ=",
-    flagStdSuffix:") — chart presents contradictory energies",flagStdSuffixL:") — consistent picture",flagStdSuffixM:") — some areas differ",
-    scoresNote:"Scores used directly by the built-in interpreter.",
+    flagSlowTight:" tight outer-planet aspect(s) (orb ≤2°) — position uncertainty may affect these.",
+    flagMoon:" Moon aspect(s) may be affected by unknown birth time",
+    flagStdHigh:"High domain variance (σ=",
+    flagStdSuffix:") — chart presents contradictory energies",
     diagFlags:"DIAGNOSTIC FLAGS",
     ringLove:"Love",ringHarmony:"Harmony",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmic",
     compatTitles:["Stellar Union","Harmonious Bond","Complex Weave","Challenging Path","Deep Tension"],
@@ -555,36 +542,24 @@ const I18N = {
     confidenceIndex:"◈ Indice de Confiance",oracleReport:"✦ Rapport de l'Oracle",
     confHigh:"Haute confiance",confGood:"Bonne confiance",confMod:"Confiance modérée",confLow:"Faible confiance",confVeryLow:"Très faible confiance",
     confGlobalDesc:"Composite : précision astronomique (45%), couverture des aspects (25%), cohérence des domaines (30%)",
-    confAstro:"Précision Astronomique",confCov:"Couverture Aspectuelle",confCoh:"Cohérence des Domaines",
-    confAstroNote:"Pénalisé pour heure inconnue et formules simplifiées des planètes lentes (±2–3° vs Swiss Ephemeris ±0,01°).",
-    confCovNote:"aspects trouvés sur 121 paires possibles. Les thèmes peu fournis sont moins fiables.",
+    confAstro:"Précision Astronomique",confCoh:"Cohérence des Domaines",
+    confGlobalDesc:"Précision astronomique (50%) + cohérence des domaines (50%)",
+    confAstroNote:"Pénalisé pour heure inconnue et aspects serrés de planètes lentes.",
     confCohNote:"Écart-type entre 5 domaines. Faible variance = image cohérente.",
     confNatalTitle:"Confiance du Thème Natal",
-    confNatalAstro:"Précision Astronomique",confNatalTime:"Heure de Naissance",confNatalDignity:"Fiabilité des Dignités",confNatalRetro:"Fiabilité des Rétrogrades",
-    confNatalAstroNote:"Pénalisé pour les formules simplifiées des planètes lentes (±2–3° vs Swiss Ephemeris ±0,01°).",
+    confNatalDesc:"Précision astronomique (45%) + heure de naissance (55%)",
+    confNatalAstro:"Précision Astronomique",confNatalTime:"Heure de Naissance",
+    confNatalAstroNote:"Les planètes lentes utilisent des formules simplifiées (vérifié JPL ≤2°).",
     confNatalTimeNote:"Heure connue — Lune et Ascendant à pleine précision.",
-    confNatalTimeWarn:"Heure inconnue — Lune incertaine ±6°, Ascendant peu fiable. Le score reflète cette limitation.",
-    confNatalDignityNote:"Les 10 planètes ont des scores de dignité. Les dignités des planètes lentes sont générationnelles, pas personnelles.",
-    confNatalRetroNote:"La détection des rétrogrades utilise une différence finie d'1 jour — fiable pour les planètes intérieures, approximative pour les lentes.",
-    flagNatalOk:"Heure connue — tous les placements à pleine précision.",
+    confNatalTimeWarn:"Heure inconnue — Lune incertaine ±6°, Ascendant peu fiable.",
     flagNatalTU:"Heure inconnue — Lune ±6°, Ascendant peu fiable.",
-    flagNatalSlow:"Uranus/Neptune/Pluton utilisent une formule séculaire simplifiée (vérifié JPL : Neptune ≤1°, Uranus/Pluton ≤2°). Ces planètes se déplacent lentement — une erreur de 1–2° change rarement le signe, seulement le degré exact.",
-    flagNatalRetro:"La direction rétrograde des planètes lentes est fiable — la différence finie sur 1 jour détecte correctement le signe du mouvement même avec ±2° d'incertitude de position, car le mouvement journalier est ~0,01–0,04°/j.",
-    flagNatalGenerational:"Uranus, Neptune, Pluton sont générationnels — interpréter comme thèmes collectifs, non personnels.",
-    flagAOk:"Partenaire A : heure connue — Lune et Ascendant à pleine précision",
+    flagNatalSlow:"Planètes lentes : formules simplifiées (vérifié JPL ≤2°). Rarement d'impact sur le signe.",
     flagAWarn:"Partenaire A : heure inconnue — Lune incertaine ±6°, Ascendant peu fiable",
-    flagBOk:"Partenaire B : heure connue — Lune et Ascendant à pleine précision",
     flagBWarn:"Partenaire B : heure inconnue — Lune incertaine ±6°, Ascendant peu fiable",
-    flagSlow:" aspect(s) impliquent Uranus/Neptune/Pluton — formules simplifiées ±2–3°",
-    flagSlowTight:" aspect(s) planète lente avec orbe ≤2° — l'incertitude de position (Neptune ≤1°, Uranus/Pluton ≤2°) peut affecter ces aspects serrés.",
-    flagSlowLoose:" aspect(s) planètes lentes détectés — tous avec orbe >2°, l'incertitude de position n'affecte probablement pas le résultat.",
-    flagMoon:" aspect(s) Lune potentiellement incorrects (heure inconnue)",
-    flagSparse:"Peu d'aspects trouvés — synastrie peu fournie, scoring moins fiable",
-    flagRich:" aspects — ensemble de données riche",
-    flagAspFound:" aspects trouvés sur 121 paires possibles",
-    flagStdHigh:"Forte variance inter-domaines (σ=",flagStdLow:"Faible variance inter-domaines (σ=",flagStdMid:"Variance modérée (σ=",
-    flagStdSuffix:") — le thème présente des énergies contradictoires",flagStdSuffixL:") — image cohérente",flagStdSuffixM:") — certains domaines diffèrent",
-    scoresNote:"Scores utilisés directement par l'interpréteur intégré.",
+    flagSlowTight:" aspect(s) planète lente serré(s) (orbe ≤2°) — l'incertitude peut affecter ceux-ci.",
+    flagMoon:" aspect(s) Lune potentiellement affecté(s) par l'heure inconnue",
+    flagStdHigh:"Forte variance inter-domaines (σ=",
+    flagStdSuffix:") — le thème présente des énergies contradictoires",
     diagFlags:"DIAGNOSTICS",
     ringLove:"Amour",ringHarmony:"Harmonie",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmique",
     compatTitles:["Union Stellaire","Lien Harmonieux","Tissu Complexe","Chemin Difficile","Tension Profonde"],
@@ -618,30 +593,24 @@ const I18N = {
     tabNatal:"Temi Natali",tabSynastry:"Aspetti Sinastrici",tabScores:"Dettaglio Punteggi",tabRaw:"Dati Grezzi",
     confidenceIndex:"◈ Indice di Fiducia",oracleReport:"✦ Rapporto dell'Oracolo",
     confHigh:"Alta fiducia",confGood:"Buona fiducia",confMod:"Fiducia moderata",confLow:"Bassa fiducia",confVeryLow:"Fiducia molto bassa",
-    confGlobalDesc:"Composito: precisione astronomica (45%), copertura aspetti (25%), coerenza domini (30%)",
-    confAstro:"Precisione Astronomica",confCov:"Copertura Aspetti",confCoh:"Coerenza Domini",
-    confAstroNote:"Penalizzato per ora sconosciuta e formule semplificate dei pianeti lenti (±2–3° vs Swiss Ephemeris ±0,01°).",
-    confCovNote:"aspetti trovati su 121 coppie possibili. Temi scarsi sono meno affidabili.",
+    confGlobalDesc:"Precisione astronomica (50%) + coerenza domini (50%)",
+    confAstro:"Precisione Astronomica",confCoh:"Coerenza Domini",
+    confAstroNote:"Penalizzato per ora sconosciuta e aspetti stretti di pianeti lenti.",
     confCohNote:"Deviazione standard tra 5 domini. Bassa varianza = quadro coerente.",
-    flagAOk:"Partner A: ora nota — Luna e Ascendente a piena precisione",
-    flagAWarn:"Partner A: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
-    flagBOk:"Partner B: ora nota — Luna e Ascendente a piena precisione",
-    flagBWarn:"Partner B: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
-    flagSlow:" aspetto/i coinvolgono Urano/Nettuno/Plutone — formule semplificate ±2–3°",
-    flagSlowTight:" aspetto/i pianeti lenti con orb ≤2° — l'incertezza di posizione (Nettuno ≤1°, Urano/Plutone ≤2°) può influenzare questi aspetti stretti.",
-    flagSlowLoose:" aspetti pianeti lenti rilevati — tutti con orb >2°, l'incertezza di posizione probabilmente non influisce sul risultato.",
-    flagMoon:" aspetto/i Lunari potenzialmente incorretti (ora sconosciuta)",
-    flagSparse:"Pochi aspetti trovati — sinastria scarsa, scoring meno affidabile",
-    flagRich:" aspetti — dataset ricco",
-    flagAspFound:" aspetti trovati su 121 coppie possibili",
-    flagStdHigh:"Alta varianza inter-domini (σ=",flagStdLow:"Bassa varianza inter-domini (σ=",flagStdMid:"Varianza moderata (σ=",
-    flagStdSuffix:") — il tema presenta energie contraddittorie",flagStdSuffixL:") — quadro coerente",flagStdSuffixM:") — alcuni domini differiscono",
-    flagNatalOk:"Ora nota — tutti i posizionamenti a piena precisione.",
+    confNatalTitle:"Confidenza del Tema Natale",
+    confNatalDesc:"Precisione astronomica (45%) + ora di nascita (55%)",
+    confNatalAstro:"Precisione Astronomica",confNatalTime:"Ora di Nascita",
+    confNatalAstroNote:"I pianeti lenti usano formule semplificate (verificato JPL ≤2°).",
+    confNatalTimeNote:"Ora nota — Luna e Ascendente a piena precisione.",
+    confNatalTimeWarn:"Ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile.",
     flagNatalTU:"Ora sconosciuta — Luna ±6°, Ascendente inaffidabile.",
-    flagNatalSlow:"Urano/Nettuno/Plutone usano una formula secolare semplificata (verificato JPL: Nettuno ≤1°, Urano/Plutone ≤2°). Questi pianeti si muovono lentamente — un errore di 1–2° raramente cambia il segno, solo il grado esatto.",
-    flagNatalRetro:"La direzione retrograda dei pianeti lenti è affidabile — la differenza finita a 1 giorno rileva correttamente il segno del moto anche con ±2° di incertezza di posizione, poiché il moto giornaliero è ~0,01–0,04°/g.",
-    flagNatalGenerational:"Urano, Nettuno, Plutone sono generazionali — interpretare come temi collettivi, non tratti personali.",
-    scoresNote:"Punteggi usati direttamente dall'interprete integrato.",
+    flagNatalSlow:"Pianeti lenti: formule semplificate (verificato JPL ≤2°). Raramente influisce sul segno.",
+    flagAWarn:"Partner A: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
+    flagBWarn:"Partner B: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
+    flagSlowTight:" aspetto/i pianeti lenti stretto/i (orb ≤2°) — l'incertezza può influire.",
+    flagMoon:" aspetto/i Lunari potenzialmente influenzati dall'ora sconosciuta",
+    flagStdHigh:"Alta varianza inter-domini (σ=",
+    flagStdSuffix:") — il tema presenta energie contraddittorie",
     diagFlags:"FLAG DIAGNOSTICI",
     ringLove:"Amore",ringHarmony:"Armonia",ringPassion:"Passione",ringMental:"Mentale",ringKarmic:"Karmico",
     compatTitles:["Unione Stellare","Legame Armonioso","Intreccio Complesso","Percorso Difficile","Tensione Profonda"],
@@ -3398,11 +3367,10 @@ function computeNatalConf(profile,name){
   const flags=[];
   // ── Astronomical precision ──
   let astro=100;
-  const slowPlanets=Object.keys(profile.retrogrades).filter(p=>SLOW_P.has(p));
-  if(slowPlanets.length>0){
-    astro-=Math.min(15,slowPlanets.length*3);
-    flags.push({i:'⚠️',tx:t('flagNatalSlow')});
-  } else flags.push({i:'✅',tx:'All planet positions use high-precision VSOP87 formulas.'});
+  if(Object.keys(profile.retrogrades).some(p=>SLOW_P.has(p))){
+    astro-=10;
+    flags.push({i:'ℹ️',tx:t('flagNatalSlow')});
+  }
   // ── Birth time ──
   let timeScore;
   if(profile.timeUnknown){
@@ -3410,56 +3378,29 @@ function computeNatalConf(profile,name){
     flags.push({i:'⚠️',tx:t('flagNatalTU')});
   } else {
     timeScore=100;
-    flags.push({i:'✅',tx:t('flagNatalOk')});
   }
-  // ── Dignity reliability ──
-  const outerDig=Object.entries(profile.dignities)
-    .filter(([pl,d])=>SLOW_P.has(pl)&&d.score!==0).length;
-  let digScore=100;
-  if(outerDig>0){
-    digScore=Math.max(60,100-outerDig*15);
-    flags.push({i:'ℹ️',tx:t('flagNatalGenerational')});
-  } else flags.push({i:'✅',tx:t('confNatalDignityNote')});
-  // ── Retrograde reliability ──
-  const slowRetros=Object.entries(profile.retrogrades).filter(([pl,r])=>r&&SLOW_P.has(pl)).length;
-  let retroScore=100;
-  if(slowRetros>0){
-    retroScore=Math.max(70,100-slowRetros*10);
-    flags.push({i:'ℹ️',tx:t('flagNatalRetro')});
-  } else flags.push({i:'✅',tx:t('confNatalRetroNote')});
   const astroF=Math.max(50,astro);
-  const global=Math.round(astroF*.35+timeScore*.40+digScore*.15+retroScore*.10);
-  return{mode:'natal',global,astro:astroF,timeScore,digScore,retroScore,flags,name};
+  const global=Math.round(astroF*.45+timeScore*.55);
+  return{mode:'natal',global,astro:astroF,timeScore,flags,name};
 }
 
 function computeConf(cA,cB,syn){
   const flags=[];
   let astro=100;
-  if(cA.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagAWarn')});}else flags.push({i:'✅',tx:t('flagAOk')});
-  if(cB.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagBWarn')});}else flags.push({i:'✅',tx:t('flagBOk')});
-  const slowAll=syn.filter(p=>p.asp&&(p.slowA||p.slowB));
-  const slowN=slowAll.length;
-  const slowTight=slowAll.filter(p=>parseFloat(p.asp.orb_actual)<=2).length;
-  if(slowN>0){
-    astro-=Math.min(10,slowTight*3); // only penalise tight-orb outer aspects
-    if(slowTight>0) flags.push({i:'⚠️',tx:slowTight+t('flagSlowTight')});
-    else flags.push({i:'ℹ️',tx:slowN+t('flagSlowLoose')});
-  }
+  if(cA.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagAWarn')});}
+  if(cB.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagBWarn')});}
+  const slowTight=syn.filter(p=>p.asp&&(p.slowA||p.slowB)&&parseFloat(p.asp.orb_actual)<=2).length;
+  if(slowTight>0){astro-=Math.min(10,slowTight*3);flags.push({i:'ℹ️',tx:slowTight+t('flagSlowTight')});}
   const moonBad=syn.filter(p=>p.asp&&((p.pA==='Moon'&&cA.timeUnknown)||(p.pB==='Moon'&&cB.timeUnknown))).length;
   if(moonBad>0)flags.push({i:'⚠️',tx:moonBad+t('flagMoon')});
   const astroF=Math.max(40,astro);
-  const found=syn.filter(p=>p.asp).length,cov=Math.round(found/121*100);
-  if(found<4)flags.push({i:'⚠️',tx:t('flagSparse')});
-  else if(found>=10)flags.push({i:'✅',tx:found+t('flagRich')});
-  else flags.push({i:'ℹ️',tx:found+t('flagAspFound')});
   const sc=STATE.scoreData.scores,dv=[sc.love,sc.harmony,sc.passion,sc.mental,sc.karmic];
   const mn=dv.reduce((a,b)=>a+b)/dv.length,std=Math.sqrt(dv.map(v=>(v-mn)**2).reduce((a,b)=>a+b)/dv.length);
   const coher=Math.max(20,Math.round(100-std));
-  if(std>25)flags.push({i:'⚠️',tx:t('flagStdHigh')+std.toFixed(0)+t('flagStdSuffix')});
-  else if(std<10)flags.push({i:'✅',tx:t('flagStdLow')+std.toFixed(0)+t('flagStdSuffixL')});
-  else flags.push({i:'ℹ️',tx:t('flagStdMid')+std.toFixed(0)+t('flagStdSuffixM')});
-  const global=Math.round(astroF*.45+cov*.25+coher*.30);
-  return{mode:'synastry',global,astro:astroF,cov,coher,flags,std:std.toFixed(0),found};
+  if(std>25)flags.push({i:'ℹ️',tx:t('flagStdHigh')+std.toFixed(0)+t('flagStdSuffix')});
+  const found=syn.filter(p=>p.asp).length;
+  const global=Math.round(astroF*.50+coher*.50);
+  return{mode:'synastry',global,astro:astroF,coher,flags,std:std.toFixed(0),found};
 }
 function confCard(label,val,color,note){
   const dv=val!==null?`${val}%`:'—',bw=val||0;
@@ -3475,21 +3416,18 @@ function renderConf(conf){
   const gauge=`<svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ag" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="${gc}66"/><stop offset="100%" stop-color="${gc}"/></linearGradient><filter id="gf" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${ticks}<path d="${arc(startA,totalArc,R)}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="${SW}" stroke-linecap="round"/>${global>0?`<path d="${arc(startA,filled,R)}" fill="none" stroke="url(#ag)" stroke-width="${SW}" stroke-linecap="round" filter="url(#gf)"/><circle cx="${dot.x.toFixed(2)}" cy="${dot.y.toFixed(2)}" r="6" fill="${gc}" filter="url(#gf)"/>`:''}</svg>`;
   let cardsHTML='',modeTitle='',modeDesc='';
   if(conf.mode==='natal'){
-    const{astro,timeScore,digScore,retroScore,name}=conf;
+    const{astro,timeScore,name}=conf;
     modeTitle=`${t('confNatalTitle')}${name?' — '+name:''}`;
-    modeDesc=`Astro (35%) + birth time (40%) + dignities (15%) + retrogrades (10%)`;
+    modeDesc=t('confNatalDesc');
     cardsHTML=
       confCard(t('confNatalAstro'),astro,cColor(astro),t('confNatalAstroNote'))+
-      confCard(t('confNatalTime'),timeScore,cColor(timeScore),timeScore===100?t('confNatalTimeNote'):t('confNatalTimeWarn'))+
-      confCard(t('confNatalDignity'),digScore,cColor(digScore),t('confNatalDignityNote'))+
-      confCard(t('confNatalRetro'),retroScore,cColor(retroScore),t('confNatalRetroNote'));
+      confCard(t('confNatalTime'),timeScore,cColor(timeScore),timeScore===100?t('confNatalTimeNote'):t('confNatalTimeWarn'));
   } else {
-    const{astro,cov,coher,std,found}=conf;
+    const{astro,coher,std}=conf;
     modeTitle=t('confidenceIndex');
     modeDesc=t('confGlobalDesc');
     cardsHTML=
       confCard(t('confAstro'),astro,cColor(astro),t('confAstroNote'))+
-      confCard(t('confCov'),cov,cColor(cov),found+' '+t('confCovNote'))+
       confCard(t('confCoh'),coher,cColor(coher),t('confCohNote')+' σ='+std);
   }
   let html=`<div class="confglobal"><div class="cggauge">${gauge}<div class="cggauge-inner"><div class="cgscore" style="color:${gc};text-shadow:0 0 36px ${gc}55">${global}<span style="font-size:30px;opacity:.6;letter-spacing:-.02em">%</span></div></div></div><div class="cglabel">${cLabel(global)}</div><div class="cgdesc" style="font-size:12px;color:var(--silver);max-width:340px;text-align:center;margin:4px auto 0">${modeDesc}</div></div><div class="confgrid">${cardsHTML}</div>`;

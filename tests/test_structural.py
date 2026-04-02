@@ -88,9 +88,9 @@ def test_sd_domain_defined(engine_js, domain):
 
 
 def test_computeconf_formula_coefficients(engine_js):
+    assert '.50' in engine_js, "Missing .50 coefficient"
     assert '.45' in engine_js, "Missing .45 coefficient"
-    assert '.25' in engine_js, "Missing .25 coefficient"
-    assert '.30' in engine_js, "Missing .30 coefficient"
+    assert '.55' in engine_js, "Missing .55 coefficient"
 
 
 # ── v10 natal profile additions ───────────────────────────────────────────────

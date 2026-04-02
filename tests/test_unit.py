@@ -241,23 +241,15 @@ def _build_cases():
         {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: astro ∈ [0,100]','check':'conf_range','key':'astro'},
         {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
-         'name':'computeConf: cov ∈ [0,100]','check':'conf_range','key':'cov'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: coher ∈ [0,100]','check':'conf_range','key':'coher'},
         {'fn':'computeConf','args':['1990-03-21','12:00',0,True,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: one TU → astro ≤ 85','check':'conf_one_tu'},
         {'fn':'computeConf','args':['1990-03-21','12:00',0,True,42,0,'1988-07-15','12:00',0,True,42,0],
          'name':'computeConf: both TU → astro ≤ 70','check':'conf_two_tu'},
-        {'fn':'computeConf','args':['2000-01-01','12:00',0,False,42,0,'2000-01-01','12:00',0,False,42,0],
-         'name':'computeConf self: cov > 0 (found/121 pairs form aspects)','check':'conf_self_cov'},
         {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
          'name':'computeConf: found ≥ 0','check':'conf_found'},
         {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
-         'name':'computeConf: llmScore=null (no LLM input)','check':'conf_no_llm'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
-         'name':'computeConf: global = round(astro×0.45 + cov×0.25 + coher×0.30)','check':'conf_formula'},
-        {'fn':'computeConf','args':['1990-03-21','12:00',0,False,42,0,'1988-07-15','12:00',0,False,42,0],
-         'name':'computeConf: flags array non-empty','check':'conf_flags'},
+         'name':'computeConf: global = round(astro×0.50 + coher×0.50)','check':'conf_formula'},
 
         # ── 18. buildNatalAspects ──────────────────────────────────────────────
         {'fn':'buildNatalAspects','args':['2000-01-01','12:00',0,False,42],
@@ -556,22 +548,17 @@ def evaluate_unit_case(case, nr, asc_store):
         p = _p(); astro = p.get('astro') if p else None; ok = astro is not None and astro <= 85; detail = f"astro={astro}"
     elif check == 'conf_two_tu':
         p = _p(); astro = p.get('astro') if p else None; ok = astro is not None and astro <= 70; detail = f"astro={astro}"
-    elif check == 'conf_self_cov':
-        p = _p(); cov = p.get('cov') if p else None; ok = cov is not None and cov > 0; detail = f"cov={cov} (expected >0)"
     elif check == 'conf_found':
         p = _p(); found = p.get('found') if p else None; ok = found is not None and found >= 0; detail = f"found={found}"
-    elif check == 'conf_no_llm':
-        p = _p(); ls = p.get('llmScore') if p else 'not_null'; ok = ls is None; detail = f"llmScore={ls!r}"
     elif check == 'conf_formula':
         p = _p()
         if p:
-            astro = p.get('astro', 0); cov = p.get('cov', 0); coher = p.get('coher', 0)
-            exp_g = round(astro * 0.45 + cov * 0.25 + coher * 0.30); act_g = p.get('global', -1)
-            ok = act_g == exp_g; detail = f"global={act_g}, expected round({astro}*0.45+{cov}*0.25+{coher}*0.30)={exp_g}"
+            import math
+            astro = p.get('astro', 0); coher = p.get('coher', 0)
+            exp_g = math.floor(astro * 0.50 + coher * 0.50 + 0.5); act_g = p.get('global', -1)
+            ok = act_g == exp_g; detail = f"global={act_g}, expected round({astro}*0.50+{coher}*0.50)={exp_g}"
         else:
             ok = False; detail = "null result"
-    elif check == 'conf_flags':
-        p = _p(); n = p.get('nFlags', 0) if p else 0; ok = n > 0; detail = f"nFlags={n}"
     # ── natal aspects ─────────────────────────────────────────────────────
     elif check == 'nat_asp_range':
         p = _p(); n = p.get('nAspects') if p else None; ok = n is not None and n >= 0; detail = f"nAspects={n}"

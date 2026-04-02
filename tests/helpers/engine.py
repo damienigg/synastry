@@ -220,9 +220,9 @@ const out = cases.map(c => {
             const pairs=buildSynastry(cA,cB);
             const sd=scoreSyn(pairs);
             STATE.scoreData={scores:sd.scores};
-            const conf=computeConf(cA,cB,pairs,null);
-            got=JSON.stringify({global:conf.global,astro:conf.astro,cov:conf.cov,
-                coher:conf.coher,found:conf.found,nFlags:conf.flags.length,llmScore:conf.llmScore});
+            const conf=computeConf(cA,cB,pairs);
+            got=JSON.stringify({global:conf.global,astro:conf.astro,
+                coher:conf.coher,found:conf.found,nFlags:conf.flags.length});
         }
         else got=null;
         return {name:c.name,got};
