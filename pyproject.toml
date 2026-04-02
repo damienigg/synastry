@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "structural: HTML structural inspection tests (no network)",
+    "unit: Engine unit tests via batch Node.js (no network)",
+    "jpl: JPL Horizons API validation (requires network)",
+    "ascendant: Swiss Ephemeris ascendant validation (no network)",
+]
+addopts = "-v"
