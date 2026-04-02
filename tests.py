@@ -399,6 +399,7 @@ def jpl_query(planet, date_str, cache, verbose=False):
 # ── TOLERANCES ────────────────────────────────────────────────────────────────
 # Loaded from tolerances.json (next to this script). Falls back to defaults if missing.
 _TOL_DEFAULTS = {
+    'Ascendant': 2.0,
     'Sun':     0.5,
     'Moon':    0.5,
     'Mercury': 0.5,
@@ -1320,6 +1321,72 @@ def print_summary(all_results):
         print(f"{planet:<12} {len(diffs):>3}  {mean_d:>7.2f}°  {col(c,f'{max_d:>7.2f}°')}  {tol:>4.1f}°  {status}")
     print("─"*58)
 
+# ── SWISS EPHEMERIS ASCENDANT VALIDATION (via Kerykeion) ─────────────────────
+# Reference values from Swiss Ephemeris (JPL DE431, ±0.001° accuracy).
+# All times UTC, noon, to match app engine invocation with tz=0.
+
+ASC_CASES = [
+    # (label, date_str, hour, lat, lon, sweph_asc)
+    ('Equator/Greenwich',  '2000-01-01', 12,   0.0,    0.0,   11.3739),
+    ('lat=42 lon=0',       '2000-01-01', 12,  42.0,    0.0,   18.4469),
+    ('Paris',              '2000-01-01', 12,  48.9,    2.35,  26.8059),
+    ('London summer',      '2000-06-15', 12,  51.5,   -0.12, 175.7353),
+    ('Sydney summer',      '2000-06-15', 12, -33.9,  151.2,  330.8498),
+    ('Stockholm',          '2000-01-01', 12,  59.3,   18.07,  74.0809),
+    ('Buenos Aires',       '2000-01-01', 12, -34.6,  -58.38, 320.1481),
+    ('Rome 1980',          '1980-04-21', 12,  41.9,   12.5,  142.7298),
+    ('Paris 1990 spring',  '1990-03-21', 12,  48.9,    2.35, 115.3455),
+    ('NYC 1950 spring',    '1950-03-21', 12,  40.7,  -74.0,   24.5306),
+    ('Tokyo 2020 autumn',  '2020-09-22', 12,  35.7,  139.7,   69.9746),
+    ('lat=42 lon=30',      '2000-01-01', 12,  42.0,   30.0,   62.3479),
+    ('lat=42 lon=90',      '2000-01-01', 12,  42.0,   90.0,  118.0809),
+]
+
+NODE_ASC_SHIM = r"""
+const [,,dateStr,hour,lat,lon] = process.argv;
+const [y,m,d] = dateStr.split('-').map(Number);
+const JD = toJD(y,m,d,parseFloat(hour),0);
+const T  = toT(JD);
+const r  = ascPos(T, parseFloat(lat), parseFloat(lon));
+process.stdout.write(JSON.stringify({asc:parseFloat(r.lon.toFixed(6)),gmst:parseFloat(r.tGMST),lst:parseFloat(r.tLST)})+'\n');
+"""
+
+def run_swisseph_ascendant(engine_js, verbose):
+    """Compare app ascendant vs Swiss Ephemeris (Kerykeion) reference values."""
+    tol = TOL.get('Ascendant', 2.0)
+    tests = []
+    W = 78
+    print(col(C_BOLD, f"\n── ASCENDANT vs Swiss Ephemeris (Kerykeion/pyswisseph) ──"))
+    print("─"*W)
+    print(f"{'LOCATION':<24} {'DATE':<12} {'APP':>9} {'SWEPH':>9} {'Δ':>8} {'TOL':>5}  STATUS")
+    print("─"*W)
+
+    for label, date_str, hour, lat, lon, sweph_asc in ASC_CASES:
+        try:
+            raw = run_node(engine_js, NODE_ASC_SHIM, [date_str, str(hour), str(lat), str(lon)])
+            data = json.loads(raw)
+            app_asc = data['asc']
+            diff = ang_diff(app_asc, sweph_asc)
+            passed = diff <= tol
+            status = col(C_OK, "PASS") if passed else col(C_FAIL, "FAIL")
+            diff_s = col(C_FAIL, f"{diff:8.2f}°") if not passed else col(C_DIM, f"{diff:8.2f}°")
+            print(f"{label:<24} {date_str:<12} {app_asc:9.3f}° {sweph_asc:9.3f}° {diff_s} {tol:4.1f}°  {status}")
+            tests.append((f"ASC {label} {date_str}", passed, f"app={app_asc:.4f}, sweph={sweph_asc:.4f}, Δ={diff:.4f}°"))
+        except Exception as e:
+            print(f"{label:<24} {date_str:<12}  {col(C_FAIL, f'ERROR: {e}')}")
+            tests.append((f"ASC {label} {date_str}", False, f"error: {e}"))
+
+    print("─"*W)
+    n_pass = sum(1 for _,ok,_ in tests if ok)
+    n_fail = sum(1 for _,ok,_ in tests if not ok)
+    print(f"{col(C_OK,str(n_pass))} pass  {col(C_FAIL,str(n_fail))} fail  {col(C_DIM,str(len(tests)))} total")
+    if n_fail:
+        print(col(C_BOLD+C_FAIL,"\n  FAILURES:"))
+        for name, ok, detail in tests:
+            if not ok: print(f"  {col(C_FAIL,'✗')} {name}\n      {col(C_DIM, detail)}")
+    _record_failures("ASCENDANT vs Swiss Ephemeris", tests)
+    return n_fail == 0
+
 # ── FIND APP ──────────────────────────────────────────────────────────────────
 def find_app(given):
     candidates=[given,'synastria-v10.html','../synastria-v10.html',str(Path(__file__).parent/'synastria-v10.html')]
@@ -1350,7 +1417,7 @@ def main():
         """))
     ap.add_argument('--app')
     ap.add_argument('--suite', default='all',
-        choices=['all','unit','structural','sun','moon','inner','outer','planets'])
+        choices=['all','unit','structural','sun','moon','inner','outer','planets','ascendant'])
     ap.add_argument('--verbose',     action='store_true')
     ap.add_argument('--clear-cache', action='store_true')
     ap.add_argument('--no-jpl',      action='store_true')
@@ -1391,9 +1458,9 @@ def main():
     if args.suite in ('all','unit'):
         ok = run_unit(engine_js, args.verbose); all_ok = all_ok and ok
 
-    skip_jpl = args.no_jpl or args.suite in ('unit','structural')
+    skip_jpl = args.no_jpl or args.suite in ('unit','structural','ascendant')
     if skip_jpl:
-        print(col(C_DIM,"\n  [JPL validation skipped — pass --suite all or a planet suite]"))
+        print(col(C_DIM,"\n  [External validation skipped — pass --suite all or a planet/ascendant suite]"))
 
     if not skip_jpl:
         all_jpl = []
@@ -1422,6 +1489,11 @@ def main():
             _record_jpl_failures(res,err,args.suite.upper())
             all_ok=all_ok and ok
         if all_jpl: print_summary(all_jpl)
+
+    # ── Ascendant vs Swiss Ephemeris ──────────────────────────────────────────
+    if not args.no_jpl and args.suite in ('all','ascendant'):
+        ok = run_swisseph_ascendant(engine_js, args.verbose)
+        all_ok = all_ok and ok
 
     print_recap()
     print()
