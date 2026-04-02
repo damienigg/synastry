@@ -3176,11 +3176,13 @@ async function callLLM(prompt){
     // causing the model to spend all tokens on reasoning → empty content.
     // Workaround: omit max_completion_tokens for GPT-5+ models.
     const isGpt5=model.startsWith('gpt-5');
-    const body={model,reasoning_effort:'none',messages:[{role:'system',content:sys},{role:'user',content:prompt}]};
-    if(!isGpt5)body.max_completion_tokens=maxTok;
-    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify(body)});
+    const body={model,messages:[{role:'system',content:sys},{role:'user',content:prompt}]};
+    if(isGpt5)body.reasoning_effort='none'; else body.max_completion_tokens=maxTok;
+    let r;
+    try{r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify(body)});}
+    catch(e){throw new Error(`OpenAI network error — if opening from file://, try serving via: python3 -m http.server 8000`);}
     if(!r.ok){const b=await r.text().catch(()=>'');throw new Error(`OpenAI ${r.status}: ${b.slice(0,200)}`);}
-    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content');
+    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content — check model name and API key');
     return j.choices[0].message.content;
   }
   if(curProvider==='gemini'){
@@ -3598,11 +3600,13 @@ async function callLLMWithSystem(prompt,sys){
   }
   if(curProvider==='openai'){
     const isGpt5=model.startsWith('gpt-5');
-    const body={model,reasoning_effort:'none',messages:[{role:'system',content:sys},{role:'user',content:prompt}]};
-    if(!isGpt5)body.max_completion_tokens=maxTok;
-    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify(body)});
+    const body={model,messages:[{role:'system',content:sys},{role:'user',content:prompt}]};
+    if(isGpt5)body.reasoning_effort='none'; else body.max_completion_tokens=maxTok;
+    let r;
+    try{r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{...headers,'Authorization':`Bearer ${key}`},body:JSON.stringify(body)});}
+    catch(e){throw new Error(`OpenAI network error — if opening from file://, try serving via: python3 -m http.server 8000`);}
     if(!r.ok){const b=await r.text().catch(()=>'');throw new Error(`OpenAI ${r.status}: ${b.slice(0,200)}`);}
-    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content');
+    const j=await r.json();if(!j.choices?.[0]?.message?.content)throw new Error('OpenAI returned empty content — check model name and API key');
     return j.choices[0].message.content;
   }
   if(curProvider==='gemini'){
