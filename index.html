@@ -3204,17 +3204,7 @@ function setLang(lang){
     const compatName=t('compatTitles')[compatIdx]||I18N.en.compatTitles[compatIdx];
     const bannerCompatEl=document.querySelector('#banner [data-compat-label]');
     if(bannerCompatEl)bannerCompatEl.textContent=compatName;
-    const aspDescs=t('aspDescs');
-    document.querySelectorAll('#evcards .evd').forEach(el=>{
-      const card=el.closest('.evcard');
-      const chip=card.querySelector('.chip');
-      if(!chip)return;
-      const aspName=Object.keys(aspDescs).find(a=>chip.classList.contains(`c-${a.toLowerCase()}`));
-      if(aspName)el.textContent=aspDescs[aspName]||el.textContent;
-    });
-    document.getElementById('rbody').innerHTML=fmtHTML(text);
-    document.getElementById('rings').innerHTML=RING_DEFS.map(r=>ring(ringLabel(r),sc[r.k],r.c)).join('');
-    renderConf(computeConf(STATE.chartA,STATE.chartB,STATE.syn));
+    renderReport(text); // re-renders banner, rings, evidence cards, report, and confidence in the active language
   }
   // Refresh help modal if open
   if(document.getElementById('help-overlay').classList.contains('open')){_helpBuildTabs();loadHelpTab(_helpActiveTab);}
@@ -3888,13 +3878,25 @@ function renderReport(text){
 
   document.getElementById('banner').innerHTML=gaugeHTML;
   document.getElementById('rings').innerHTML=RING_DEFS.map(r=>ring(ringLabel(r),sc[r.k],r.c)).join('');
-  const aspDescs=t('aspDescs');
+  // Evidence cards — pair-specific descriptions, not generic aspect descriptions
+  const _evPlanetRole={en:{Sun:'identity',Moon:'emotions',Mercury:'communication',Venus:'love & values',Mars:'drive & desire',Jupiter:'growth & optimism',Saturn:'structure & commitment',Uranus:'independence & change',Neptune:'dreams & illusions',Pluto:'transformation & power',Ascendant:'outward persona'},
+    fr:{Sun:'identité',Moon:'émotions',Mercury:'communication',Venus:'amour & valeurs',Mars:'élan & désir',Jupiter:'croissance & optimisme',Saturn:'structure & engagement',Uranus:'indépendance & changement',Neptune:'rêves & illusions',Pluto:'transformation & pouvoir',Ascendant:'persona extérieure'},
+    it:{Sun:'identità',Moon:'emozioni',Mercury:'comunicazione',Venus:'amore & valori',Mars:'slancio & desiderio',Jupiter:'crescita & ottimismo',Saturn:'struttura & impegno',Uranus:'indipendenza & cambiamento',Neptune:'sogni & illusioni',Pluto:'trasformazione & potere',Ascendant:'persona esteriore'}};
+  const _evAspVerb={en:{Conjunction:'merges with',Trine:'flows harmoniously with',Sextile:'cooperates with',Square:'challenges',Opposition:'polarizes with',Quincunx:'misaligns with'},
+    fr:{Conjunction:'fusionne avec',Trine:'s\'harmonise avec',Sextile:'coopère avec',Square:'défie',Opposition:'se polarise avec',Quincunx:'se désaligne avec'},
+    it:{Conjunction:'si fonde con',Trine:'fluisce in armonia con',Sextile:'coopera con',Square:'sfida',Opposition:'si polarizza con',Quincunx:'si disallinea con'}};
+  const _evRoles=_evPlanetRole[LANG]||_evPlanetRole.en;
+  const _evVerbs=_evAspVerb[LANG]||_evAspVerb.en;
   const top=syn.filter(p=>p.asp&&p.asp.h!==0).sort((a,b)=>Math.abs(b.asp.h)-Math.abs(a.asp.h)).slice(0,6);
   document.getElementById('evcards').innerHTML=top.map(p=>{
     const fl=[];
-    if(p.slowA||p.slowB)fl.push('<span style="color:var(--amber);font-size:10px">~p</span>');
+    if(p.slowA||p.slowB)fl.push('<span style="color:var(--silver);font-size:10px">~p</span>');
     if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))fl.push('<span style="color:var(--amber);font-size:10px">~t</span>');
-    return`<div class="evcard"><div class="eva">${aspChip(p.asp)} <span style="color:var(--silver);font-size:12px;margin-left:6px">${PSYM[p.pA]||'↑'}${p.pA} × ${PSYM[p.pB]||'↑'}${p.pB}</span> ${fl.join(' ')}</div><div class="evd">${aspDescs[p.asp.name]||''}</div></div>`;
+    const roleA=_evRoles[p.pA]||p.pA,roleB=_evRoles[p.pB]||p.pB;
+    const verb=_evVerbs[p.asp.name]||p.asp.name;
+    const pnA=trPlanet(p.pA,LANG),pnB=trPlanet(p.pB,LANG);
+    const desc=`${nameA}'s ${pnA} (${roleA}) ${verb} ${nameB}'s ${pnB} (${roleB})`;
+    return`<div class="evcard"><div class="eva">${aspChip(p.asp)} <span style="color:var(--silver);font-size:12px;margin-left:6px">${PSYM[p.pA]||'↑'}${pnA} × ${PSYM[p.pB]||'↑'}${pnB}</span> ${fl.join(' ')}</div><div class="evd">${desc}</div></div>`;
   }).join('');
   document.getElementById('rbody').innerHTML=fmtHTML(text);
   document.getElementById('report-sec').style.display='block';
