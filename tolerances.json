@@ -1,6 +1,6 @@
 {
   "_comment": "Comparison tolerances in degrees. JPL Horizons for planets, Swiss Ephemeris for Ascendant.",
-  "Ascendant": 2.0,
+  "Ascendant": 1.0,
   "Sun":     0.5,
   "Moon":    0.5,
   "Mercury": 0.5,
