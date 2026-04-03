@@ -48,8 +48,9 @@ Planetary positions are computed entirely in JavaScript, client-side, using clas
 | Sun | VSOP87 geometric mean + aberration | ≤ 0.5° vs JPL |
 | Moon | Brown 16-term simplified series | ≤ 0.1° vs JPL |
 | Mercury, Venus, Mars | VSOP87 truncated L/B/R, heliocentric → geocentric | ≤ 0.5° vs JPL |
-| Jupiter, Saturn | Secular elements + perturbation terms | ≤ 2-3° vs JPL |
-| Uranus, Neptune, Pluto | Secular elements (Meeus Table 31.b) | ≤ 2° vs JPL |
+| Jupiter, Saturn | Secular elements + mutual perturbation terms | ≤ 2-3° vs JPL |
+| Uranus | Secular elements + Saturn-Neptune perturbation terms | ≤ 1.5° vs JPL |
+| Neptune, Pluto | Secular elements (Meeus Table 31.b) | ≤ 2° vs JPL |
 | Ascendant | GMST + obliquity + latitude | ≤ 0.01° vs Swiss Ephemeris |
 
 All accuracy figures are verified by the automated test suite against JPL Horizons (1920-2050) and Swiss Ephemeris (Kerykeion/pyswisseph, JPL DE431). Position errors for outer planets rarely affect sign placement (signs are 30° wide); they matter only for tight aspects (orb ≤ 2°), which the Confidence Index flags.

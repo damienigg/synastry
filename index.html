@@ -610,7 +610,7 @@ const I18N = {
 <h3>Interpretation</h3>
 <p>All 330 possible planet-pair &times; aspect combinations have <strong>bespoke, psychologically-grounded interpretations</strong> in all 3 languages (990 entries total). No generic fallbacks are used. Every term is explained in plain language.</p>
 <h3>Accuracy</h3>
-<p>Planetary positions are computed client-side using classical algorithms (VSOP87, Brown series). Inner planets are accurate to &le;0.5&deg;, outer planets to &le;2-3&deg;, the Moon to &le;0.1&deg;, and the Ascendant to &le;0.01&deg; — all verified against JPL Horizons and the Swiss Ephemeris.</p>`,
+<p>Planetary positions are computed client-side using classical algorithms (VSOP87, Brown series, secular elements with perturbation corrections). Inner planets are accurate to &le;0.5&deg;, Jupiter/Saturn to &le;2-3&deg;, Uranus to &le;1.5&deg;, Neptune/Pluto to &le;2&deg;, the Moon to &le;0.1&deg;, and the Ascendant to &le;0.01&deg; — all verified against JPL Horizons and the Swiss Ephemeris.</p>`,
     helpAbout:`<h2>About Synastria</h2>
 <p>Synastria is a self-contained astrological oracle for natal charts and relationship analysis. The entire application runs in a single HTML file — no build step, no server, no external dependencies.</p>
 <h3>Features</h3>
@@ -722,7 +722,7 @@ const I18N = {
 <h3>Interprétation</h3>
 <p>Les 330 combinaisons possibles de paire de planètes &times; aspect ont des <strong>interprétations sur mesure, psychologiquement fondées</strong> dans les 3 langues (990 entrées au total). Aucun texte générique n'est utilisé. Chaque terme est expliqué en langage courant.</p>
 <h3>Précision</h3>
-<p>Les positions planétaires sont calculées côté client avec des algorithmes classiques (VSOP87, séries de Brown). Les planètes intérieures sont précises à &le;0,5&deg;, les extérieures à &le;2-3&deg;, la Lune à &le;0,1&deg;, et l'Ascendant à &le;0,01&deg; — le tout vérifié contre JPL Horizons et l'éphéméride suisse.</p>`,
+<p>Les positions planétaires sont calculées côté client avec des algorithmes classiques (VSOP87, séries de Brown, éléments séculaires avec corrections de perturbation). Les planètes intérieures sont précises à &le;0,5&deg;, Jupiter/Saturne à &le;2-3&deg;, Uranus à &le;1,5&deg;, Neptune/Pluton à &le;2&deg;, la Lune à &le;0,1&deg;, et l'Ascendant à &le;0,01&deg; — le tout vérifié contre JPL Horizons et l'éphéméride suisse.</p>`,
     helpAbout:`<h2>À propos de Synastria</h2>
 <p>Synastria est un oracle astrologique autonome pour les thèmes nataux et l'analyse relationnelle. L'application entière fonctionne dans un seul fichier HTML — pas de compilation, pas de serveur, pas de dépendances externes.</p>
 <h3>Fonctionnalités</h3>
@@ -833,7 +833,7 @@ const I18N = {
 <h3>Interpretazione</h3>
 <p>Tutte le 330 combinazioni possibili di coppia di pianeti &times; aspetto hanno <strong>interpretazioni su misura, psicologicamente fondate</strong> in tutte e 3 le lingue (990 voci in totale). Nessun testo generico viene usato. Ogni termine è spiegato in linguaggio chiaro.</p>
 <h3>Precisione</h3>
-<p>Le posizioni planetarie sono calcolate lato client con algoritmi classici (VSOP87, serie di Brown). I pianeti interni sono precisi a &le;0,5&deg;, gli esterni a &le;2-3&deg;, la Luna a &le;0,1&deg;, e l'Ascendente a &le;0,01&deg; — tutto verificato contro JPL Horizons e l'effemeridi svizzere.</p>`,
+<p>Le posizioni planetarie sono calcolate lato client con algoritmi classici (VSOP87, serie di Brown, elementi secolari con correzioni di perturbazione). I pianeti interni sono precisi a &le;0,5&deg;, Giove/Saturno a &le;2-3&deg;, Urano a &le;1,5&deg;, Nettuno/Plutone a &le;2&deg;, la Luna a &le;0,1&deg;, e l'Ascendente a &le;0,01&deg; — tutto verificato contro JPL Horizons e le effemeridi svizzere.</p>`,
     helpAbout:`<h2>Informazioni su Synastria</h2>
 <p>Synastria è un oracolo astrologico autonomo per temi natali e analisi relazionale. L'intera applicazione funziona in un singolo file HTML — nessuna compilazione, nessun server, nessuna dipendenza esterna.</p>
 <h3>Funzionalità</h3>
@@ -907,7 +907,7 @@ const ASPECTS=[
 //   → heliocentric spherical → geocentric rectangular → ecliptic lon
 //   → accuracy ±0.5-2° for 1800-2050 (vs Swiss Ephemeris)
 // Outer planets (Jupiter, Saturn, Uranus, Neptune, Pluto): secular
-//   elements (Meeus Table 31.b) + Jupiter/Saturn perturbations
+//   elements (Meeus Table 31.b) + perturbations (Jupiter/Saturn mutual, Uranus/Saturn/Neptune)
 //   → accuracy ±1-3° for 1950-2050
 // ═══════════════════════════════════════════════════════════════════
 
