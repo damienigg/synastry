@@ -14,11 +14,11 @@ def test_engine_block(html_path, engine_js):
 
 
 @pytest.mark.parametrize("fn", [
-    'function sunPos', 'function moonPos', 'function vsopGeoLon',
-    'function outerGeoLon', 'function planetPos', 'function buildChart',
+    'function sunPos', 'function moonPos',
+    'function planetPos', 'function buildChart',
     'function buildSynastry', 'function scoreSyn', 'function computeConf',
     'function getAspect', 'function degSign', 'function ascPos',
-    'function helioXY', 'function kepler', 'function vsopLBR',
+    'function kepler', 'function vsopLBR',
     'function jupPert', 'function satPert',
     'const toJD', 'const toT', 'const m360',
     'const VSOP', 'const SECULAR', 'const ASPECTS',

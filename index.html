@@ -981,31 +981,24 @@ const m360=x=>((x%360)+360)%360;
 const toT=JD=>(JD-2451545)/36525;
 const toJD=(y,m,d,h,tz)=>{const ut=h-tz,yr=m<=2?y-1:y,mo=m<=2?m+12:m,A=Math.floor(yr/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(yr+4716))+Math.floor(30.6001*(mo+1))+d+B-1524.5+ut/24};
 function kepler(Mdeg,e){const M=Mdeg*Math.PI/180;let E=M;for(let i=0;i<60;i++){const dE=(M-E+e*Math.sin(E))/(1-e*Math.cos(E));E+=dE;if(Math.abs(dE)<1e-10)break}return E*180/Math.PI}
-// Inner planets via VSOP87 heliocentric spherical → geocentric
-function vsopGeoLon(planet,T){
-  const pl=vsopLBR(planet,T),ea=vsopLBR('Earth',T);
-  const px=pl.R*Math.cos(pl.B)*Math.cos(pl.L),py=pl.R*Math.cos(pl.B)*Math.sin(pl.L);
-  const ex=ea.R*Math.cos(ea.B)*Math.cos(ea.L),ey=ea.R*Math.cos(ea.B)*Math.sin(ea.L);
-  return m360(Math.atan2(py-ey,px-ex)*180/Math.PI);
-}
-// Outer planets via secular elements + perturbations
-function helioXY(name,T,pertDeg=0){
+function planetPos(name,T){
+  if(INNER_P.has(name)){
+    const pl=vsopLBR(name,T),ea=vsopLBR('Earth',T);
+    const px=pl.R*Math.cos(pl.B)*Math.cos(pl.L),py=pl.R*Math.cos(pl.B)*Math.sin(pl.L);
+    const ex=ea.R*Math.cos(ea.B)*Math.cos(ea.L),ey=ea.R*Math.cos(ea.B)*Math.sin(ea.L);
+    const lon=m360(Math.atan2(py-ey,px-ex)*180/Math.PI);
+    return{lon,method:'VSOP87',tHelio:(pl.L*180/Math.PI).toFixed(4),tR:pl.R.toFixed(6)};
+  }
+  const pert=name==='Jupiter'?jupPert(T):name==='Saturn'?satPert(T):0;
   const s=getSec(name,T),M=m360(s.L-s.w),E=kepler(M,s.e)*Math.PI/180;
   const v=2*Math.atan2(Math.sqrt(1+s.e)*Math.sin(E/2),Math.sqrt(1-s.e)*Math.cos(E/2));
   const r=s.a*(1-s.e*Math.cos(E));
-  const lon=v+s.w*Math.PI/180+pertDeg*Math.PI/180;
-  return{x:r*Math.cos(lon),y:r*Math.sin(lon)};
-}
-function outerGeoLon(name,T){
-  const pert=name==='Jupiter'?jupPert(T):name==='Saturn'?satPert(T):0;
-  const pl=helioXY(name,T,pert),ea=vsopLBR('Earth',T);
-  // Use VSOP87 Earth for outer planets too (more accurate baseline)
+  const helioLon=v+s.w*Math.PI/180+pert*Math.PI/180;
+  const pl={x:r*Math.cos(helioLon),y:r*Math.sin(helioLon)};
+  const ea=vsopLBR('Earth',T);
   const ex=ea.R*Math.cos(ea.B)*Math.cos(ea.L),ey=ea.R*Math.cos(ea.B)*Math.sin(ea.L);
-  return m360(Math.atan2(pl.y-ey,pl.x-ex)*180/Math.PI);
-}
-function planetPos(name,T){
-  const lon=INNER_P.has(name)?vsopGeoLon(name,T):outerGeoLon(name,T);
-  return{lon,tL:'VSOP87',tM:'',tE:'',tv:''};
+  const lon=m360(Math.atan2(pl.y-ey,pl.x-ex)*180/Math.PI);
+  return{lon,method:'Secular+Kepler',tL:s.L.toFixed(4),tM:M.toFixed(4),tE:(E*180/Math.PI).toFixed(4),tv:(v*180/Math.PI).toFixed(4),tPert:pert?pert.toFixed(4):'0'};
 }
 function degSign(lon){const i=Math.floor(lon/30);return{sign:ZSIGNS[i],sym:ZSYMS[i],deg:parseFloat((lon%30).toFixed(1)),lon}}
 
@@ -1137,14 +1130,17 @@ function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   tr('Julian Day',`JD = f(${dateStr} ${timeStr} UTC${tz>=0?'+':''}${tz})`,JD.toFixed(4));
   tr('Julian Centuries T','T = (JD − 2451545.0) / 36525',T.toFixed(8));
   const sun=sunPos(T);pos.Sun=degSign(sun.lon);
-  tr('Sun L₀','280.46646 + 36000.76983·T',`${sun.tL0}°`);tr('Sun M','357.52911 + 35999.05029·T',`${sun.tM}°`);
+  tr('Sun L₀','280.46646 + 36000.76983·T',`${sun.tL0}°`);tr('Sun M','357.52911 + 35999.05029·T − 1.537×10⁻⁴·T²',`${sun.tM}°`);
   tr('Sun C','(1.9146−0.0048T)·sinM + (0.0200−0.0001T)·sin2M + 0.0003·sin3M',`${sun.tC}°`);tr('Sun ☉',`L₀ + C`,`${sun.lon.toFixed(4)}° → ${pos.Sun.sign} ${pos.Sun.deg}°`);
   const moon=moonPos(T);pos.Moon=degSign(moon.lon);
-  tr('Moon L₀ (Brown)','218.3164 + 481267.8812·T',`${moon.tL0}°`);tr('Moon ΣL (16 terms)','Σ periodic',`+${moon.tsL}°`);
+  tr('Moon L₀ (Brown)','218.3164 + 481267.8812·T − 1.5786×10⁻³·T²',`${moon.tL0}°`);tr('Moon ΣL (16 terms)','6288774·sinM\' + 1274027·sin(2D−M\') + 658314·sin2D + 213618·sin2M\' + 12 smaller terms (÷10⁶)',`+${moon.tsL}°`);
   tr('Moon ☽','L₀ + ΣL/10⁶',`${moon.lon.toFixed(4)}° → ${pos.Moon.sign} ${pos.Moon.deg}°`);
   for(const p of['Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']){
     const r=planetPos(p,T);pos[p]=degSign(r.lon);
-    tr(p,`L=${r.tL}° M=${r.tM}° E=${r.tE}° v=${r.tv}°`,`${r.lon.toFixed(4)}° → ${pos[p].sign} ${pos[p].deg}°`);
+    const formula=r.method==='VSOP87'
+      ?`VSOP87 helio L=${r.tHelio}° R=${r.tR} AU → geocentric`
+      :`Secular L=${r.tL}° M=${r.tM}° E=${r.tE}° v=${r.tv}°${r.tPert!=='0'?' pert='+r.tPert+'°':''}`;
+    tr(p,formula,`${r.lon.toFixed(4)}° → ${pos[p].sign} ${pos[p].deg}°`);
   }
   const latVal=lat??42;
   const lonVal=lon??0;
