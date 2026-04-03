@@ -4,6 +4,18 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.4.1] — 2026-04-03
+
+### Fixed
+- **Multilingual interpolation bugs** — calculated variables (element names, zodiac signs, modalities, planet names, aspect verbs) were rendered in English inside French and Italian sentences. Affected both the synastry report (`builtinReport`) and the natal report (`builtinNatalReport`). All interpolated variables now pass through language-aware translators:
+  - Element names: Fire→Feu/Fuoco, Water→Eau/Acqua, Earth→Terre/Terra, Air→Air/Aria
+  - Zodiac signs: Aries→Bélier/Ariete, Taurus→Taureau/Toro, etc.
+  - Modalities: Fixed→Fixe/Fisso, Mutable→Mutable/Mutevole, Cardinal→Cardinal/Cardinale
+  - Planet names: Venus→Vénus/Venere, Saturn→Saturne/Saturno, etc.
+  - Aspect verbs: conjunct→conjonction/congiunzione, trine→trigone/trigono, etc.
+
+---
+
 ## [10.4.0] — 2026-04-03
 
 ### Added
