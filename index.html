@@ -977,6 +977,7 @@ function evalPoly(c,T){let r=0;for(let i=c.length-1;i>=0;i--)r=r*T+c[i];return r
 function getSec(n,T){return{L:m360(evalPoly(SECULAR[n].L,T)),w:m360(evalPoly(SECULAR[n].w,T)),e:evalPoly(SECULAR[n].e,T),a:evalPoly(SECULAR[n].a,T)};}
 function jupPert(T){const Lj=getSec('Jupiter',T).L,Ls=getSec('Saturn',T).L,r=x=>x*Math.PI/180;return+0.332*Math.sin(r(2*Lj-5*Ls-67.6))+0.056*Math.sin(r(2*Lj-2*Ls+21))+0.042*Math.sin(r(3*Lj-5*Ls+21))-0.036*Math.sin(r(Lj-2*Ls))+0.022*Math.cos(r(Lj-Ls))+0.023*Math.sin(r(2*Lj-3*Ls+52))-0.016*Math.sin(r(Lj-5*Ls-69));}
 function satPert(T){const Lj=getSec('Jupiter',T).L,Ls=getSec('Saturn',T).L,r=x=>x*Math.PI/180;return+0.812*Math.sin(r(2*Lj-5*Ls-67.6))+0.229*Math.cos(r(2*Lj-4*Ls-2))+0.119*Math.cos(r(Lj-2*Ls-3))+0.046*Math.cos(r(2*Lj-6*Ls-69))+0.014*Math.sin(r(Lj-3*Ls+32))-0.056*Math.sin(r(2*Lj-2*Ls-22))+0.024*Math.sin(r(2*Lj-3*Ls+52));}
+function uraPert(T){const Ls=getSec('Saturn',T).L,Lu=getSec('Uranus',T).L,Ln=getSec('Neptune',T).L,r=x=>x*Math.PI/180;return+0.664*Math.sin(r(Ls-2*Lu+75.0))+0.348*Math.sin(r(Ls-3*Lu+70.7))+0.261*Math.sin(r(2*Ls-6*Lu+105))+0.198*Math.sin(r(2*Ls-7*Lu+108))-0.114*Math.sin(r(3*Ls-7*Lu+55))+0.049*Math.sin(r(Ln-Lu))-0.044*Math.sin(r(Ls-4*Lu+68));}
 const m360=x=>((x%360)+360)%360;
 const toT=JD=>(JD-2451545)/36525;
 const toJD=(y,m,d,h,tz)=>{const ut=h-tz,yr=m<=2?y-1:y,mo=m<=2?m+12:m,A=Math.floor(yr/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(yr+4716))+Math.floor(30.6001*(mo+1))+d+B-1524.5+ut/24};
@@ -989,7 +990,7 @@ function planetPos(name,T){
     const lon=m360(Math.atan2(py-ey,px-ex)*180/Math.PI);
     return{lon,method:'VSOP87',tHelio:(pl.L*180/Math.PI).toFixed(4),tR:pl.R.toFixed(6)};
   }
-  const pert=name==='Jupiter'?jupPert(T):name==='Saturn'?satPert(T):0;
+  const pert=name==='Jupiter'?jupPert(T):name==='Saturn'?satPert(T):name==='Uranus'?uraPert(T):0;
   const s=getSec(name,T),M=m360(s.L-s.w),E=kepler(M,s.e)*Math.PI/180;
   const v=2*Math.atan2(Math.sqrt(1+s.e)*Math.sin(E/2),Math.sqrt(1-s.e)*Math.cos(E/2));
   const r=s.a*(1-s.e*Math.cos(E));
@@ -1109,12 +1110,29 @@ function moonPos(T){
   const D=m360(297.85036+445267.11148*T-1.9142e-3*T*T),M=m360(357.52772+35999.05034*T-1.603e-4*T*T),
     Mp=m360(134.96298+477198.867398*T+8.6972e-3*T*T),F=m360(93.27191+483202.017538*T-3.6825e-3*T*T);
   const Dr=D*Math.PI/180,Mr=M*Math.PI/180,Mpr=Mp*Math.PI/180,Fr=F*Math.PI/180;
-  const sL=(6288774*Math.sin(Mpr)+1274027*Math.sin(2*Dr-Mpr)+658314*Math.sin(2*Dr)+213618*Math.sin(2*Mpr)
-    -185116*Math.sin(Mr)-114332*Math.sin(2*Fr)+58793*Math.sin(2*Dr-2*Mpr)+57066*Math.sin(2*Dr-Mr-Mpr)
-    +53322*Math.sin(2*Dr+Mpr)+45758*Math.sin(2*Dr-Mr)-40923*Math.sin(Mp-Mr)-34720*Math.sin(Dr)
-    -30383*Math.sin(Mp+Mr)+15327*Math.sin(2*Dr-2*Fr)-12528*Math.sin(Mpr+2*Fr)+10980*Math.sin(Mpr-2*Fr))/1e6;
+  // 16-term Brown series — individual contributions
+  const terms=[
+    {c:6288774,arg:'M\'',     v:Math.sin(Mpr)},
+    {c:1274027,arg:'2D−M\'',  v:Math.sin(2*Dr-Mpr)},
+    {c:658314, arg:'2D',      v:Math.sin(2*Dr)},
+    {c:213618, arg:'2M\'',    v:Math.sin(2*Mpr)},
+    {c:-185116,arg:'M',       v:Math.sin(Mr)},
+    {c:-114332,arg:'2F',      v:Math.sin(2*Fr)},
+    {c:58793,  arg:'2D−2M\'', v:Math.sin(2*Dr-2*Mpr)},
+    {c:57066,  arg:'2D−M−M\'',v:Math.sin(2*Dr-Mr-Mpr)},
+    {c:53322,  arg:'2D+M\'',  v:Math.sin(2*Dr+Mpr)},
+    {c:45758,  arg:'2D−M',    v:Math.sin(2*Dr-Mr)},
+    {c:-40923, arg:'M\'−M',   v:Math.sin(Mpr-Mr)},
+    {c:-34720, arg:'D',       v:Math.sin(Dr)},
+    {c:-30383, arg:'M\'+ M',  v:Math.sin(Mpr+Mr)},
+    {c:15327,  arg:'2D−2F',   v:Math.sin(2*Dr-2*Fr)},
+    {c:-12528, arg:'M\'+2F',  v:Math.sin(Mpr+2*Fr)},
+    {c:10980,  arg:'M\'−2F',  v:Math.sin(Mpr-2*Fr)},
+  ];
+  const sLraw=terms.reduce((s,t)=>s+t.c*t.v,0);
+  const sL=sLraw/1e6;
   const L0=m360(218.3164477+481267.88123421*T-1.5786e-3*T*T);
-  return{lon:m360(L0+sL),tL0:L0.toFixed(4),tsL:sL.toFixed(4)};
+  return{lon:m360(L0+sL),tL0:L0.toFixed(4),tsL:sL.toFixed(4),tD:D.toFixed(4),tM:M.toFixed(4),tMp:Mp.toFixed(4),tF:F.toFixed(4),terms};
 }
 function ascPos(T,lat,lon){
   const JD=2451545+T*36525,GMST=m360(280.46061837+360.98564736629*(JD-2451545)+3.87933e-4*T*T);
@@ -1133,8 +1151,14 @@ function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   tr('Sun L₀','280.46646 + 36000.76983·T',`${sun.tL0}°`);tr('Sun M','357.52911 + 35999.05029·T − 1.537×10⁻⁴·T²',`${sun.tM}°`);
   tr('Sun C','(1.9146−0.0048T)·sinM + (0.0200−0.0001T)·sin2M + 0.0003·sin3M',`${sun.tC}°`);tr('Sun ☉',`L₀ + C`,`${sun.lon.toFixed(4)}° → ${pos.Sun.sign} ${pos.Sun.deg}°`);
   const moon=moonPos(T);pos.Moon=degSign(moon.lon);
-  tr('Moon L₀ (Brown)','218.3164 + 481267.8812·T − 1.5786×10⁻³·T²',`${moon.tL0}°`);tr('Moon ΣL (16 terms)','6288774·sinM\' + 1274027·sin(2D−M\') + 658314·sin2D + 213618·sin2M\' + 12 smaller terms (÷10⁶)',`+${moon.tsL}°`);
-  tr('Moon ☽','L₀ + ΣL/10⁶',`${moon.lon.toFixed(4)}° → ${pos.Moon.sign} ${pos.Moon.deg}°`);
+  tr('Moon D','297.8504 + 445267.1115·T − 1.9142×10⁻³·T²',`${moon.tD}°`);
+  tr('Moon M (Sun)','357.5277 + 35999.0503·T − 1.603×10⁻⁴·T²',`${moon.tM}°`);
+  tr('Moon M\' (Moon)','134.9630 + 477198.8674·T + 8.6972×10⁻³·T²',`${moon.tMp}°`);
+  tr('Moon F','93.2719 + 483202.0175·T − 3.6825×10⁻³·T²',`${moon.tF}°`);
+  tr('Moon L₀','218.3164 + 481267.8812·T − 1.5786×10⁻³·T²',`${moon.tL0}°`);
+  for(const tm of moon.terms){const cv=(tm.c*tm.v).toFixed(0);tr(`Moon ΣL term`,`${tm.c>0?'+':''}${tm.c} · sin(${tm.arg})`,cv);}
+  tr('Moon ΣL (total)','Σ 16 terms ÷ 10⁶',`+${moon.tsL}°`);
+  tr('Moon ☽','L₀ + ΣL',`${moon.lon.toFixed(4)}° → ${pos.Moon.sign} ${pos.Moon.deg}°`);
   for(const p of['Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']){
     const r=planetPos(p,T);pos[p]=degSign(r.lon);
     const formula=r.method==='VSOP87'
