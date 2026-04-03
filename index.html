@@ -273,7 +273,6 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 .help-body hr{border:none;height:1px;background:linear-gradient(90deg,transparent,var(--border-hi),transparent);margin:24px 0}
 .help-body a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(212,168,67,.3);transition:border-color .2s}
 .help-body a:hover{border-bottom-color:var(--gold)}
-.help-err{color:var(--silver);font-style:italic;text-align:center;padding:40px 0}
 /* RESPONSIVE */
 @media(max-width:640px){.couple-grid,.confgrid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}.action-bar{flex-direction:column;align-items:center}.help-panel{padding:24px 18px 28px}}
 </style>
@@ -566,6 +565,66 @@ const I18N = {
     natalProfileBox:"◉ Natal Profile",natalProfileCollapsed:"Natal chart & aspects (collapsed)",
     natalOracleReport:"✦ Natal Oracle Report",natalDataTitle:"◉ Chart Data",
     soloOnlyMsg:"Solo mode — enter a second birth date to compute compatibility.",
+    // Help
+    helpTitle:"Help",helpTabGuide:"Guide",helpTabAstro:"Astrology",helpTabAbout:"About",
+    helpGuide:`<h2>How to use Synastria</h2>
+<h3>Solo mode — Natal Profile</h3>
+<ol>
+<li>Enter a <strong>birth date</strong> (type DD/MM/YYYY or use the calendar picker)</li>
+<li>Optionally enter the <strong>birth time</strong> — this improves Moon accuracy and enables the Ascendant. If unknown, tick the box and noon will be used</li>
+<li>Optionally select a <strong>birth city</strong> — this sets the UTC offset and latitude</li>
+<li>Click <strong>Cast the Charts</strong></li>
+</ol>
+<p>You will receive a full natal chart with a 9-section oracle report: Core Identity, Inner World, Persona, Planetary Strengths &amp; Challenges, Harmonious and Dynamic Aspects, Retrograde Planets, and a Synthesis.</p>
+<h3>Duo mode — Synastry</h3>
+<ol>
+<li>Fill in both partners' birth data</li>
+<li>Click <strong>Cast the Charts</strong></li>
+</ol>
+<p>You will receive both natal profiles plus a compatibility analysis across 6 domains: Overall, Love, Passion, Harmony, Mental, and Karmic — with an oracle report and domain rings.</p>
+<h3>Other actions</h3>
+<ul>
+<li><strong>Reset</strong> — clears all inputs and results</li>
+<li><strong>Export PDF</strong> — generates a print-ready report</li>
+<li><strong>Language</strong> — switch between EN, FR, IT at any time; all reports re-render instantly</li>
+</ul>
+<h3>Confidence Index</h3>
+<p>Every output includes a Confidence Index measuring <em>calculation reliability</em>, not relationship strength. It accounts for astronomical precision, birth time availability, and domain coherence. Only warnings are shown when relevant.</p>
+<h3>Privacy</h3>
+<p>All calculations and interpretations happen <strong>entirely in your browser</strong>. No birth data is ever sent to any server. City search sends only the city name to Open-Meteo for geocoding. The app works fully offline (except for city search).</p>`,
+    helpAstro:`<h2>Astrological Approach</h2>
+<p>Synastria uses <strong>Western tropical astrology</strong>, anchored to the vernal equinox.</p>
+<h3>What is computed</h3>
+<ul>
+<li><strong>10 planets</strong> — Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto</li>
+<li><strong>Ascendant</strong> — the rising sign at the moment of birth (requires birth time and location)</li>
+<li><strong>6 aspects</strong> — Conjunction (8&deg;), Sextile (6&deg;), Square (8&deg;), Trine (8&deg;), Quincunx (3&deg;), Opposition (8&deg;)</li>
+<li><strong>Essential dignities</strong> — domicile, exaltation, detriment, fall for each planet</li>
+<li><strong>Lunar phase</strong> — 8 phases based on Sun-Moon separation</li>
+<li><strong>Elemental balance</strong> — Fire, Earth, Air, Water distribution across the chart</li>
+<li><strong>Modality balance</strong> — Cardinal, Fixed, Mutable distribution</li>
+<li><strong>Retrograde detection</strong> — planets appearing to move backward from Earth's perspective</li>
+</ul>
+<h3>Synastry scoring</h3>
+<p>Compatibility is scored across 5 independent domains (Love, Harmony, Passion, Mental, Karmic) using a weighted aspect model with 86 planet-pair entries. The Overall score combines all domains.</p>
+<h3>Interpretation</h3>
+<p>All 330 possible planet-pair &times; aspect combinations have <strong>bespoke, psychologically-grounded interpretations</strong> in all 3 languages (990 entries total). No generic fallbacks are used. Every term is explained in plain language.</p>
+<h3>Accuracy</h3>
+<p>Planetary positions are computed client-side using classical algorithms (VSOP87, Brown series). Inner planets are accurate to &le;0.5&deg;, outer planets to &le;2-3&deg;, the Moon to &le;0.1&deg;, and the Ascendant to &le;0.01&deg; — all verified against JPL Horizons and the Swiss Ephemeris.</p>`,
+    helpAbout:`<h2>About Synastria</h2>
+<p>Synastria is a self-contained astrological oracle for natal charts and relationship analysis. The entire application runs in a single HTML file — no build step, no server, no external dependencies.</p>
+<h3>Features</h3>
+<ul>
+<li>Full natal profile with 9-section oracle report</li>
+<li>Synastry compatibility across 6 domains</li>
+<li>990 bespoke interpretations (330 &times; 3 languages)</li>
+<li>JPL-verified astronomy engine</li>
+<li>Confidence Index for every output</li>
+<li>Trilingual (English, French, Italian)</li>
+<li>Works offline — no internet needed for calculations</li>
+<li>Print-ready PDF export</li>
+</ul>
+<p><em>Made with &hearts; by Damien</em></p>`,
   },
   fr:{
     tagline:"Oracle Astrologique — Profils Nataux & Analyse Synastrique Traçable",
@@ -618,6 +677,66 @@ const I18N = {
     natalProfileBox:"◉ Profil Natal",natalProfileCollapsed:"Thème natal & aspects (replié)",
     natalOracleReport:"✦ Rapport de l'Oracle Natal",natalDataTitle:"◉ Données du Thème",
     soloOnlyMsg:"Mode solo — entrez une deuxième date de naissance pour calculer la compatibilité.",
+    // Aide
+    helpTitle:"Aide",helpTabGuide:"Guide",helpTabAstro:"Astrologie",helpTabAbout:"À propos",
+    helpGuide:`<h2>Comment utiliser Synastria</h2>
+<h3>Mode solo — Profil Natal</h3>
+<ol>
+<li>Entrez une <strong>date de naissance</strong> (tapez JJ/MM/AAAA ou utilisez le calendrier)</li>
+<li>Optionnellement, entrez l'<strong>heure de naissance</strong> — cela améliore la précision de la Lune et active l'Ascendant. Si inconnue, cochez la case et midi sera utilisé</li>
+<li>Optionnellement, sélectionnez une <strong>ville de naissance</strong> — cela définit le décalage UTC et la latitude</li>
+<li>Cliquez sur <strong>Dresser les Thèmes</strong></li>
+</ol>
+<p>Vous recevrez un thème natal complet avec un rapport oracle en 9 sections : Identité Centrale, Monde Intérieur, Persona, Forces &amp; Défis Planétaires, Aspects Harmonieux et Dynamiques, Planètes Rétrogrades, et une Synthèse.</p>
+<h3>Mode duo — Synastrie</h3>
+<ol>
+<li>Remplissez les données de naissance des deux partenaires</li>
+<li>Cliquez sur <strong>Dresser les Thèmes</strong></li>
+</ol>
+<p>Vous recevrez les deux profils nataux plus une analyse de compatibilité sur 6 domaines : Global, Amour, Passion, Harmonie, Mental et Karmique — avec un rapport oracle et des anneaux de domaine.</p>
+<h3>Autres actions</h3>
+<ul>
+<li><strong>Réinitialiser</strong> — efface toutes les entrées et résultats</li>
+<li><strong>Exporter PDF</strong> — génère un rapport prêt à imprimer</li>
+<li><strong>Langue</strong> — basculez entre EN, FR, IT à tout moment ; tous les rapports se rafraîchissent instantanément</li>
+</ul>
+<h3>Indice de Confiance</h3>
+<p>Chaque résultat inclut un Indice de Confiance mesurant la <em>fiabilité des calculs</em>, pas la force de la relation. Il tient compte de la précision astronomique, de la disponibilité de l'heure de naissance et de la cohérence des domaines. Les avertissements n'apparaissent que quand c'est pertinent.</p>
+<h3>Confidentialité</h3>
+<p>Tous les calculs et interprétations se font <strong>entièrement dans votre navigateur</strong>. Aucune donnée de naissance n'est envoyée à un serveur. La recherche de ville n'envoie que le nom de la ville à Open-Meteo pour le géocodage. L'application fonctionne entièrement hors ligne (sauf pour la recherche de ville).</p>`,
+    helpAstro:`<h2>Approche astrologique</h2>
+<p>Synastria utilise l'<strong>astrologie tropicale occidentale</strong>, ancrée à l'équinoxe de printemps.</p>
+<h3>Ce qui est calculé</h3>
+<ul>
+<li><strong>10 planètes</strong> — Soleil, Lune, Mercure, Vénus, Mars, Jupiter, Saturne, Uranus, Neptune, Pluton</li>
+<li><strong>Ascendant</strong> — le signe levant au moment de la naissance (nécessite heure et lieu)</li>
+<li><strong>6 aspects</strong> — Conjonction (8&deg;), Sextile (6&deg;), Carré (8&deg;), Trigone (8&deg;), Quinconce (3&deg;), Opposition (8&deg;)</li>
+<li><strong>Dignités essentielles</strong> — domicile, exaltation, détriment, chute pour chaque planète</li>
+<li><strong>Phase lunaire</strong> — 8 phases basées sur la séparation Soleil-Lune</li>
+<li><strong>Équilibre élémentaire</strong> — répartition Feu, Terre, Air, Eau dans le thème</li>
+<li><strong>Équilibre modal</strong> — répartition Cardinal, Fixe, Mutable</li>
+<li><strong>Détection de rétrogradation</strong> — planètes semblant reculer vues depuis la Terre</li>
+</ul>
+<h3>Scoring de synastrie</h3>
+<p>La compatibilité est évaluée sur 5 domaines indépendants (Amour, Harmonie, Passion, Mental, Karmique) avec un modèle d'aspects pondéré de 86 entrées par paire de planètes. Le score Global combine tous les domaines.</p>
+<h3>Interprétation</h3>
+<p>Les 330 combinaisons possibles de paire de planètes &times; aspect ont des <strong>interprétations sur mesure, psychologiquement fondées</strong> dans les 3 langues (990 entrées au total). Aucun texte générique n'est utilisé. Chaque terme est expliqué en langage courant.</p>
+<h3>Précision</h3>
+<p>Les positions planétaires sont calculées côté client avec des algorithmes classiques (VSOP87, séries de Brown). Les planètes intérieures sont précises à &le;0,5&deg;, les extérieures à &le;2-3&deg;, la Lune à &le;0,1&deg;, et l'Ascendant à &le;0,01&deg; — le tout vérifié contre JPL Horizons et l'éphéméride suisse.</p>`,
+    helpAbout:`<h2>À propos de Synastria</h2>
+<p>Synastria est un oracle astrologique autonome pour les thèmes nataux et l'analyse relationnelle. L'application entière fonctionne dans un seul fichier HTML — pas de compilation, pas de serveur, pas de dépendances externes.</p>
+<h3>Fonctionnalités</h3>
+<ul>
+<li>Profil natal complet avec rapport oracle en 9 sections</li>
+<li>Compatibilité synastrique sur 6 domaines</li>
+<li>990 interprétations sur mesure (330 &times; 3 langues)</li>
+<li>Moteur astronomique vérifié contre JPL</li>
+<li>Indice de Confiance pour chaque résultat</li>
+<li>Trilingue (anglais, français, italien)</li>
+<li>Fonctionne hors ligne — pas d'internet nécessaire pour les calculs</li>
+<li>Export PDF prêt à imprimer</li>
+</ul>
+<p><em>Fait avec &hearts; par Damien</em></p>`,
   },
   it:{
     tagline:"Oracolo Astrologico — Profili Natali & Analisi Sinastriale Tracciabile",
@@ -669,6 +788,66 @@ const I18N = {
     natalProfileBox:"◉ Profilo Natale",natalProfileCollapsed:"Tema natale & aspetti (compresso)",
     natalOracleReport:"✦ Rapporto dell'Oracolo Natale",natalDataTitle:"◉ Dati del Tema",
     soloOnlyMsg:"Modalità solo — inserisci una seconda data di nascita per calcolare la compatibilità.",
+    // Aiuto
+    helpTitle:"Aiuto",helpTabGuide:"Guida",helpTabAstro:"Astrologia",helpTabAbout:"Info",
+    helpGuide:`<h2>Come usare Synastria</h2>
+<h3>Modalità solo — Profilo Natale</h3>
+<ol>
+<li>Inserisci una <strong>data di nascita</strong> (digita GG/MM/AAAA o usa il calendario)</li>
+<li>Opzionalmente, inserisci l'<strong>ora di nascita</strong> — migliora la precisione della Luna e attiva l'Ascendente. Se sconosciuta, spunta la casella e verrà usato mezzogiorno</li>
+<li>Opzionalmente, seleziona una <strong>città di nascita</strong> — imposta l'offset UTC e la latitudine</li>
+<li>Clicca su <strong>Tracciare i Temi</strong></li>
+</ol>
+<p>Riceverai un tema natale completo con un rapporto oracolo in 9 sezioni: Identità Centrale, Mondo Interiore, Persona, Forze &amp; Sfide Planetarie, Aspetti Armoniosi e Dinamici, Pianeti Retrogradi, e una Sintesi.</p>
+<h3>Modalità duo — Sinastria</h3>
+<ol>
+<li>Compila i dati di nascita di entrambi i partner</li>
+<li>Clicca su <strong>Tracciare i Temi</strong></li>
+</ol>
+<p>Riceverai entrambi i profili natali più un'analisi di compatibilità su 6 domini: Globale, Amore, Passione, Armonia, Mentale e Karmico — con un rapporto oracolo e anelli di dominio.</p>
+<h3>Altre azioni</h3>
+<ul>
+<li><strong>Ripristina</strong> — cancella tutti gli input e i risultati</li>
+<li><strong>Esporta PDF</strong> — genera un rapporto pronto per la stampa</li>
+<li><strong>Lingua</strong> — passa tra EN, FR, IT in qualsiasi momento; tutti i rapporti si aggiornano istantaneamente</li>
+</ul>
+<h3>Indice di Fiducia</h3>
+<p>Ogni risultato include un Indice di Fiducia che misura l'<em>affidabilità dei calcoli</em>, non la forza della relazione. Tiene conto della precisione astronomica, della disponibilità dell'ora di nascita e della coerenza dei domini. Gli avvisi appaiono solo quando è rilevante.</p>
+<h3>Privacy</h3>
+<p>Tutti i calcoli e le interpretazioni avvengono <strong>interamente nel tuo browser</strong>. Nessun dato di nascita viene inviato a un server. La ricerca città invia solo il nome della città a Open-Meteo per la geocodifica. L'app funziona completamente offline (tranne per la ricerca città).</p>`,
+    helpAstro:`<h2>Approccio astrologico</h2>
+<p>Synastria utilizza l'<strong>astrologia tropicale occidentale</strong>, ancorata all'equinozio di primavera.</p>
+<h3>Cosa viene calcolato</h3>
+<ul>
+<li><strong>10 pianeti</strong> — Sole, Luna, Mercurio, Venere, Marte, Giove, Saturno, Urano, Nettuno, Plutone</li>
+<li><strong>Ascendente</strong> — il segno all'orizzonte al momento della nascita (richiede ora e luogo)</li>
+<li><strong>6 aspetti</strong> — Congiunzione (8&deg;), Sestile (6&deg;), Quadrato (8&deg;), Trigono (8&deg;), Quinconce (3&deg;), Opposizione (8&deg;)</li>
+<li><strong>Dignità essenziali</strong> — domicilio, esaltazione, detrimento, caduta per ogni pianeta</li>
+<li><strong>Fase lunare</strong> — 8 fasi basate sulla separazione Sole-Luna</li>
+<li><strong>Equilibrio elementale</strong> — distribuzione Fuoco, Terra, Aria, Acqua nel tema</li>
+<li><strong>Equilibrio modale</strong> — distribuzione Cardinale, Fisso, Mutevole</li>
+<li><strong>Rilevamento retrogrado</strong> — pianeti che sembrano muoversi all'indietro visti dalla Terra</li>
+</ul>
+<h3>Punteggio sinastriale</h3>
+<p>La compatibilità è valutata su 5 domini indipendenti (Amore, Armonia, Passione, Mentale, Karmico) con un modello di aspetti ponderato di 86 voci per coppia di pianeti. Il punteggio Globale combina tutti i domini.</p>
+<h3>Interpretazione</h3>
+<p>Tutte le 330 combinazioni possibili di coppia di pianeti &times; aspetto hanno <strong>interpretazioni su misura, psicologicamente fondate</strong> in tutte e 3 le lingue (990 voci in totale). Nessun testo generico viene usato. Ogni termine è spiegato in linguaggio chiaro.</p>
+<h3>Precisione</h3>
+<p>Le posizioni planetarie sono calcolate lato client con algoritmi classici (VSOP87, serie di Brown). I pianeti interni sono precisi a &le;0,5&deg;, gli esterni a &le;2-3&deg;, la Luna a &le;0,1&deg;, e l'Ascendente a &le;0,01&deg; — tutto verificato contro JPL Horizons e l'effemeridi svizzere.</p>`,
+    helpAbout:`<h2>Informazioni su Synastria</h2>
+<p>Synastria è un oracolo astrologico autonomo per temi natali e analisi relazionale. L'intera applicazione funziona in un singolo file HTML — nessuna compilazione, nessun server, nessuna dipendenza esterna.</p>
+<h3>Funzionalità</h3>
+<ul>
+<li>Profilo natale completo con rapporto oracolo in 9 sezioni</li>
+<li>Compatibilità sinastriale su 6 domini</li>
+<li>990 interpretazioni su misura (330 &times; 3 lingue)</li>
+<li>Motore astronomico verificato contro JPL</li>
+<li>Indice di Fiducia per ogni risultato</li>
+<li>Trilingue (inglese, francese, italiano)</li>
+<li>Funziona offline — nessun internet necessario per i calcoli</li>
+<li>Esportazione PDF pronta per la stampa</li>
+</ul>
+<p><em>Fatto con &hearts; da Damien</em></p>`,
   }
 };
 
@@ -2887,6 +3066,8 @@ function setLang(lang){
     document.getElementById('rings').innerHTML=RING_DEFS.map(r=>ring(ringLabel(r),sc[r.k],r.c)).join('');
     renderConf(computeConf(STATE.chartA,STATE.chartB,STATE.syn));
   }
+  // Refresh help modal if open
+  if(document.getElementById('help-overlay').classList.contains('open')){_helpBuildTabs();loadHelpTab(_helpActiveTab);}
 }
 function applyI18N(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v)el.textContent=v});
@@ -3793,111 +3974,31 @@ function exportPDF(){
 
 // ── HELP MODAL ──
 const HELP_TABS=[
-  {id:'about',label:'About',file:'README.md'},
-  {id:'changelog',label:'Changelog',file:'CHANGELOG.md'},
+  {id:'guide',key:'helpGuide',labelKey:'helpTabGuide'},
+  {id:'astro',key:'helpAstro',labelKey:'helpTabAstro'},
+  {id:'about',key:'helpAbout',labelKey:'helpTabAbout'},
 ];
-const _helpCache={};
+let _helpActiveTab='guide';
 
-function parseMd(md){
-  // Normalize line endings
-  let s=md.replace(/\r\n/g,'\n');
-  // Code blocks (``` ... ```)
-  s=s.replace(/```(\w*)\n([\s\S]*?)```/g,(_,lang,code)=>`<pre><code>${code.replace(/</g,'&lt;').replace(/>/g,'&gt;').trimEnd()}</code></pre>`);
-  // Split into lines for block-level processing
-  const lines=s.split('\n');
-  let html='',inList=false,listType='',inTable=false,tableRows=[];
-
-  function flushTable(){
-    if(!tableRows.length)return'';
-    // Row 0=header, row 1=separator (skip), rest=body
-    const hdr=tableRows[0],body=tableRows.slice(2);
-    let t='<table><thead><tr>'+hdr.map(c=>`<th>${inline(c.trim())}</th>`).join('')+'</tr></thead><tbody>';
-    for(const r of body)t+='<tr>'+r.map(c=>`<td>${inline(c.trim())}</td>`).join('')+'</tr>';
-    t+='</tbody></table>';
-    tableRows=[];inTable=false;
-    return t;
-  }
-  function flushList(){if(inList){inList=false;return listType==='ul'?'</ul>':'</ol>';}return'';}
-
-  function inline(t){
-    // Inline code (before other inline to avoid conflicts)
-    t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
-    // Bold + italic
-    t=t.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
-    // Bold
-    t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-    // Italic
-    t=t.replace(/\*(.+?)\*/g,'<em>$1</em>');
-    // Links [text](url)
-    t=t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-    return t;
-  }
-
-  for(let i=0;i<lines.length;i++){
-    const L=lines[i];
-    // Already inside a <pre> block (handled by regex above)
-    if(L.startsWith('<pre>'))  {html+=flushList()+flushTable()+L+'\n';continue;}
-    if(L.startsWith('</pre>')){html+=L+'\n';continue;}
-    // Horizontal rule
-    if(/^---+\s*$/.test(L)){html+=flushList()+flushTable()+'<hr>';continue;}
-    // Headings
-    const hm=L.match(/^(#{1,3})\s+(.+)/);
-    if(hm){const lvl=hm[1].length;html+=flushList()+flushTable()+`<h${lvl}>${inline(hm[2])}</h${lvl}>`;continue;}
-    // Table row
-    if(L.includes('|')&&L.trim().startsWith('|')){
-      const cells=L.trim().replace(/^\||\|$/g,'').split('|');
-      if(!inTable)inTable=true;
-      tableRows.push(cells);
-      continue;
-    } else if(inTable){html+=flushTable();}
-    // Unordered list
-    if(/^[-*]\s+/.test(L)){
-      if(!inList||listType!=='ul'){html+=flushList();html+='<ul>';inList=true;listType='ul';}
-      html+=`<li>${inline(L.replace(/^[-*]\s+/,''))}</li>`;continue;
-    }
-    // Ordered list
-    if(/^\d+\.\s+/.test(L)){
-      if(!inList||listType!=='ol'){html+=flushList();html+='<ol>';inList=true;listType='ol';}
-      html+=`<li>${inline(L.replace(/^\d+\.\s+/,''))}</li>`;continue;
-    }
-    // Close list if line is not a list item
-    if(inList&&L.trim()===''){html+=flushList();html+='<p></p>';continue;}
-    if(inList){html+=flushList();}
-    // Empty line
-    if(L.trim()===''){continue;}
-    // Paragraph
-    html+=`<p>${inline(L)}</p>`;
-  }
-  html+=flushList()+flushTable();
-  return html;
+function loadHelpTab(id){
+  _helpActiveTab=id;
+  const body=document.getElementById('help-body');
+  const tab=HELP_TABS.find(x=>x.id===id);
+  if(tab)body.innerHTML=t(tab.key);
+  document.querySelectorAll('.help-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
 }
 
-async function loadHelpTab(id){
-  const tab=HELP_TABS.find(t=>t.id===id);if(!tab)return;
-  const body=document.getElementById('help-body');
-  document.querySelectorAll('.help-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
-  if(_helpCache[id]){body.innerHTML=_helpCache[id];return;}
-  body.innerHTML='<div class="help-err">Loading…</div>';
-  try{
-    const resp=await fetch(tab.file);
-    if(!resp.ok)throw new Error(resp.status);
-    const md=await resp.text();
-    _helpCache[id]=parseMd(md);
-    body.innerHTML=_helpCache[id];
-  }catch(e){
-    body.innerHTML=`<div class="help-err">Could not load ${tab.file}.<br><small>If viewing via file://, try serving with a local HTTP server:<br><code>python3 -m http.server</code></small></div>`;
-  }
+function _helpBuildTabs(){
+  document.getElementById('help-tabs').innerHTML=HELP_TABS.map(x=>
+    `<button class="help-tab${x.id===_helpActiveTab?' active':''}" data-tab="${x.id}" onclick="loadHelpTab('${x.id}')">${t(x.labelKey)}</button>`
+  ).join('');
 }
 
 function openHelp(){
-  const overlay=document.getElementById('help-overlay');
-  const tabs=document.getElementById('help-tabs');
-  if(!tabs.children.length){
-    tabs.innerHTML=HELP_TABS.map(t=>`<button class="help-tab" data-tab="${t.id}" onclick="loadHelpTab('${t.id}')">${t.label}</button>`).join('');
-  }
-  overlay.classList.add('open');
+  _helpBuildTabs();
+  loadHelpTab(_helpActiveTab);
+  document.getElementById('help-overlay').classList.add('open');
   document.body.style.overflow='hidden';
-  loadHelpTab(HELP_TABS[0].id);
   document.addEventListener('keydown',_helpEsc);
 }
 
