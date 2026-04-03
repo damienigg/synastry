@@ -222,9 +222,9 @@ def _build_cases():
          'name':'buildSynastry: Uranus/Neptune/Pluto pairs carry slowA or slowB=true','check':'syn_slow_flag'},
         # ── 16. scoreSyn — all 6 domains ──────────────────────────────────────
         {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
-         'name':'scoreSyn couple A: overall=56 (frozen)','check':'score_val','domain':'overall','exp_score':56},
+         'name':'scoreSyn couple A: overall=57 (frozen)','check':'score_val','domain':'overall','exp_score':57},
         {'fn':'scoreSyn','args':['1980-04-21','12:00',0,42,0,'1982-08-13','12:00',0,42,0],
-         'name':'scoreSyn couple A: love=54 (frozen)','check':'score_val','domain':'love','exp_score':54},
+         'name':'scoreSyn couple A: love=60 (frozen)','check':'score_val','domain':'love','exp_score':60},
         {'fn':'scoreSyn','args':['1990-03-21','12:00',0,42,0,'1988-07-15','12:00',0,42,0],
          'name':'scoreSyn couple B: all 6 domains in [0,100]','check':'scores_range'},
         {'fn':'scoreSyn','args':['1990-03-21','12:00',0,42,0,'1988-07-15','12:00',0,42,0],

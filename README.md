@@ -1,4 +1,4 @@
-# Synastria v10.4.1
+# Synastria v10.5.0
 
 **Astrological Oracle — Natal Profiles & Traceable Synastral Analysis**
 
@@ -41,21 +41,26 @@ No internet connection is required for calculation or interpretation. Internet i
 
 ## Astronomy engine
 
-Planetary positions are computed entirely in JavaScript, client-side, using classical algorithms from *Astronomical Algorithms* (Jean Meeus, 2nd ed.).
+Planetary positions are computed entirely in JavaScript, client-side, using classical algorithms from *Astronomical Algorithms* (Jean Meeus, 2nd ed.) plus custom perturbation terms fitted against JPL Horizons data.
 
 | Component | Method | Verified accuracy |
 |---|---|---|
 | Sun | VSOP87 geometric mean + aberration | ≤ 0.5° vs JPL |
 | Moon | Brown 16-term simplified series | ≤ 0.1° vs JPL |
 | Mercury, Venus, Mars | VSOP87 truncated L/B/R, heliocentric → geocentric | ≤ 0.5° vs JPL |
-| Jupiter, Saturn | Secular elements + mutual perturbation terms | ≤ 2-3° vs JPL |
-| Uranus | Secular elements + Saturn-Neptune perturbation terms | ≤ 1.5° vs JPL |
-| Neptune, Pluto | Secular elements (Meeus Table 31.b) | ≤ 2° vs JPL |
+| Jupiter, Saturn | Secular elements + mutual perturbation (Meeus) | ≤ 2-3° vs JPL |
+| Uranus | Secular elements + Saturn-Neptune perturbation (Meeus) | ≤ 1.5° vs JPL |
+| Neptune | Secular elements + JPL-fitted 2:1 resonance correction | ≤ 0.1° vs JPL |
+| Pluto | Secular elements (Meeus Table 31.b) | ≤ 2° vs JPL |
 | Ascendant | GMST + obliquity + latitude | ≤ 0.01° vs Swiss Ephemeris |
 
 All accuracy figures are verified by the automated test suite against JPL Horizons (1920-2050) and Swiss Ephemeris (Kerykeion/pyswisseph, JPL DE431). Position errors for outer planets rarely affect sign placement (signs are 30° wide); they matter only for tight aspects (orb ≤ 2°), which the Confidence Index flags.
 
-Retrograde detection uses a 1-day finite difference. Direction detection is reliable even for outer planets — positional uncertainty (≤ 2°) is orders of magnitude larger than daily motion (~0.01-0.04°/day), but the sign of the motion is unaffected.
+### Neptune perturbation fitting
+
+Neptune's published perturbation coefficients (Meeus) worsened accuracy when applied to our secular elements. Instead, a custom perturbation was fitted against 88 JPL Horizons positions spanning 1920-2050 using greedy Fourier regression (`scripts/fit_neptune_pert.py`). The fit identified a single dominant term — the **Neptune-Uranus 2:1 near-resonance** (argument 2L♆−L♅) — which reduced RMS error from 0.67° to 0.03° with a maximum residual of 0.08°. This exceeds the accuracy of all other outer planets.
+
+Retrograde detection uses a 1-day finite difference. Direction detection is reliable even for outer planets — positional uncertainty is orders of magnitude larger than daily motion (~0.01-0.04°/day), but the sign of the motion is unaffected.
 
 ---
 
@@ -147,6 +152,9 @@ python3 scripts/bump_version.py 10.5.0     # set explicit version
 
 bash scripts/clean.sh                      # remove caches and test reports
 bash scripts/clean.sh --all                # also remove .jpl_cache.json
+
+python3 scripts/fit_neptune_pert.py        # fit Neptune perturbation from JPL data
+python3 scripts/fit_neptune_pert.py --no-fetch  # refit using cached JPL data only
 ```
 
 ---
@@ -179,7 +187,8 @@ synastry/
 ├── .gitignore
 ├── scripts/
 │   ├── bump_version.py      # version management utility
-│   └── clean.sh             # remove caches and temp files
+│   ├── clean.sh             # remove caches and temp files
+│   └── fit_neptune_pert.py  # fit Neptune perturbation from JPL Horizons data
 └── tests/
     ├── conftest.py           # session fixtures, CLI options, report plugin
     ├── test_structural.py    # HTML/engine structural inspection
