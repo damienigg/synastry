@@ -1355,12 +1355,35 @@ function builtinReport(chartA,chartB,pairs,scores,nameA,nameB,lang){
   const venA=chartA.pos.Venus.sign,venB=chartB.pos.Venus.sign;
   const marA=chartA.pos.Mars.sign,marB=chartB.pos.Mars.sign;
   const sunAL=sn(sunA),sunBL=sn(sunB),venAL=sn(venA),venBL=sn(venB);
-  // Element analysis
+  // Element analysis — 7 distinct element pairings with specific descriptions
   const elemA=ELEM_MAP[sunA],elemB=ELEM_MAP[sunB];
-  const elemComp=elemA===elemB?{en:'natural understanding',fr:'compréhension naturelle',it:'comprensione naturale'}[lang]:
-    ((elemA==='Fire'&&elemB==='Air')||(elemA==='Air'&&elemB==='Fire'))?{en:'stimulating dynamic',fr:'dynamique stimulante',it:'dinamica stimolante'}[lang]:
-    ((elemA==='Earth'&&elemB==='Water')||(elemA==='Water'&&elemB==='Earth'))?{en:'complementary harmony',fr:'harmonie complémentaire',it:'armonia complementare'}[lang]:
-    {en:'challenging polarity',fr:'polarité difficile',it:'polarità difficile'}[lang];
+  const ELEM_PAIR={en:{
+    same:'natural understanding — their solar energies speak the same elemental language',
+    'Air-Fire':'stimulating dynamic — Fire ignites and Air fans the flame, creating mutual excitement and forward momentum',
+    'Earth-Water':'complementary harmony — Earth gives shape to Water\'s depth, Water nourishes Earth\'s patience',
+    'Fire-Water':'intense polarity — Fire\'s drive to act meets Water\'s need to feel; passion runs high but so does the risk of steam',
+    'Earth-Fire':'friction of pace — Fire leaps and Earth builds; impatience meets steadiness, which can frustrate or ground',
+    'Air-Water':'different languages — Air processes through thought, Water through emotion; understanding requires conscious translation',
+    'Air-Earth':'contrasting rhythms — Air explores ideas, Earth demands results; the tension can produce both innovation and friction',
+  },fr:{
+    same:'compréhension naturelle — leurs énergies solaires parlent le même langage élémentaire',
+    'Air-Fire':'dynamique stimulante — le Feu allume et l\'Air attise la flamme, créant un élan et une excitation mutuels',
+    'Earth-Water':'harmonie complémentaire — la Terre donne forme à la profondeur de l\'Eau, l\'Eau nourrit la patience de la Terre',
+    'Fire-Water':'polarité intense — l\'élan du Feu rencontre le besoin de ressentir de l\'Eau ; la passion est forte mais le risque de vapeur aussi',
+    'Earth-Fire':'friction de rythme — le Feu bondit et la Terre construit ; l\'impatience rencontre la constance, ce qui peut frustrer ou ancrer',
+    'Air-Water':'langages différents — l\'Air traite par la pensée, l\'Eau par l\'émotion ; se comprendre demande un effort de traduction',
+    'Air-Earth':'rythmes contrastés — l\'Air explore les idées, la Terre exige des résultats ; la tension peut produire innovation comme friction',
+  },it:{
+    same:'comprensione naturale — le loro energie solari parlano lo stesso linguaggio elementale',
+    'Air-Fire':'dinamica stimolante — il Fuoco accende e l\'Aria alimenta la fiamma, creando slancio e entusiasmo reciproci',
+    'Earth-Water':'armonia complementare — la Terra dà forma alla profondità dell\'Acqua, l\'Acqua nutre la pazienza della Terra',
+    'Fire-Water':'polarità intensa — lo slancio del Fuoco incontra il bisogno di sentire dell\'Acqua; la passione è forte ma anche il rischio di vapore',
+    'Earth-Fire':'frizione di ritmo — il Fuoco balza e la Terra costruisce; l\'impazienza incontra la costanza, il che può frustrare o radicare',
+    'Air-Water':'linguaggi diversi — l\'Aria elabora col pensiero, l\'Acqua con l\'emozione; capirsi richiede uno sforzo di traduzione',
+    'Air-Earth':'ritmi contrastanti — l\'Aria esplora idee, la Terra esige risultati; la tensione può produrre innovazione come frizione',
+  }};
+  const elemKey=elemA===elemB?'same':[elemA,elemB].sort().join('-');
+  const elemComp=(ELEM_PAIR[lang]||ELEM_PAIR.en)[elemKey];
   // Compose sections per language
   const T={
     en:{
