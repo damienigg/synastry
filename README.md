@@ -1,4 +1,4 @@
-# Synastria v10.5.0
+# Synastria v10.6.0
 
 **Astrological Oracle — Natal Profiles & Traceable Synastral Analysis**
 

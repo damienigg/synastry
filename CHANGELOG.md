@@ -4,6 +4,30 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.6.0] — 2026-04-04
+
+### Fixed
+- **Synastry sort precedence bug** — `harmAsp` sort used `||0-` pattern where JS operator precedence caused the comparator to short-circuit. Top harmonious aspects in the oracle report were effectively unsorted. Fixed with explicit parentheses.
+- **5 asymmetric SW weights** — Jupiter-Sun, Jupiter-Moon, Saturn-Sun, Saturn-Moon, Saturn-Venus had weights in one direction only. Scores changed depending on which partner was A vs B.
+- **8 asymmetric SD domain assignments** — same planets assigned to domains in one direction only.
+- **Missing `scoresNote` I18N key** — was referenced by `renderScores()` but never defined; silently rendered "scoresNote" as literal text. Now shows proper disclaimer in EN/FR/IT.
+- **Stale calcTraces tooltips** — outer planet badges showed "±2-3°" (old accuracy); updated to "JPL-fitted ≤0.25°".
+
+### Changed
+- **SW built from `_SW_HALF`** — half-table that auto-generates reverse pairs (A-B → B-A). Asymmetry bugs are structurally impossible.
+- **SD built from `_SD_HALF`** — same symmetric construction.
+- **Weight adjustments** — Saturn-Venus 0.7→0.9 (commitment), Saturn-Sun/Moon 0.6→0.7 (karmic authority). Added 13 previously missing pairs: Mercury-Sun (0.7), Mercury-Moon (0.7), Mercury-Venus (0.7), Mercury-Mars (0.6), Jupiter-Venus (0.8), Jupiter-Mars (0.6), Jupiter-Mercury (0.6), Saturn-Mars (0.6), Saturn-Mercury (0.5), Ascendant-Venus (0.9), Ascendant-Mars (0.8), Ascendant-Mercury (0.6), Jupiter-Saturn (0.4).
+- **Domain additions** — love: Jupiter-Venus, Saturn-Venus; karmic: Saturn-Mars. All domains symmetric.
+- **Confidence Index overhaul** — removed misleading `flagNatalSlow` (retrograde ≠ position error). Added `flagAscSensitive` (Ascendant moves ≈1°/4min). Updated all flags and notes for ≤0.25° accuracy. Tightened `slowTight` threshold 2°→1°. Added `scoresNote` disclaimer. All 3 languages updated.
+- **Ascendant nutation correction** — apparent sidereal time (GAST) replaces mean (GMST), Laskar obliquity polynomial (4 terms) replaces simplified (2 terms), nutation in longitude and obliquity added. Fully traceable in calcTraces.
+- **All outer-planet perturbations JPL-fitted** — Jupiter (7 terms), Saturn (8 terms), Uranus (4 terms), Pluto (5 terms) custom-fitted against 88 JPL positions each. Meeus terms replaced (they worsened accuracy). All tolerances unified at 0.5°.
+
+### Added
+- 27 new tests (563 total): SW/SD symmetry structural checks, harmAsp sort parentheses check, core pair existence, runtime symmetry verification, SW value+reverse checks.
+- Per-planet fitting scripts: `scripts/fit_jupiter_pert.py`, `scripts/fit_saturn_pert.py`, `scripts/fit_uranus_pert.py`, `scripts/fit_pluto_pert.py`, shared `scripts/secular.py`.
+
+---
+
 ## [10.5.0] — 2026-04-03
 
 ### Added
