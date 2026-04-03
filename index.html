@@ -102,13 +102,13 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 .mono{font-family:'Courier New',monospace;font-size:11px;color:var(--silver)}
 .gdeg{color:var(--gold);font-weight:500}
 /* ASPECTS */
-.chip{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-family:'Cinzel',serif;letter-spacing:.08em}
-.c-conjunction{background:rgba(212,168,67,.15);color:var(--gold);border:1px solid rgba(212,168,67,.3)}
-.c-trine{background:rgba(74,184,154,.15);color:var(--emerald);border:1px solid rgba(74,184,154,.3)}
-.c-sextile{background:rgba(74,143,212,.15);color:var(--azure);border:1px solid rgba(74,143,212,.3)}
-.c-square{background:rgba(196,96,122,.2);color:var(--rose);border:1px solid rgba(196,96,122,.35)}
-.c-opposition{background:rgba(160,80,100,.15);color:#e0708a;border:1px solid rgba(196,96,122,.3)}
-.c-quincunx{background:rgba(150,100,200,.15);color:#c090f0;border:1px solid rgba(150,100,200,.3)}
+.chip{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-family:'Cinzel',serif;letter-spacing:.08em;--cr:136,120,170;--cc:var(--silver);background:rgba(var(--cr),.15);color:var(--cc);border:1px solid rgba(var(--cr),.3)}
+.c-conjunction{--cr:212,168,67;--cc:var(--gold)}
+.c-trine{--cr:74,184,154;--cc:var(--emerald)}
+.c-sextile{--cr:74,143,212;--cc:var(--azure)}
+.c-square{--cr:196,96,122;--cc:var(--rose)}
+.c-opposition{--cr:160,80,100;--cc:#e0708a}
+.c-quincunx{--cr:150,100,200;--cc:#c090f0}
 /* REPORT */
 #report-sec{display:none}
 .rings{display:flex;justify-content:center;gap:36px;margin:24px 0;flex-wrap:wrap}
@@ -870,6 +870,28 @@ const PSYM={Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'�
 const ZSIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 const ZSYMS=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 const SLOW_P=new Set(['Uranus','Neptune','Pluto']);
+const INNER_P=new Set(['Mercury','Venus','Mars']);
+// ── Shared translation tables ────────────────────────────────────────────────
+const SIGN_TR={
+  fr:{Aries:'Bélier',Taurus:'Taureau',Gemini:'Gémeaux',Cancer:'Cancer',Leo:'Lion',Virgo:'Vierge',Libra:'Balance',Scorpio:'Scorpion',Sagittarius:'Sagittaire',Capricorn:'Capricorne',Aquarius:'Verseau',Pisces:'Poissons'},
+  it:{Aries:'Ariete',Taurus:'Toro',Gemini:'Gemelli',Cancer:'Cancro',Leo:'Leone',Virgo:'Vergine',Libra:'Bilancia',Scorpio:'Scorpione',Sagittarius:'Sagittario',Capricorn:'Capricorno',Aquarius:'Acquario',Pisces:'Pesci'},
+};
+const PLANET_TR={
+  fr:{Sun:'Soleil',Moon:'Lune',Mercury:'Mercure',Venus:'Vénus',Mars:'Mars',Jupiter:'Jupiter',Saturn:'Saturne',Uranus:'Uranus',Neptune:'Neptune',Pluto:'Pluton',Ascendant:'Ascendant'},
+  it:{Sun:'Sole',Moon:'Luna',Mercury:'Mercurio',Venus:'Venere',Mars:'Marte',Jupiter:'Giove',Saturn:'Saturno',Uranus:'Urano',Neptune:'Nettuno',Pluto:'Plutone',Ascendant:'Ascendente'},
+};
+const ELEM_TR={en:{Fire:'Fire',Earth:'Earth',Air:'Air',Water:'Water'},fr:{Fire:'Feu',Earth:'Terre',Air:'Air',Water:'Eau'},it:{Fire:'Fuoco',Earth:'Terra',Air:'Aria',Water:'Acqua'}};
+const MOD_TR={en:{Cardinal:'Cardinal',Fixed:'Fixed',Mutable:'Mutable'},fr:{Cardinal:'Cardinal',Fixed:'Fixe',Mutable:'Mutable'},it:{Cardinal:'Cardinale',Fixed:'Fisso',Mutable:'Mutevole'}};
+const ASP_VERB={
+  en:{Conjunction:'conjunct',Trine:'trine',Sextile:'sextile',Square:'square',Opposition:'opposite',Quincunx:'quincunx'},
+  fr:{Conjunction:'conjonction',Trine:'trigone',Sextile:'sextile',Square:'carré',Opposition:'opposition',Quincunx:'quinconce'},
+  it:{Conjunction:'congiunzione',Trine:'trigono',Sextile:'sestile',Square:'quadrato',Opposition:'opposizione',Quincunx:'quinconce'},
+};
+function trSign(s,lang){return(SIGN_TR[lang]&&SIGN_TR[lang][s])||s;}
+function trPlanet(pl,lang){return(PLANET_TR[lang]&&PLANET_TR[lang][pl])||pl;}
+function trElem(e,lang){return(ELEM_TR[lang]&&ELEM_TR[lang][e])||e;}
+function trMod(m,lang){return(MOD_TR[lang]&&MOD_TR[lang][m])||m;}
+function trAspVerb(name,lang){return(ASP_VERB[lang]&&ASP_VERB[lang][name])||ASP_VERB.en[name]||name;}
 const ASPECTS=[
   {name:'Conjunction',angle:0,  orb:8, h:1.0, sym:'☌'},
   {name:'Sextile',   angle:60, orb:6, h:0.7, sym:'⚹'},
@@ -982,8 +1004,7 @@ function outerGeoLon(name,T){
   return m360(Math.atan2(pl.y-ey,pl.x-ex)*180/Math.PI);
 }
 function planetPos(name,T){
-  const INNER=new Set(['Mercury','Venus','Mars']);
-  const lon=INNER.has(name)?vsopGeoLon(name,T):outerGeoLon(name,T);
+  const lon=INNER_P.has(name)?vsopGeoLon(name,T):outerGeoLon(name,T);
   return{lon,tL:'VSOP87',tM:'',tE:'',tv:''};
 }
 function degSign(lon){const i=Math.floor(lon/30);return{sign:ZSIGNS[i],sym:ZSYMS[i],deg:parseFloat((lon%30).toFixed(1)),lon}}
@@ -1028,9 +1049,8 @@ function lunarPhase(chart){
 
 function elementTally(chart){
   const tally={Fire:0,Earth:0,Air:0,Water:0};
-  for(const p of PLANETS){const pos=chart.pos[p];if(pos)tally[ELEM_MAP[pos.sign]=(ELEM_MAP[pos.sign]||'?')]=(tally[ELEM_MAP[pos.sign]]||0)+1;}
-  // Ascendant counts too
-  if(chart.pos.Ascendant)tally[ELEM_MAP[chart.pos.Ascendant.sign]]=(tally[ELEM_MAP[chart.pos.Ascendant.sign]]||0)+1;
+  for(const p of PLANETS){const pos=chart.pos[p];if(pos){const e=ELEM_MAP[pos.sign];if(e)tally[e]++;}}
+  if(chart.pos.Ascendant){const e=ELEM_MAP[chart.pos.Ascendant.sign];if(e)tally[e]++;}
   return tally;
 }
 
@@ -1156,6 +1176,9 @@ const SW={'Sun-Moon':1.8,'Moon-Sun':1.8,'Sun-Venus':1.5,'Venus-Sun':1.5,'Sun-Mar
   'Pluto-Saturn':.5,'Saturn-Pluto':.5,'Uranus-Saturn':.5,'Saturn-Uranus':.5,'Neptune-Saturn':.4,'Saturn-Neptune':.4,
   'Uranus-Uranus':.3,'Neptune-Neptune':.3,'Pluto-Pluto':.3,'Uranus-Neptune':.3,'Neptune-Uranus':.3,'Uranus-Pluto':.3,'Pluto-Uranus':.3,'Neptune-Pluto':.3,'Pluto-Neptune':.3};
 const SD={love:['Venus-Mars','Mars-Venus','Sun-Moon','Moon-Sun','Sun-Venus','Venus-Sun','Moon-Venus','Venus-Moon','Neptune-Venus','Venus-Neptune','Neptune-Moon','Moon-Neptune'],harmony:['Sun-Sun','Moon-Moon','Venus-Venus','Jupiter-Sun','Jupiter-Moon','Jupiter-Venus','Neptune-Sun','Sun-Neptune'],passion:['Mars-Sun','Sun-Mars','Mars-Moon','Moon-Mars','Mars-Venus','Venus-Mars','Pluto-Mars','Mars-Pluto','Pluto-Venus','Venus-Pluto'],mental:['Mercury-Mercury','Mercury-Sun','Sun-Mercury','Mercury-Moon','Moon-Mercury','Uranus-Mercury','Mercury-Uranus','Uranus-Sun','Sun-Uranus'],karmic:['Saturn-Sun','Saturn-Moon','Saturn-Venus','Ascendant-Sun','Ascendant-Moon','Pluto-Sun','Sun-Pluto','Pluto-Moon','Moon-Pluto','Pluto-Venus','Venus-Pluto','Pluto-Ascendant','Ascendant-Pluto','Saturn-Pluto','Pluto-Saturn']};
+// Pre-built domain lookup: pair-key → list of domains it belongs to (O(1) vs Array.includes)
+const SD_MAP=new Map();
+for(const[dom,keys]of Object.entries(SD))for(const k of keys){if(!SD_MAP.has(k))SD_MAP.set(k,[]);SD_MAP.get(k).push(dom);}
 function scoreSyn(pairs){
   let sc={overall:0,love:0,harmony:0,passion:0,mental:0,karmic:0},mx={...{overall:0,love:0,harmony:0,passion:0,mental:0,karmic:0}};
   const det=[];
@@ -1163,7 +1186,7 @@ function scoreSyn(pairs){
     if(!p.asp)continue;
     const k=`${p.pA}-${p.pB}`,w=SW[k]||.4,contrib=w*p.asp.h;
     sc.overall+=contrib;mx.overall+=w;
-    for(const[dom,keys]of Object.entries(SD))if(keys.includes(k)){sc[dom]+=contrib;mx[dom]+=w;}
+    const doms=SD_MAP.get(k);if(doms)for(const dom of doms){sc[dom]+=contrib;mx[dom]+=w;}
     det.push({key:k,asp:p.asp.name,h:p.asp.h,w,c:contrib.toFixed(3)});
   }
   const norm=(s,m)=>m===0?50:Math.round(((s/m)*.5+.5)*100);
@@ -1179,47 +1202,23 @@ function builtinReport(chartA,chartB,pairs,scores,nameA,nameB,lang){
   const ov=scores.overall,love=scores.love,pass=scores.passion,harm=scores.harmony,ment=scores.mental,karm=scores.karmic;
   const compatIdx=ov>=80?0:ov>=65?1:ov>=50?2:ov>=35?3:4;
   const compatName=L.compatTitles[compatIdx];
-  // Translated sign names
-  const SIGN_TR={
-    fr:{Aries:'Bélier',Taurus:'Taureau',Gemini:'Gémeaux',Cancer:'Cancer',Leo:'Lion',Virgo:'Vierge',Libra:'Balance',Scorpio:'Scorpion',Sagittarius:'Sagittaire',Capricorn:'Capricorne',Aquarius:'Verseau',Pisces:'Poissons'},
-    it:{Aries:'Ariete',Taurus:'Toro',Gemini:'Gemelli',Cancer:'Cancro',Leo:'Leone',Virgo:'Vergine',Libra:'Bilancia',Scorpio:'Scorpione',Sagittarius:'Sagittario',Capricorn:'Capricorno',Aquarius:'Acquario',Pisces:'Pesci'},
-  };
-  const sn=s=>(SIGN_TR[lang]&&SIGN_TR[lang][s])||s;
-  // Translated planet names
-  const PLANET_TR={
-    fr:{Sun:'Soleil',Moon:'Lune',Mercury:'Mercure',Venus:'Vénus',Mars:'Mars',Jupiter:'Jupiter',Saturn:'Saturne',Uranus:'Uranus',Neptune:'Neptune',Pluto:'Pluton',Ascendant:'Ascendant'},
-    it:{Sun:'Sole',Moon:'Luna',Mercury:'Mercurio',Venus:'Venere',Mars:'Marte',Jupiter:'Giove',Saturn:'Saturno',Uranus:'Urano',Neptune:'Nettuno',Pluto:'Plutone',Ascendant:'Ascendente'},
-  };
-  const pn=pl=>(PLANET_TR[lang]&&PLANET_TR[lang][pl])||pl;
-  // Translated element names
-  const ELEM_TR={en:{Fire:'Fire',Earth:'Earth',Air:'Air',Water:'Water'},fr:{Fire:'Feu',Earth:'Terre',Air:'Air',Water:'Eau'},it:{Fire:'Fuoco',Earth:'Terra',Air:'Aria',Water:'Acqua'}};
-  const et=e=>(ELEM_TR[lang]&&ELEM_TR[lang][e])||e;
+  const sn=s=>trSign(s,lang),pn=pl=>trPlanet(pl,lang),et=e=>trElem(e,lang);
   // Gather top harmonious and challenging aspects
   const harmAsp=pairs.filter(p=>p.asp&&p.asp.h>0).sort((a,b)=>b.asp.h*SW[`${b.pA}-${b.pB}`]||0-a.asp.h*SW[`${a.pA}-${a.pB}`]||0).slice(0,4);
   const chalAsp=pairs.filter(p=>p.asp&&p.asp.h<0).sort((a,b)=>a.asp.h-b.asp.h).slice(0,3);
-  // Translated aspect verbs
-  const ASP_VERB={
-    en:{Conjunction:'conjunct',Trine:'trine',Sextile:'sextile',Square:'square',Opposition:'opposite',Quincunx:'quincunx'},
-    fr:{Conjunction:'conjonction',Trine:'trigone',Sextile:'sextile',Square:'carré',Opposition:'opposition',Quincunx:'quinconce'},
-    it:{Conjunction:'congiunzione',Trine:'trigono',Sextile:'sestile',Square:'quadrato',Opposition:'opposizione',Quincunx:'quinconce'},
-  };
-  const aspStr=p=>{const verbs=ASP_VERB[lang]||ASP_VERB.en;const verb=verbs[p.asp.name]||p.asp.name;return`${pn(p.pA)} ${verb} ${pn(p.pB)}`;}
+  const aspStr=p=>`${pn(p.pA)} ${trAspVerb(p.asp.name,lang)} ${pn(p.pB)}`;
   // Sun and Moon signs
   const sunA=chartA.pos.Sun.sign,moonA=chartA.pos.Moon.sign;
   const sunB=chartB.pos.Sun.sign,moonB=chartB.pos.Moon.sign;
   const venA=chartA.pos.Venus.sign,venB=chartB.pos.Venus.sign;
   const marA=chartA.pos.Mars.sign,marB=chartB.pos.Mars.sign;
-  // Translated sign variables for interpolation
   const sunAL=sn(sunA),sunBL=sn(sunB),venAL=sn(venA),venBL=sn(venB);
   // Element analysis
-  const ELEM={Aries:'Fire',Leo:'Fire',Sagittarius:'Fire',Taurus:'Earth',Virgo:'Earth',Capricorn:'Earth',Gemini:'Air',Libra:'Air',Aquarius:'Air',Cancer:'Water',Scorpio:'Water',Pisces:'Water'};
-  const elemA=ELEM[sunA],elemB=ELEM[sunB];
+  const elemA=ELEM_MAP[sunA],elemB=ELEM_MAP[sunB];
   const elemComp=elemA===elemB?{en:'natural understanding',fr:'compréhension naturelle',it:'comprensione naturale'}[lang]:
     ((elemA==='Fire'&&elemB==='Air')||(elemA==='Air'&&elemB==='Fire'))?{en:'stimulating dynamic',fr:'dynamique stimulante',it:'dinamica stimolante'}[lang]:
     ((elemA==='Earth'&&elemB==='Water')||(elemA==='Water'&&elemB==='Earth'))?{en:'complementary harmony',fr:'harmonie complémentaire',it:'armonia complementare'}[lang]:
     {en:'challenging polarity',fr:'polarité difficile',it:'polarità difficile'}[lang];
-  // Modality
-  const MOD={Aries:'Cardinal',Cancer:'Cardinal',Libra:'Cardinal',Capricorn:'Cardinal',Taurus:'Fixed',Leo:'Fixed',Scorpio:'Fixed',Aquarius:'Fixed',Gemini:'Mutable',Virgo:'Mutable',Sagittarius:'Mutable',Pisces:'Mutable'};
   // Compose sections per language
   const T={
     en:{
@@ -1261,23 +1260,14 @@ function builtinNatalReport(profile,name,lang){
   const L=I18N[lang]||I18N.en;
   const p=profile.pos;
   const sunSign=p.Sun.sign,moonSign=p.Moon.sign,ascSign=p.Ascendant?p.Ascendant.sign:'—';
-  const ELEM={en:{Fire:'Fire',Earth:'Earth',Air:'Air',Water:'Water'},fr:{Fire:'Feu',Earth:'Terre',Air:'Air',Water:'Eau'},it:{Fire:'Fuoco',Earth:'Terra',Air:'Aria',Water:'Acqua'}};
-  const E=ELEM[lang]||ELEM.en;
-
-  // ── Translated sign names ──────────────────────────────────────────────────
-  const SIGN_TR={
-    fr:{Aries:'Bélier',Taurus:'Taureau',Gemini:'Gémeaux',Cancer:'Cancer',Leo:'Lion',Virgo:'Vierge',Libra:'Balance',Scorpio:'Scorpion',Sagittarius:'Sagittaire',Capricorn:'Capricorne',Aquarius:'Verseau',Pisces:'Poissons'},
-    it:{Aries:'Ariete',Taurus:'Toro',Gemini:'Gemelli',Cancer:'Cancro',Leo:'Leone',Virgo:'Vergine',Libra:'Bilancia',Scorpio:'Scorpione',Sagittarius:'Sagittario',Capricorn:'Capricorno',Aquarius:'Acquario',Pisces:'Pesci'},
-  };
-  const sn=s=>(SIGN_TR[lang]&&SIGN_TR[lang][s])||s; // translated sign name
+  const sn=s=>trSign(s,lang),pn=pl=>trPlanet(pl,lang),E=ELEM_TR[lang]||ELEM_TR.en;
 
   const sunSignL=sn(sunSign),moonSignL=sn(moonSign),ascSignL=sn(ascSign);
 
   const dom=Object.entries(profile.elements).sort((a,b)=>b[1]-a[1]);
   const dominantElem=dom[0][0];
   const dominantMod=Object.entries(profile.modalities).sort((a,b)=>b[1]-a[1])[0][0];
-  const MOD_TR={en:{Cardinal:'Cardinal',Fixed:'Fixed',Mutable:'Mutable'},fr:{Cardinal:'Cardinal',Fixed:'Fixe',Mutable:'Mutable'},it:{Cardinal:'Cardinale',Fixed:'Fisso',Mutable:'Mutevole'}};
-  const dominantModL=(MOD_TR[lang]&&MOD_TR[lang][dominantMod])||dominantMod;
+  const dominantModL=trMod(dominantMod,lang);
   const retros=Object.entries(profile.retrogrades).filter(([,r])=>r).map(([p])=>p);
   const harmon=profile.aspects.filter(a=>a.asp.h>0).sort((a,b)=>b.asp.h-a.asp.h).slice(0,4);
   const chall=profile.aspects.filter(a=>a.asp.h<0).sort((a,b)=>a.asp.h-b.asp.h).slice(0,4);
@@ -1413,12 +1403,6 @@ function builtinNatalReport(profile,name,lang){
 
   // Aspect interpretation — specific to the planet pair, not generic
   const aspPairKey=(a,b)=>[a,b].sort().join('-');
-  // Translated planet names (for body text — sign names already have sn())
-  const PLANET_TR={
-    fr:{Sun:'Soleil',Moon:'Lune',Mercury:'Mercure',Venus:'Vénus',Mars:'Mars',Jupiter:'Jupiter',Saturn:'Saturne',Uranus:'Uranus',Neptune:'Neptune',Pluto:'Pluton',Ascendant:'Ascendant'},
-    it:{Sun:'Sole',Moon:'Luna',Mercury:'Mercurio',Venus:'Venere',Mars:'Marte',Jupiter:'Giove',Saturn:'Saturno',Uranus:'Urano',Neptune:'Nettuno',Pluto:'Plutone',Ascendant:'Ascendente'},
-  };
-  const pn=pl=>(PLANET_TR[lang]&&PLANET_TR[lang][pl])||pl; // translated planet name
   // ── Planet-pair interpretation dictionary ─────────────────────────────────
   // Structure: pair key (sorted alphabetically) → aspect type → text
   // Strategy: P1 personal×personal = all 6 aspects × 10 pairs = 60 entries
@@ -2934,7 +2918,7 @@ function builtinNatalReport(profile,name,lang){
     }[lang]||''),
   };
 
-  const aspStr=a=>{const ASP_VERB={en:{Conjunction:'conjunct',Trine:'trine',Sextile:'sextile',Square:'square',Opposition:'opposite',Quincunx:'quincunx'},fr:{Conjunction:'conjonction',Trine:'trigone',Sextile:'sextile',Square:'carré',Opposition:'opposition',Quincunx:'quinconce'},it:{Conjunction:'congiunzione',Trine:'trigono',Sextile:'sestile',Square:'quadrato',Opposition:'opposizione',Quincunx:'quinconce'}};const verbs=ASP_VERB[lang]||ASP_VERB.en;const verb=verbs[a.asp.name]||a.asp.name;return`${pn(a.pA)} ${verb} ${pn(a.pB)}`;};
+  const aspStr=a=>`${pn(a.pA)} ${trAspVerb(a.asp.name,lang)} ${pn(a.pB)}`;
   const ST={en:{id:'Core Identity — ☉ Sun',inner:'Inner World — ☽ Moon & Lunar Phase',persona:'Persona — ↑ Ascendant',str:'Planetary Strengths',ch:'Planetary Challenges',asp_h:'Harmonious Natal Aspects',asp_c:'Dynamic Natal Tensions',retro:'Retrograde Planets',syn:'Synthesis'},
             fr:{id:'Identité Centrale — ☉ Soleil',inner:'Monde Intérieur — ☽ Lune & Phase Lunaire',persona:'Persona — ↑ Ascendant',str:'Forces Planétaires',ch:'Défis Planétaires',asp_h:'Aspects Nataux Harmonieux',asp_c:'Tensions Natales Dynamiques',retro:'Planètes Rétrogrades',syn:'Synthèse'},
             it:{id:'Identità Centrale — ☉ Sole',inner:'Mondo Interiore — ☽ Luna & Fase Lunare',persona:'Persona — ↑ Ascendente',str:'Forze Planetarie',ch:'Sfide Planetarie',asp_h:'Aspetti Natali Armoniosi',asp_c:'Tensioni Natali Dinamiche',retro:'Pianeti Retrogradi',syn:'Sintesi'}}[lang]||{id:'Identity',inner:'Inner World',persona:'Persona',str:'Strengths',ch:'Challenges',asp_h:'Harmonious Aspects',asp_c:'Dynamic Tensions',retro:'Retrograde',syn:'Synthesis'};
