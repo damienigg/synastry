@@ -3109,7 +3109,8 @@ function toggleBox(id){
   hdr.classList.toggle('collapsed',collapsed);
 }
 function buildTabButtons(){
-  document.getElementById('tabs').innerHTML=['natal','synastry','scores','raw'].map((n,i)=>`<button class="tbtn${i===0?' active':''}" onclick="switchTab('${n}')">${t('tab'+n.charAt(0).toUpperCase()+n.slice(1))}</button>`).join('');
+  const tabs=STATE.soloMode?['natal']:['natal','synastry','scores','raw'];
+  document.getElementById('tabs').innerHTML=tabs.map((n,i)=>`<button class="tbtn${i===0?' active':''}" onclick="switchTab('${n}')">${t('tab'+n.charAt(0).toUpperCase()+n.slice(1))}</button>`).join('');
 }
 
 // ── City dropdown ──
@@ -3803,13 +3804,8 @@ async function runAll(){
 
     setP(60,'Building natal profile…');await sl(80);
 
-    // Rebuild traces tab for the solo person
     STATE.syn=null;STATE.scoreData=null;
-    // Patch STATE temporarily so renderNatal works for solo
-    if(!dA){STATE.chartA=activeChart;}
-    if(!dB){STATE.chartB=activeChart;}
     buildTabButtons();renderNatal();
-    if(dA){STATE.chartB=null;}else{STATE.chartA=null;}
 
     setP(80,'Applying built-in rules…');await sl(60);
     try{
