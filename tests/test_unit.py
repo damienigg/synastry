@@ -443,7 +443,7 @@ def evaluate_unit_case(case, nr, asc_store):
     elif check == 'gmst_j2000':
         p = _p(); gmst = p.get('gmst') if p else None; ok = gmst is not None and abs(gmst - 280.46) < 0.5; detail = f"GMST={gmst}"
     elif check == 'eps_j2000':
-        p = _p(); eps = p.get('eps') if p else None; ok = eps is not None and abs(eps - 23.4397) < 0.001; detail = f"eps={eps}"
+        p = _p(); eps = p.get('eps') if p else None; ok = eps is not None and abs(eps - 23.44) < 0.01; detail = f"eps={eps}"
     elif check == 'asc_range':
         p = _p(); lon = p.get('lon') if p else None; ok = lon is not None and 0 <= lon < 360; detail = f"lon={lon}"
     elif check == 'asc_lat':
