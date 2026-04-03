@@ -4,6 +4,23 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.6.1] — 2026-04-04
+
+### Added
+- **Radar chart** — 5-axis spider diagram (Love, Harmony, Passion, Mental, Karmic) showing the shape of the relationship at a glance. Symmetric pentagon = balanced, skewed = dominant domain.
+- **Aspect heatmap** — 11×11 grid with Partner A as rows, Partner B as columns. Cells colored green (harmonious) or red (challenging). Hover for aspect details.
+- **Weight and domain columns** in Synastry Aspects tab — each aspect now shows its scoring weight (W) and which domains it contributes to (L/H/P/M/K).
+- **Weight Reference Table** in Score Breakdown tab — collapsible table listing all planet pair weights, sorted by importance, with domain tags and disclaimer explaining weights are interpretive choices.
+- **`weightsNote`** I18N key (EN/FR/IT) — disclaimer explaining that weights are editorial, not physical constants.
+
+### Changed
+- **Evidence cards diversified** — one per aspect type (best conjunction, best trine, etc.) then filled by strength, instead of showing 6 cards of the same type.
+- **Evidence card text** — now describes human needs/drives ("Le sens de l'identité de Damien fusionne avec les besoins émotionnels de Laure") instead of repeating planet names already shown in the card header.
+- **Elemental compatibility** — expanded from 4 categories to 7 distinct pairings (Fire+Water, Fire+Earth, Air+Water, Air+Earth each with specific descriptions).
+- **Synastry report sections** rewritten for depth and clarity (EN/FR/IT) — Moon signs in Love, Mars signs in Challenges, all 5 domain scores in Synthesis, closing disclaimer about scores vs. fate.
+
+---
+
 ## [10.6.0] — 2026-04-04
 
 ### Fixed
