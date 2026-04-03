@@ -551,6 +551,7 @@ const I18N = {
     flagMoon:" Moon aspect(s) may shift significantly with unknown birth time (Moon moves ≈13°/day)",
     flagStdHigh:"High domain variance (σ=",
     flagStdSuffix:") — scores vary widely across domains, suggesting a complex or contradictory relational dynamic. No single score captures the full picture.",
+    scoresNote:"Scores are derived from weighted aspect harmonics — they measure astronomical alignment patterns, not human compatibility. A low score does not mean a bad relationship; a high score does not guarantee one.",
     diagFlags:"DIAGNOSTIC FLAGS",
     ringLove:"Love",ringHarmony:"Harmony",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmic",
     compatTitles:["Stellar Union","Harmonious Bond","Complex Weave","Challenging Path","Deep Tension"],
@@ -677,6 +678,7 @@ const I18N = {
     flagMoon:" aspect(s) Lune pouvant varier significativement avec l'heure inconnue (la Lune se déplace d'≈13°/jour)",
     flagStdHigh:"Forte variance inter-domaines (σ=",
     flagStdSuffix:") — les scores varient fortement entre domaines, suggérant une dynamique relationnelle complexe ou contradictoire. Aucun score unique ne capture la situation complète.",
+    scoresNote:"Les scores sont dérivés d'harmoniques d'aspects pondérées — ils mesurent des motifs d'alignement astronomique, pas la compatibilité humaine. Un score bas ne signifie pas une mauvaise relation ; un score élevé n'en garantit pas une bonne.",
     diagFlags:"DIAGNOSTICS",
     ringLove:"Amour",ringHarmony:"Harmonie",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmique",
     compatTitles:["Union Stellaire","Lien Harmonieux","Tissu Complexe","Chemin Difficile","Tension Profonde"],
@@ -803,6 +805,7 @@ const I18N = {
     flagMoon:" aspetto/i Lunari che possono variare significativamente con l'ora sconosciuta (la Luna si muove di ≈13°/giorno)",
     flagStdHigh:"Alta varianza inter-domini (σ=",
     flagStdSuffix:") — i punteggi variano fortemente tra domini, suggerendo una dinamica relazionale complessa o contraddittoria. Nessun punteggio singolo cattura il quadro completo.",
+    scoresNote:"I punteggi sono derivati da armoniche di aspetti ponderate — misurano modelli di allineamento astronomico, non la compatibilità umana. Un punteggio basso non significa una cattiva relazione; uno alto non ne garantisce una buona.",
     diagFlags:"FLAG DIAGNOSTICI",
     ringLove:"Amore",ringHarmony:"Armonia",ringPassion:"Passione",ringMental:"Mentale",ringKarmic:"Karmico",
     compatTitles:["Unione Stellare","Legame Armonioso","Intreccio Complesso","Percorso Difficile","Tensione Profonda"],
@@ -3057,7 +3060,7 @@ function renderNatalProfileBox(profile,name,slot,color,reportText,expanded){
       const dig=profile.dignities[p];
       const digBadge=dig&&dig.label?`<span style="font-size:10px;color:${dig.score>0?'var(--emerald)':'var(--rose)'};margin-left:4px">${t(dig.label)||dig.label}</span>`:'';
       const retroBadge=profile.retrogrades[p]?`<span style="color:var(--amber);font-size:10px;margin-left:4px" title="Retrograde">℞</span>`:'';
-      const slowBadge=SLOW_P.has(p)?`<span style="color:var(--silver);font-size:10px" title="±2-3° formula">~</span>`:'';
+      const slowBadge=SLOW_P.has(p)?`<span style="color:var(--silver);font-size:10px" title="Outer planet (JPL-fitted ≤0.25°)">~</span>`:'';
       return`<tr><td>${PSYM[p]||'↑'} ${p}${slowBadge}</td><td class="gdeg">${pos.lon.toFixed(4)}°</td><td>${pos.sym} ${pos.sign}</td><td style="color:${color}">${pos.deg}° ${pos.sign}${digBadge}${retroBadge}</td></tr>`;
     }).join('');
     const posTable=`<table class="tt"><thead><tr><th>Planet</th><th>Longitude</th><th>Sign</th><th>Degree</th></tr></thead><tbody>${posRows}</tbody></table>`;
@@ -3675,7 +3678,7 @@ function renderSynastry(){
   const{syn,nameA,nameB,chartA,chartB}=STATE;
   const rows=syn.filter(p=>p.asp).map(p=>{
     const fl=[];
-    if(p.slowA||p.slowB)fl.push(`<span style="color:var(--amber);font-size:10px" title="Outer planet ±2-3°">~p</span>`);
+    if(p.slowA||p.slowB)fl.push(`<span style="color:var(--silver);font-size:10px" title="Outer planet (JPL-fitted ≤0.25°)">~p</span>`);
     if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))fl.push(`<span style="color:var(--amber);font-size:10px" title="Time unknown">~t</span>`);
     return`<tr><td class="va">${PSYM[p.pA]||'↑'} ${p.pA} <small style="color:var(--silver)">${p.sA}</small></td><td class="gdeg">${p.lA.toFixed(2)}°</td><td class="vb">${PSYM[p.pB]||'↑'} ${p.pB} <small style="color:var(--silver)">${p.sB}</small></td><td class="gdeg">${p.lB.toFixed(2)}°</td><td>${p.asp.diff}°</td><td>${aspChip(p.asp)}</td><td>${p.asp.orb_actual}°</td><td style="color:${p.asp.h>0?'var(--emerald)':'var(--rose)'}">${p.asp.h>0?'+':''}${p.asp.h}</td><td>${fl.join(' ')||'—'}</td></tr>`;
   }).join('');
