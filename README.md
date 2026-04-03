@@ -1,4 +1,4 @@
-# Synastria v10.4.0
+# Synastria v10.4.1
 
 **Astrological Oracle — Natal Profiles & Traceable Synastral Analysis**
 
@@ -35,7 +35,7 @@ Synastria computes astrological charts from birth data and generates human-reada
 6. Click **Cast the Charts**
 7. Use **Reset** to clear everything, or **Export PDF** to save a print-ready report
 
-No internet connection is required for the core calculation. Internet is used only for city search (open-meteo geocoding API) and optional LLM calls.
+No internet connection is required for calculation or interpretation. Internet is used only for city search (Open-Meteo geocoding API).
 
 ---
 
@@ -135,6 +135,21 @@ Tolerances are configurable in `tolerances.json`.
 
 ---
 
+## Scripts
+
+```bash
+python3 scripts/bump_version.py            # show current version
+python3 scripts/bump_version.py patch      # 10.4.1 → 10.4.2
+python3 scripts/bump_version.py minor      # 10.4.1 → 10.5.0
+python3 scripts/bump_version.py major      # 10.4.1 → 11.0.0
+python3 scripts/bump_version.py 10.5.0     # set explicit version
+
+bash scripts/clean.sh                      # remove caches and test reports
+bash scripts/clean.sh --all                # also remove .jpl_cache.json
+```
+
+---
+
 ## Languages
 
 Full interface and all generated content available in:
@@ -149,7 +164,36 @@ Language can be switched at any time. Built-in reports re-render immediately.
 
 ## Architecture
 
-The application is a **single HTML file** (~3,600 lines). No build tools, no npm, no backend, no external APIs for interpretation.
+The application is a **single HTML file** (~3,700 lines). No build tools, no npm, no backend, no external APIs for interpretation.
+
+```
+synastry/
+├── index.html               # the entire application (CSS + HTML + JS)
+├── CHANGELOG.md             # version history
+├── VERSION.md               # current version
+├── README.md
+├── tolerances.json          # JPL/Swiss Ephemeris comparison thresholds
+├── requirements.txt         # Python test dependencies
+├── pyproject.toml           # pytest configuration
+├── .gitignore
+├── scripts/
+│   ├── bump_version.py      # version management utility
+│   └── clean.sh             # remove caches and temp files
+└── tests/
+    ├── conftest.py           # session fixtures, CLI options, report plugin
+    ├── test_structural.py    # HTML/engine structural inspection
+    ├── test_unit.py          # batch engine tests via Node.js
+    ├── test_edge_cases.py    # date/timezone/boundary edge cases
+    ├── test_jpl.py           # JPL Horizons planet validation
+    ├── test_ascendant.py     # Swiss Ephemeris ascendant validation
+    └── helpers/
+        ├── engine.py         # extract_engine(), JS shims
+        ├── node_runner.py    # find_node(), run_node()
+        ├── jpl.py            # JPL client, cache, tolerances
+        └── formatting.py     # ANSI color helpers
+```
+
+### Inside index.html
 
 ```
 index.html
@@ -169,29 +213,12 @@ index.html
     └── UI (calendar, city search, collapsible panels, SVG rings)
 ```
 
-### Test suite structure
-
-```
-tests/
-├── conftest.py              # session fixtures, CLI options, report plugin
-├── test_structural.py       # HTML/engine structural inspection
-├── test_unit.py             # batch engine tests via Node.js
-├── test_edge_cases.py       # date/timezone/boundary edge cases
-├── test_jpl.py              # JPL Horizons planet validation
-├── test_ascendant.py        # Swiss Ephemeris ascendant validation
-└── helpers/
-    ├── engine.py            # extract_engine(), JS shims
-    ├── node_runner.py       # find_node(), run_node()
-    ├── jpl.py               # JPL client, cache, tolerances
-    └── formatting.py        # ANSI color helpers
-```
-
 ---
 
 ## Privacy
 
 - All calculations and interpretations happen **entirely in your browser** — no birth data is ever sent to any server
-- City search sends only the typed city name to open-meteo (no birth data)
+- City search sends only the typed city name to Open-Meteo (no birth data)
 - No external APIs are used for interpretation — everything is built-in
 - The app works fully offline (except for city geocoding)
 
