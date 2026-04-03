@@ -3110,7 +3110,13 @@ function toggleBox(id){
 }
 function buildTabButtons(){
   const tabs=STATE.soloMode?['natal']:['natal','synastry','scores','raw'];
-  document.getElementById('tabs').innerHTML=tabs.map((n,i)=>`<button class="tbtn${i===0?' active':''}" onclick="switchTab('${n}')">${t('tab'+n.charAt(0).toUpperCase()+n.slice(1))}</button>`).join('');
+  document.getElementById('tabs').innerHTML=tabs.map((n,i)=>`<button class="tbtn${i===0?' active':''}" data-tab="${n}" onclick="switchTab('${n}')">${t('tab'+n.charAt(0).toUpperCase()+n.slice(1))}</button>`).join('');
+  // Ensure only the first tab's content is visible; clear and hide others
+  ['natal','synastry','scores','raw'].forEach(n=>{
+    const el=document.getElementById('tab-'+n);
+    if(n===tabs[0]){el.classList.add('active');}
+    else{el.classList.remove('active');el.innerHTML='';}
+  });
 }
 
 // ── City dropdown ──
@@ -3511,9 +3517,9 @@ function toggleTU(p){
   document.getElementById(`cl-${p}`).classList.remove('open');
 }
 function switchTab(n){
-  document.querySelectorAll('.tbtn').forEach((b,i)=>b.classList.toggle('active',['natal','synastry','scores','raw'][i]===n));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.toggle('active',b.dataset.tab===n));
   document.querySelectorAll('.tcontent').forEach(c=>c.classList.remove('active'));
-  document.getElementById(`tab-${n}`).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
 }
 function setP(pct,msg){document.getElementById('pbar').style.width=pct+'%';document.getElementById('plog').textContent=msg}
 function sl(ms){return new Promise(r=>setTimeout(r,ms))}
