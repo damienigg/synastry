@@ -1133,6 +1133,7 @@ function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   const JD=toJD(y,m,d,hour,tz),T=toT(JD);
   const pos={},trace=[];
   const tr=(s,f,v)=>trace.push({s,f,v});
+  tr('UTC Offset','Timezone offset from geocoding (hours)',`UTC${tz>=0?'+':''}${tz}`);
   tr('Julian Day',`JD = f(${dateStr} ${timeStr} UTC${tz>=0?'+':''}${tz})`,JD.toFixed(4));
   tr('Julian Centuries T','T = (JD − 2451545.0) / 36525',T.toFixed(8));
   const sun=sunPos(T);pos.Sun=degSign(sun.lon);
