@@ -467,6 +467,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
     <div class="box-body expanded" id="body-report">
       <div id="banner"></div>
       <div class="rings" id="rings"></div>
+      <div id="syn-charts" style="display:flex;flex-wrap:wrap;justify-content:center;gap:28px;margin:24px 0"></div>
       <div class="rbody" id="rbody"></div>
       <div class="evcards" id="evcards"></div>
     </div>
@@ -3842,6 +3843,81 @@ function renderConf(conf){
 }
 
 // ── Render report ──
+// ── Radar chart (5-domain spider) ────────────────────────────────────────────
+function radarChart(scores){
+  const keys=['love','harmony','passion','mental','karmic'];
+  const labels=keys.map(k=>ringLabel(RING_DEFS.find(r=>r.k===k)));
+  const colors=keys.map(k=>RING_DEFS.find(r=>r.k===k).c);
+  const vals=keys.map(k=>scores[k]/100);
+  const n=keys.length,R=90,cx=120,cy=110;
+  const angle=i=>-Math.PI/2+i*2*Math.PI/n;
+  const pt=(i,r)=>({x:cx+r*Math.cos(angle(i)),y:cy+r*Math.sin(angle(i))});
+  // Grid rings
+  let grid='';
+  for(const frac of[.25,.5,.75,1]){
+    const pts=keys.map((_,i)=>pt(i,R*frac));
+    grid+=`<polygon points="${pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="none" stroke="rgba(180,140,255,.08)" stroke-width="1"/>`;
+  }
+  // Axis lines + labels
+  let axes='';
+  for(let i=0;i<n;i++){
+    const p=pt(i,R);
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="rgba(180,140,255,.12)" stroke-width="1"/>`;
+    const lp=pt(i,R+16);
+    axes+=`<text x="${lp.x.toFixed(1)}" y="${(lp.y+4).toFixed(1)}" text-anchor="middle" fill="${colors[i]}" font-family="Cinzel,serif" font-size="8" letter-spacing=".15em">${labels[i]}</text>`;
+  }
+  // Data polygon
+  const dataPts=vals.map((v,i)=>pt(i,R*v));
+  const poly=dataPts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const avgColor='rgba(212,168,67,.25)';
+  const strokeColor='rgba(212,168,67,.8)';
+  // Dots
+  const dots=dataPts.map((p,i)=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="${colors[i]}" style="filter:drop-shadow(0 0 4px ${colors[i]}80)"/>`).join('');
+  // Score labels at each vertex
+  const scoreTxts=vals.map((v,i)=>{const p=pt(i,R*v-(v>.15?12:-12));return`<text x="${p.x.toFixed(1)}" y="${(p.y+3).toFixed(1)}" text-anchor="middle" fill="var(--star)" font-family="Cormorant Garamond,serif" font-size="11" font-weight="600">${scores[keys[i]]}</text>`;}).join('');
+  return`<div style="text-align:center"><svg viewBox="0 0 240 230" width="260" height="250" xmlns="http://www.w3.org/2000/svg">${grid}${axes}<polygon points="${poly}" fill="${avgColor}" stroke="${strokeColor}" stroke-width="2" stroke-linejoin="round" style="filter:drop-shadow(0 0 8px rgba(212,168,67,.3))"/>${dots}${scoreTxts}</svg></div>`;
+}
+
+// ── Aspect heatmap (11×11 grid) ─────────────────────────────────────────────
+function aspectHeatmap(syn,nameA,nameB){
+  const planets=[...PLANETS,'Ascendant'];
+  // Build lookup: 'pA-pB' → aspect
+  const aspMap=new Map();
+  for(const p of syn)if(p.asp)aspMap.set(`${p.pA}-${p.pB}`,p.asp);
+  const cellSize=28,pad=56;
+  const w=pad+planets.length*cellSize,h=pad+planets.length*cellSize;
+  let cells='';
+  for(let row=0;row<planets.length;row++){
+    for(let col=0;col<planets.length;col++){
+      const x=pad+col*cellSize,y=pad+row*cellSize;
+      const key=`${planets[row]}-${planets[col]}`;
+      const asp=aspMap.get(key);
+      let fill='rgba(255,255,255,.02)',title=`${planets[row]} × ${planets[col]}: no major aspect`;
+      if(asp){
+        const hue=asp.h>0?'rgba(74,184,154,':'rgba(196,96,122,';
+        const intensity=Math.min(.7,Math.abs(asp.h)*.5+.15);
+        fill=`${hue}${intensity.toFixed(2)})`;
+        title=`${planets[row]} × ${planets[col]}: ${asp.name} (h=${asp.h>0?'+':''}${asp.h}, orb=${asp.orb_actual}°)`;
+      }
+      cells+=`<rect x="${x}" y="${y}" width="${cellSize-1}" height="${cellSize-1}" rx="2" fill="${fill}" stroke="rgba(180,140,255,.06)" stroke-width=".5"><title>${title}</title></rect>`;
+      if(asp)cells+=`<text x="${x+cellSize/2}" y="${y+cellSize/2+3}" text-anchor="middle" fill="var(--star)" font-family="Cinzel,serif" font-size="7" opacity=".7">${asp.sym}</text>`;
+    }
+  }
+  // Row labels (Partner A planets) — left side
+  let labels='';
+  for(let i=0;i<planets.length;i++){
+    labels+=`<text x="${pad-5}" y="${pad+i*cellSize+cellSize/2+3}" text-anchor="end" fill="var(--rose)" font-family="Cinzel,serif" font-size="8" letter-spacing=".1em">${PSYM[planets[i]]||'↑'}</text>`;
+  }
+  // Column labels (Partner B planets) — top
+  for(let i=0;i<planets.length;i++){
+    labels+=`<text x="${pad+i*cellSize+cellSize/2}" y="${pad-8}" text-anchor="middle" fill="var(--azure)" font-family="Cinzel,serif" font-size="8" letter-spacing=".1em">${PSYM[planets[i]]||'↑'}</text>`;
+  }
+  // Partner name labels
+  labels+=`<text x="${pad-5}" y="${pad-20}" text-anchor="end" fill="var(--rose)" font-family="Cinzel,serif" font-size="7" letter-spacing=".2em">${nameA}</text>`;
+  labels+=`<text x="${pad+planets.length*cellSize/2}" y="${pad-22}" text-anchor="middle" fill="var(--azure)" font-family="Cinzel,serif" font-size="7" letter-spacing=".2em">${nameB}</text>`;
+  return`<div style="text-align:center;overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${cells}${labels}</svg></div>`;
+}
+
 function renderReport(text){
   const{scoreData,nameA,nameB,syn,chartA,chartB}=STATE,sc=scoreData.scores;
   const ov=sc.overall,compatIdx=ov>=80?0:ov>=65?1:ov>=50?2:ov>=35?3:4;
@@ -3878,6 +3954,7 @@ function renderReport(text){
 
   document.getElementById('banner').innerHTML=gaugeHTML;
   document.getElementById('rings').innerHTML=RING_DEFS.map(r=>ring(ringLabel(r),sc[r.k],r.c)).join('');
+  document.getElementById('syn-charts').innerHTML=radarChart(sc)+aspectHeatmap(syn,nameA,nameB);
   // Evidence cards — pair-specific descriptions using need/drive labels
   const _evNeed={en:{Sun:'sense of identity',Moon:'emotional needs',Mercury:'way of thinking',Venus:'capacity for love',Mars:'drive and desire',Jupiter:'need for growth',Saturn:'need for structure',Uranus:'urge for freedom',Neptune:'idealism',Pluto:'need for transformation',Ascendant:'outward presence'},
     fr:{Sun:'sens de l\'identité',Moon:'besoins émotionnels',Mercury:'manière de penser',Venus:'capacité d\'aimer',Mars:'élan et désir',Jupiter:'besoin de croissance',Saturn:'besoin de structure',Uranus:'besoin de liberté',Neptune:'idéalisme',Pluto:'besoin de transformation',Ascendant:'présence extérieure'},
@@ -4101,7 +4178,7 @@ function resetAll(){
   document.getElementById('exportBtn').style.display='none';
   ['report-sec','conf-sec','natal-report-A-sec','natal-data-A-sec','natal-report-B-sec','natal-data-B-sec','solo-notice'].forEach(id=>{document.getElementById(id).style.display='none';});
   // Clear result content
-  ['rbody','banner','rings','tab-natal','tab-syn','tab-scores','tab-raw','natal-report-A-body','natal-data-A-body','natal-report-B-body','natal-data-B-body'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+  ['rbody','banner','rings','syn-charts','tab-natal','tab-syn','tab-scores','tab-raw','natal-report-A-body','natal-data-A-body','natal-report-B-body','natal-data-B-body'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
   const ev=document.getElementById('evcards');if(ev)ev.innerHTML='';
   // Reset state
   STATE={chartA:null,chartB:null,syn:null,scoreData:null,nameA:'A',nameB:'B',soloMode:false,profileA:null,profileB:null};
