@@ -543,7 +543,8 @@ const I18N = {
     confNatalTimeNote:"Birth time known — Moon and Ascendant at full precision.",
     confNatalTimeWarn:"Birth time unknown — Moon uncertain ±6°, Ascendant unreliable.",
     flagNatalTU:"Birth time unknown — Moon ±6°, Ascendant unreliable.",
-    flagNatalSlow:"Outer planets use simplified formulas (JPL-verified ≤2°). This rarely affects sign placement.",
+    flagNatalSlow:"Outer planets use simplified formulas (JPL-verified ≤0.25°). This rarely affects sign placement.",
+    flagHighLat:"High latitude (>60°) — Ascendant precision degrades as the ecliptic becomes nearly parallel to the horizon.",
     flagAWarn:"Partner A: time unknown — Moon uncertain ±6°, Ascendant unreliable",
     flagBWarn:"Partner B: time unknown — Moon uncertain ±6°, Ascendant unreliable",
     flagSlowTight:" tight outer-planet aspect(s) (orb ≤2°) — position uncertainty may affect these.",
@@ -668,7 +669,8 @@ const I18N = {
     confNatalTimeNote:"Heure connue — Lune et Ascendant à pleine précision.",
     confNatalTimeWarn:"Heure inconnue — Lune incertaine ±6°, Ascendant peu fiable.",
     flagNatalTU:"Heure inconnue — Lune ±6°, Ascendant peu fiable.",
-    flagNatalSlow:"Planètes lentes : formules simplifiées (vérifié JPL ≤2°). Rarement d'impact sur le signe.",
+    flagNatalSlow:"Planètes lentes : formules simplifiées (vérifié JPL ≤0,25°). Rarement d'impact sur le signe.",
+    flagHighLat:"Latitude élevée (>60°) — la précision de l'Ascendant se dégrade car l'écliptique devient quasi parallèle à l'horizon.",
     flagAWarn:"Partenaire A : heure inconnue — Lune incertaine ±6°, Ascendant peu fiable",
     flagBWarn:"Partenaire B : heure inconnue — Lune incertaine ±6°, Ascendant peu fiable",
     flagSlowTight:" aspect(s) planète lente serré(s) (orbe ≤2°) — l'incertitude peut affecter ceux-ci.",
@@ -792,7 +794,8 @@ const I18N = {
     confNatalTimeNote:"Ora nota — Luna e Ascendente a piena precisione.",
     confNatalTimeWarn:"Ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile.",
     flagNatalTU:"Ora sconosciuta — Luna ±6°, Ascendente inaffidabile.",
-    flagNatalSlow:"Pianeti lenti: formule semplificate (verificato JPL ≤2°). Raramente influisce sul segno.",
+    flagNatalSlow:"Pianeti lenti: formule semplificate (verificato JPL ≤0,25°). Raramente influisce sul segno.",
+    flagHighLat:"Latitudine elevata (>60°) — la precisione dell'Ascendente si degrada perché l'eclittica diventa quasi parallela all'orizzonte.",
     flagAWarn:"Partner A: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
     flagBWarn:"Partner B: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
     flagSlowTight:" aspetto/i pianeti lenti stretto/i (orb ≤2°) — l'incertezza può influire.",
@@ -3703,6 +3706,14 @@ function computeNatalConf(profile,name){
     astro-=10;
     flags.push({i:'ℹ️',tx:t('flagNatalSlow')});
   }
+  // ── High latitude penalty (Ascendant degrades above 60°) ──
+  const absLat=Math.abs(profile.lat||0);
+  if(absLat>60&&!profile.timeUnknown){
+    // Scale penalty: 60°→0, 70°→-15, 80°→-30
+    const penalty=Math.min(30,Math.round((absLat-60)*1.5));
+    astro-=penalty;
+    flags.push({i:'⚠️',tx:t('flagHighLat')});
+  }
   // ── Birth time ──
   let timeScore;
   if(profile.timeUnknown){
@@ -3721,6 +3732,13 @@ function computeConf(cA,cB,syn){
   let astro=100;
   if(cA.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagAWarn')});}
   if(cB.timeUnknown){astro-=15;flags.push({i:'⚠️',tx:t('flagBWarn')});}
+  // High-latitude penalty for either partner
+  const maxLat=Math.max(Math.abs(cA.lat||0),Math.abs(cB.lat||0));
+  if(maxLat>60&&(!cA.timeUnknown||!cB.timeUnknown)){
+    const penalty=Math.min(15,Math.round((maxLat-60)*0.75));
+    astro-=penalty;
+    flags.push({i:'⚠️',tx:t('flagHighLat')});
+  }
   const slowTight=syn.filter(p=>p.asp&&(p.slowA||p.slowB)&&parseFloat(p.asp.orb_actual)<=2).length;
   if(slowTight>0){astro-=Math.min(10,slowTight*3);flags.push({i:'ℹ️',tx:slowTight+t('flagSlowTight')});}
   const moonBad=syn.filter(p=>p.asp&&((p.pA==='Moon'&&cA.timeUnknown)||(p.pB==='Moon'&&cB.timeUnknown))).length;
