@@ -534,23 +534,23 @@ const I18N = {
     confHigh:"High confidence",confGood:"Good confidence",confMod:"Moderate confidence",confLow:"Low confidence",confVeryLow:"Very low confidence",
     confGlobalDesc:"Astronomical precision (50%) + domain coherence (50%)",
     confAstro:"Astronomical Precision",confCoh:"Domain Coherence",
-    confAstroNote:"Penalized for unknown birth time and tight outer-planet aspects.",
+    confAstroNote:"Penalized for unknown birth time and high-latitude Ascendant instability.",
     confCohNote:"Standard deviation across 5 domains. Low variance = consistent picture.",
     confNatalTitle:"Natal Chart Confidence",
     confNatalDesc:"Astronomical precision (45%) + birth time (55%)",
     confNatalAstro:"Astronomical Precision",confNatalTime:"Birth Time",
-    confNatalAstroNote:"Outer planets use simplified secular formulas (JPL-verified ≤2°).",
-    confNatalTimeNote:"Birth time known — Moon and Ascendant at full precision.",
-    confNatalTimeWarn:"Birth time unknown — Moon uncertain ±6°, Ascendant unreliable.",
-    flagNatalTU:"Birth time unknown — Moon ±6°, Ascendant unreliable.",
-    flagNatalSlow:"Outer planets use simplified formulas (JPL-verified ≤0.25°). This rarely affects sign placement.",
-    flagHighLat:"High latitude (>60°) — Ascendant precision degrades as the ecliptic becomes nearly parallel to the horizon.",
-    flagAWarn:"Partner A: time unknown — Moon uncertain ±6°, Ascendant unreliable",
-    flagBWarn:"Partner B: time unknown — Moon uncertain ±6°, Ascendant unreliable",
-    flagSlowTight:" tight outer-planet aspect(s) (orb ≤2°) — position uncertainty may affect these.",
-    flagMoon:" Moon aspect(s) may be affected by unknown birth time",
+    confNatalAstroNote:"All planets JPL-verified ≤0.25°. Ascendant ≤0.01° (degrades at extreme latitudes).",
+    confNatalTimeNote:"Birth time known — Moon and Ascendant at full precision. Note: ±4 min birth time error ≈ ±1° Ascendant shift.",
+    confNatalTimeWarn:"Birth time unknown — Moon uncertain ±6°, Ascendant cannot be calculated. Interpretations relying on the Ascendant are excluded.",
+    flagNatalTU:"Birth time unknown — Moon position uncertain ±6° (moves 0.55°/hour). Ascendant excluded. Sun and planet positions are unaffected.",
+    flagHighLat:"High latitude (>60°) — Ascendant precision degrades as the ecliptic becomes nearly parallel to the horizon. At 70°N the error may reach ≈0.6°.",
+    flagAscSensitive:"The Ascendant moves ≈1° every 4 minutes. Even small birth time errors significantly shift Ascendant-dependent interpretations.",
+    flagAWarn:"Partner A: time unknown — Moon uncertain ±6°, Ascendant excluded from analysis",
+    flagBWarn:"Partner B: time unknown — Moon uncertain ±6°, Ascendant excluded from analysis",
+    flagSlowTight:" tight outer-planet aspect(s) (orb ≤1°) — even at ≤0.25° precision, the aspect may be borderline.",
+    flagMoon:" Moon aspect(s) may shift significantly with unknown birth time (Moon moves ≈13°/day)",
     flagStdHigh:"High domain variance (σ=",
-    flagStdSuffix:") — chart presents contradictory energies",
+    flagStdSuffix:") — scores vary widely across domains, suggesting a complex or contradictory relational dynamic. No single score captures the full picture.",
     diagFlags:"DIAGNOSTIC FLAGS",
     ringLove:"Love",ringHarmony:"Harmony",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmic",
     compatTitles:["Stellar Union","Harmonious Bond","Complex Weave","Challenging Path","Deep Tension"],
@@ -657,26 +657,26 @@ const I18N = {
     tabNatal:"Thèmes Nataux",tabSynastry:"Aspects Synastrie",tabScores:"Détail des Scores",tabRaw:"Données Brutes",
     confidenceIndex:"◈ Indice de Confiance",oracleReport:"✦ Rapport de l'Oracle",
     confHigh:"Haute confiance",confGood:"Bonne confiance",confMod:"Confiance modérée",confLow:"Faible confiance",confVeryLow:"Très faible confiance",
-    confGlobalDesc:"Composite : précision astronomique (45%), couverture des aspects (25%), cohérence des domaines (30%)",
-    confAstro:"Précision Astronomique",confCoh:"Cohérence des Domaines",
     confGlobalDesc:"Précision astronomique (50%) + cohérence des domaines (50%)",
-    confAstroNote:"Pénalisé pour heure inconnue et aspects serrés de planètes lentes.",
+    confAstro:"Précision Astronomique",confCoh:"Cohérence des Domaines",
+    confAstroNote:"Pénalisé pour heure inconnue et instabilité de l'Ascendant en haute latitude.",
     confCohNote:"Écart-type entre 5 domaines. Faible variance = image cohérente.",
     confNatalTitle:"Confiance du Thème Natal",
     confNatalDesc:"Précision astronomique (45%) + heure de naissance (55%)",
     confNatalAstro:"Précision Astronomique",confNatalTime:"Heure de Naissance",
-    confNatalAstroNote:"Les planètes lentes utilisent des formules simplifiées (vérifié JPL ≤2°).",
-    confNatalTimeNote:"Heure connue — Lune et Ascendant à pleine précision.",
-    confNatalTimeWarn:"Heure inconnue — Lune incertaine ±6°, Ascendant peu fiable.",
-    flagNatalTU:"Heure inconnue — Lune ±6°, Ascendant peu fiable.",
+    confNatalAstroNote:"Toutes les planètes vérifiées JPL ≤0,25°. Ascendant ≤0,01° (se dégrade aux latitudes extrêmes).",
+    confNatalTimeNote:"Heure connue — Lune et Ascendant à pleine précision. Note : ±4 min d'erreur sur l'heure ≈ ±1° de décalage de l'Ascendant.",
+    confNatalTimeWarn:"Heure inconnue — Lune incertaine ±6°, Ascendant non calculable. Les interprétations liées à l'Ascendant sont exclues.",
+    flagNatalTU:"Heure inconnue — position lunaire incertaine ±6° (se déplace de 0,55°/heure). Ascendant exclu. Soleil et planètes non affectés.",
     flagNatalSlow:"Planètes lentes : formules simplifiées (vérifié JPL ≤0,25°). Rarement d'impact sur le signe.",
-    flagHighLat:"Latitude élevée (>60°) — la précision de l'Ascendant se dégrade car l'écliptique devient quasi parallèle à l'horizon.",
-    flagAWarn:"Partenaire A : heure inconnue — Lune incertaine ±6°, Ascendant peu fiable",
-    flagBWarn:"Partenaire B : heure inconnue — Lune incertaine ±6°, Ascendant peu fiable",
-    flagSlowTight:" aspect(s) planète lente serré(s) (orbe ≤2°) — l'incertitude peut affecter ceux-ci.",
-    flagMoon:" aspect(s) Lune potentiellement affecté(s) par l'heure inconnue",
+    flagHighLat:"Latitude élevée (>60°) — la précision de l'Ascendant se dégrade car l'écliptique devient quasi parallèle à l'horizon. À 70°N l'erreur peut atteindre ≈0,6°.",
+    flagAscSensitive:"L'Ascendant se déplace d'≈1° toutes les 4 minutes. Même de petites erreurs sur l'heure décalent significativement les interprétations liées à l'Ascendant.",
+    flagAWarn:"Partenaire A : heure inconnue — Lune incertaine ±6°, Ascendant exclu de l'analyse",
+    flagBWarn:"Partenaire B : heure inconnue — Lune incertaine ±6°, Ascendant exclu de l'analyse",
+    flagSlowTight:" aspect(s) planète lente serré(s) (orbe ≤1°) — même à ≤0,25° de précision, l'aspect peut être limite.",
+    flagMoon:" aspect(s) Lune pouvant varier significativement avec l'heure inconnue (la Lune se déplace d'≈13°/jour)",
     flagStdHigh:"Forte variance inter-domaines (σ=",
-    flagStdSuffix:") — le thème présente des énergies contradictoires",
+    flagStdSuffix:") — les scores varient fortement entre domaines, suggérant une dynamique relationnelle complexe ou contradictoire. Aucun score unique ne capture la situation complète.",
     diagFlags:"DIAGNOSTICS",
     ringLove:"Amour",ringHarmony:"Harmonie",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmique",
     compatTitles:["Union Stellaire","Lien Harmonieux","Tissu Complexe","Chemin Difficile","Tension Profonde"],
@@ -785,23 +785,24 @@ const I18N = {
     confHigh:"Alta fiducia",confGood:"Buona fiducia",confMod:"Fiducia moderata",confLow:"Bassa fiducia",confVeryLow:"Fiducia molto bassa",
     confGlobalDesc:"Precisione astronomica (50%) + coerenza domini (50%)",
     confAstro:"Precisione Astronomica",confCoh:"Coerenza Domini",
-    confAstroNote:"Penalizzato per ora sconosciuta e aspetti stretti di pianeti lenti.",
+    confAstroNote:"Penalizzato per ora sconosciuta e instabilità dell'Ascendente ad alta latitudine.",
     confCohNote:"Deviazione standard tra 5 domini. Bassa varianza = quadro coerente.",
     confNatalTitle:"Confidenza del Tema Natale",
     confNatalDesc:"Precisione astronomica (45%) + ora di nascita (55%)",
     confNatalAstro:"Precisione Astronomica",confNatalTime:"Ora di Nascita",
-    confNatalAstroNote:"I pianeti lenti usano formule semplificate (verificato JPL ≤2°).",
-    confNatalTimeNote:"Ora nota — Luna e Ascendente a piena precisione.",
-    confNatalTimeWarn:"Ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile.",
-    flagNatalTU:"Ora sconosciuta — Luna ±6°, Ascendente inaffidabile.",
+    confNatalAstroNote:"Tutti i pianeti verificati JPL ≤0,25°. Ascendente ≤0,01° (si degrada alle latitudini estreme).",
+    confNatalTimeNote:"Ora nota — Luna e Ascendente a piena precisione. Nota: ±4 min di errore sull'ora ≈ ±1° di spostamento dell'Ascendente.",
+    confNatalTimeWarn:"Ora sconosciuta — Luna incerta ±6°, Ascendente non calcolabile. Le interpretazioni legate all'Ascendente sono escluse.",
+    flagNatalTU:"Ora sconosciuta — posizione lunare incerta ±6° (si muove di 0,55°/ora). Ascendente escluso. Sole e pianeti non influenzati.",
     flagNatalSlow:"Pianeti lenti: formule semplificate (verificato JPL ≤0,25°). Raramente influisce sul segno.",
-    flagHighLat:"Latitudine elevata (>60°) — la precisione dell'Ascendente si degrada perché l'eclittica diventa quasi parallela all'orizzonte.",
-    flagAWarn:"Partner A: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
-    flagBWarn:"Partner B: ora sconosciuta — Luna incerta ±6°, Ascendente inaffidabile",
-    flagSlowTight:" aspetto/i pianeti lenti stretto/i (orb ≤2°) — l'incertezza può influire.",
-    flagMoon:" aspetto/i Lunari potenzialmente influenzati dall'ora sconosciuta",
+    flagHighLat:"Latitudine elevata (>60°) — la precisione dell'Ascendente si degrada perché l'eclittica diventa quasi parallela all'orizzonte. A 70°N l'errore può raggiungere ≈0,6°.",
+    flagAscSensitive:"L'Ascendente si sposta di ≈1° ogni 4 minuti. Anche piccoli errori sull'ora spostano significativamente le interpretazioni legate all'Ascendente.",
+    flagAWarn:"Partner A: ora sconosciuta — Luna incerta ±6°, Ascendente escluso dall'analisi",
+    flagBWarn:"Partner B: ora sconosciuta — Luna incerta ±6°, Ascendente escluso dall'analisi",
+    flagSlowTight:" aspetto/i pianeti lenti stretto/i (orb ≤1°) — anche a ≤0,25° di precisione, l'aspetto può essere al limite.",
+    flagMoon:" aspetto/i Lunari che possono variare significativamente con l'ora sconosciuta (la Luna si muove di ≈13°/giorno)",
     flagStdHigh:"Alta varianza inter-domini (σ=",
-    flagStdSuffix:") — il tema presenta energie contraddittorie",
+    flagStdSuffix:") — i punteggi variano fortemente tra domini, suggerendo una dinamica relazionale complessa o contraddittoria. Nessun punteggio singolo cattura il quadro completo.",
     diagFlags:"FLAG DIAGNOSTICI",
     ringLove:"Amore",ringHarmony:"Armonia",ringPassion:"Passione",ringMental:"Mentale",ringKarmic:"Karmico",
     compatTitles:["Unione Stellare","Legame Armonioso","Intreccio Complesso","Percorso Difficile","Tensione Profonda"],
@@ -3701,15 +3702,11 @@ function renderRaw(){
 function computeNatalConf(profile,name){
   const flags=[];
   // ── Astronomical precision ──
+  // All planets now JPL-fitted ≤0.25°; no blanket penalty needed.
   let astro=100;
-  if(Object.keys(profile.retrogrades).some(p=>SLOW_P.has(p))){
-    astro-=10;
-    flags.push({i:'ℹ️',tx:t('flagNatalSlow')});
-  }
   // ── High latitude penalty (Ascendant degrades above 60°) ──
   const absLat=Math.abs(profile.lat||0);
   if(absLat>60&&!profile.timeUnknown){
-    // Scale penalty: 60°→0, 70°→-15, 80°→-30
     const penalty=Math.min(30,Math.round((absLat-60)*1.5));
     astro-=penalty;
     flags.push({i:'⚠️',tx:t('flagHighLat')});
@@ -3721,6 +3718,8 @@ function computeNatalConf(profile,name){
     flags.push({i:'⚠️',tx:t('flagNatalTU')});
   } else {
     timeScore=100;
+    // Ascendant sensitivity warning (always, when time is known)
+    flags.push({i:'ℹ️',tx:t('flagAscSensitive')});
   }
   const astroF=Math.max(50,astro);
   const global=Math.round(astroF*.45+timeScore*.55);
@@ -3739,8 +3738,9 @@ function computeConf(cA,cB,syn){
     astro-=penalty;
     flags.push({i:'⚠️',tx:t('flagHighLat')});
   }
-  const slowTight=syn.filter(p=>p.asp&&(p.slowA||p.slowB)&&parseFloat(p.asp.orb_actual)<=2).length;
-  if(slowTight>0){astro-=Math.min(10,slowTight*3);flags.push({i:'ℹ️',tx:slowTight+t('flagSlowTight')});}
+  // Tight outer-planet aspects: orb ≤1° may be borderline even at ≤0.25° precision
+  const slowTight=syn.filter(p=>p.asp&&(p.slowA||p.slowB)&&parseFloat(p.asp.orb_actual)<=1).length;
+  if(slowTight>0){astro-=Math.min(8,slowTight*2);flags.push({i:'ℹ️',tx:slowTight+t('flagSlowTight')});}
   const moonBad=syn.filter(p=>p.asp&&((p.pA==='Moon'&&cA.timeUnknown)||(p.pB==='Moon'&&cB.timeUnknown))).length;
   if(moonBad>0)flags.push({i:'⚠️',tx:moonBad+t('flagMoon')});
   const astroF=Math.max(40,astro);
