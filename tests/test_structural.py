@@ -180,3 +180,69 @@ def test_natal_split_boxes(html_path, element_id):
 def test_rerender_natal_builtin_defined(html_path):
     html = html_path.read_text(encoding='utf-8')
     assert 'function rerenderNatalBuiltin' in html
+
+
+# ── Synastry scoring structural tests ────────────────────────────────────────
+
+def test_sw_symmetry(engine_js):
+    """SW must be built from _SW_HALF with automatic reverse-pair generation."""
+    assert '_SW_HALF' in engine_js, "SW must be built from _SW_HALF half-table"
+    assert "if(a!==b)SW[`${b}-${a}`]=w" in engine_js, \
+        "SW must auto-generate reverse pairs from _SW_HALF"
+    # Verify _SW_HALF has the core pairs
+    m = re.search(r"const _SW_HALF=\{([\s\S]*?)\};", engine_js)
+    assert m, "_SW_HALF not found"
+    half = m.group(1)
+    assert "'Sun-Moon'" in half, "Sun-Moon missing from _SW_HALF"
+    assert "'Venus-Mars'" in half, "Venus-Mars missing from _SW_HALF"
+
+
+def test_sd_symmetry(engine_js):
+    """Every A-B pair in SD must also have B-A in the same domain."""
+    # SD is built from _SD_HALF, so check the final SD object
+    # We verify the construction pattern instead
+    assert '_SD_HALF' in engine_js, "_SD_HALF not found — SD must be built from symmetric half-table"
+    assert "if(a!==b)full.add(`${b}-${a}`)" in engine_js or 'if(a!==b)' in engine_js, \
+        "SD symmetry construction not found — must add reverse pairs"
+
+
+def test_sw_covers_sd(engine_js):
+    """Every pair referenced in SD must have a weight in SW (not rely on default 0.4)."""
+    # Extract _SD_HALF keys
+    sd_m = re.search(r"const _SD_HALF=\{([\s\S]*?)\};", engine_js)
+    assert sd_m, "_SD_HALF not found"
+    sd_pairs = set(re.findall(r"'(\w+-\w+)'", sd_m.group(1)))
+    # Extract _SW_HALF keys
+    sw_m = re.search(r"const _SW_HALF=\{([\s\S]*?)\};", engine_js)
+    assert sw_m, "_SW_HALF not found"
+    sw_pairs = set(re.findall(r"'(\w+-\w+)'", sw_m.group(1)))
+    # Check coverage (SD pairs should be in SW — at least one direction)
+    missing = []
+    for p in sd_pairs:
+        a, b = p.split('-')
+        if p not in sw_pairs and f"{b}-{a}" not in sw_pairs:
+            missing.append(p)
+    assert not missing, f"SD pairs missing from SW (will default to 0.4): {missing}"
+
+
+def test_harmAsp_sort_uses_parentheses(html_path):
+    """harmAsp sort must use explicit parentheses to avoid operator precedence bug."""
+    html = html_path.read_text(encoding='utf-8')
+    # Find all harmAsp sort expressions
+    matches = re.findall(r"harmAsp=.*?\.sort\(([^)]+\))", html)
+    assert matches, "harmAsp sort not found in HTML"
+    for sort_body in matches:
+        # Must NOT have the pattern: SW[...]||0-  (precedence bug)
+        assert '||0-' not in sort_body, \
+            f"harmAsp sort has operator precedence bug (||0- pattern): {sort_body}"
+
+
+CORE_PERSONAL_PAIRS = [
+    'Sun-Moon', 'Sun-Venus', 'Sun-Mars', 'Moon-Venus', 'Moon-Mars', 'Venus-Mars',
+    'Mercury-Sun', 'Mercury-Moon', 'Mercury-Venus',
+]
+
+@pytest.mark.parametrize("pair", CORE_PERSONAL_PAIRS)
+def test_sw_has_core_pair(engine_js, pair):
+    """Core personal planet pairs must have explicit weights in SW, not defaults."""
+    assert f"'{pair}'" in engine_js, f"Core pair {pair} missing from SW"

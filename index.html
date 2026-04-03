@@ -1272,16 +1272,52 @@ function buildSynastry(cA,cB){
   }
   return pairs;
 }
-// Scoring weights
-const SW={'Sun-Moon':1.8,'Moon-Sun':1.8,'Sun-Venus':1.5,'Venus-Sun':1.5,'Sun-Mars':1.3,'Mars-Sun':1.3,'Venus-Mars':1.6,'Mars-Venus':1.6,'Moon-Venus':1.4,'Venus-Moon':1.4,'Moon-Mars':1.2,'Mars-Moon':1.2,'Ascendant-Sun':1.2,'Sun-Ascendant':1.2,'Ascendant-Moon':1.3,'Moon-Ascendant':1.3,'Sun-Sun':.9,'Moon-Moon':.9,'Venus-Venus':1,'Mars-Mars':.7,'Mercury-Mercury':.8,'Jupiter-Sun':.7,'Jupiter-Moon':.7,'Saturn-Sun':.6,'Saturn-Moon':.6,'Saturn-Venus':.7,
-  'Pluto-Moon':1.1,'Moon-Pluto':1.1,'Pluto-Sun':1.0,'Sun-Pluto':1.0,'Pluto-Venus':.9,'Venus-Pluto':.9,'Pluto-Mars':.8,'Mars-Pluto':.8,'Pluto-Ascendant':.8,'Ascendant-Pluto':.8,
-  'Uranus-Sun':.8,'Sun-Uranus':.8,'Uranus-Moon':.9,'Moon-Uranus':.9,'Uranus-Venus':.8,'Venus-Uranus':.8,'Uranus-Mars':.7,'Mars-Uranus':.7,'Uranus-Ascendant':.7,'Ascendant-Uranus':.7,
-  'Neptune-Sun':.7,'Sun-Neptune':.7,'Neptune-Moon':.8,'Moon-Neptune':.8,'Neptune-Venus':.8,'Venus-Neptune':.8,'Neptune-Mars':.6,'Mars-Neptune':.6,'Neptune-Ascendant':.6,'Ascendant-Neptune':.6,
-  'Pluto-Mercury':.6,'Mercury-Pluto':.6,'Uranus-Mercury':.6,'Mercury-Uranus':.6,'Neptune-Mercury':.5,'Mercury-Neptune':.5,
-  'Pluto-Jupiter':.5,'Jupiter-Pluto':.5,'Uranus-Jupiter':.5,'Jupiter-Uranus':.5,'Neptune-Jupiter':.5,'Jupiter-Neptune':.5,
-  'Pluto-Saturn':.5,'Saturn-Pluto':.5,'Uranus-Saturn':.5,'Saturn-Uranus':.5,'Neptune-Saturn':.4,'Saturn-Neptune':.4,
-  'Uranus-Uranus':.3,'Neptune-Neptune':.3,'Pluto-Pluto':.3,'Uranus-Neptune':.3,'Neptune-Uranus':.3,'Uranus-Pluto':.3,'Pluto-Uranus':.3,'Neptune-Pluto':.3,'Pluto-Neptune':.3};
-const SD={love:['Venus-Mars','Mars-Venus','Sun-Moon','Moon-Sun','Sun-Venus','Venus-Sun','Moon-Venus','Venus-Moon','Neptune-Venus','Venus-Neptune','Neptune-Moon','Moon-Neptune'],harmony:['Sun-Sun','Moon-Moon','Venus-Venus','Jupiter-Sun','Jupiter-Moon','Jupiter-Venus','Neptune-Sun','Sun-Neptune'],passion:['Mars-Sun','Sun-Mars','Mars-Moon','Moon-Mars','Mars-Venus','Venus-Mars','Pluto-Mars','Mars-Pluto','Pluto-Venus','Venus-Pluto'],mental:['Mercury-Mercury','Mercury-Sun','Sun-Mercury','Mercury-Moon','Moon-Mercury','Uranus-Mercury','Mercury-Uranus','Uranus-Sun','Sun-Uranus'],karmic:['Saturn-Sun','Saturn-Moon','Saturn-Venus','Ascendant-Sun','Ascendant-Moon','Pluto-Sun','Sun-Pluto','Pluto-Moon','Moon-Pluto','Pluto-Venus','Venus-Pluto','Pluto-Ascendant','Ascendant-Pluto','Saturn-Pluto','Pluto-Saturn']};
+// Scoring weights — symmetric (A-B = B-A). Built from half-table to prevent asymmetry bugs.
+const _SW_HALF={
+  // Personal × Personal (highest weights — core relationship dynamics)
+  'Sun-Moon':1.8,'Sun-Venus':1.5,'Sun-Mars':1.3,'Moon-Venus':1.4,'Moon-Mars':1.2,'Venus-Mars':1.6,
+  'Mercury-Sun':.7,'Mercury-Moon':.7,'Mercury-Venus':.7,'Mercury-Mars':.6,
+  // Self-aspects
+  'Sun-Sun':.9,'Moon-Moon':.9,'Venus-Venus':1,'Mars-Mars':.7,'Mercury-Mercury':.8,
+  // Ascendant × Personal
+  'Ascendant-Sun':1.2,'Ascendant-Moon':1.3,'Ascendant-Venus':.9,'Ascendant-Mars':.8,'Ascendant-Mercury':.6,
+  // Jupiter × Personal (benefic expansion)
+  'Jupiter-Sun':.7,'Jupiter-Moon':.7,'Jupiter-Venus':.8,'Jupiter-Mars':.6,'Jupiter-Mercury':.6,
+  // Saturn × Personal (structure, commitment, karmic lessons)
+  'Saturn-Sun':.7,'Saturn-Moon':.7,'Saturn-Venus':.9,'Saturn-Mars':.6,'Saturn-Mercury':.5,
+  // Pluto × Personal (transformation, intensity)
+  'Pluto-Sun':1.0,'Pluto-Moon':1.1,'Pluto-Venus':.9,'Pluto-Mars':.8,'Pluto-Mercury':.6,'Pluto-Ascendant':.8,
+  // Uranus × Personal (disruption, excitement)
+  'Uranus-Sun':.8,'Uranus-Moon':.9,'Uranus-Venus':.8,'Uranus-Mars':.7,'Uranus-Mercury':.6,'Uranus-Ascendant':.7,
+  // Neptune × Personal (idealism, illusion)
+  'Neptune-Sun':.7,'Neptune-Moon':.8,'Neptune-Venus':.8,'Neptune-Mars':.6,'Neptune-Mercury':.5,'Neptune-Ascendant':.6,
+  // Social/Outer × Social/Outer (generational — low weight)
+  'Jupiter-Saturn':.4,'Jupiter-Uranus':.5,'Jupiter-Neptune':.5,'Jupiter-Pluto':.5,
+  'Saturn-Uranus':.5,'Saturn-Neptune':.4,'Saturn-Pluto':.5,
+  'Uranus-Neptune':.3,'Uranus-Pluto':.3,'Neptune-Pluto':.3,
+  'Uranus-Uranus':.3,'Neptune-Neptune':.3,'Pluto-Pluto':.3,
+};
+// Build full symmetric table: for every A-B, also add B-A with the same weight
+const SW={};
+for(const[k,w]of Object.entries(_SW_HALF)){
+  SW[k]=w;
+  const[a,b]=k.split('-');
+  if(a!==b)SW[`${b}-${a}`]=w;
+}
+// Score domains — symmetric: every A-B also implies B-A
+const _SD_HALF={
+  love:['Sun-Moon','Sun-Venus','Moon-Venus','Venus-Mars','Neptune-Venus','Neptune-Moon','Jupiter-Venus','Saturn-Venus'],
+  harmony:['Sun-Sun','Moon-Moon','Venus-Venus','Jupiter-Sun','Jupiter-Moon','Jupiter-Venus','Neptune-Sun'],
+  passion:['Mars-Sun','Mars-Moon','Mars-Venus','Pluto-Mars','Pluto-Venus'],
+  mental:['Mercury-Mercury','Mercury-Sun','Mercury-Moon','Uranus-Mercury','Uranus-Sun'],
+  karmic:['Saturn-Sun','Saturn-Moon','Saturn-Venus','Saturn-Mars','Ascendant-Sun','Ascendant-Moon','Pluto-Sun','Pluto-Moon','Pluto-Venus','Pluto-Ascendant','Saturn-Pluto'],
+};
+const SD={};
+for(const[dom,keys]of Object.entries(_SD_HALF)){
+  const full=new Set();
+  for(const k of keys){full.add(k);const[a,b]=k.split('-');if(a!==b)full.add(`${b}-${a}`);}
+  SD[dom]=[...full];
+}
 // Pre-built domain lookup: pair-key → list of domains it belongs to (O(1) vs Array.includes)
 const SD_MAP=new Map();
 for(const[dom,keys]of Object.entries(SD))for(const k of keys){if(!SD_MAP.has(k))SD_MAP.set(k,[]);SD_MAP.get(k).push(dom);}
@@ -1310,8 +1346,8 @@ function builtinReport(chartA,chartB,pairs,scores,nameA,nameB,lang){
   const compatName=L.compatTitles[compatIdx];
   const sn=s=>trSign(s,lang),pn=pl=>trPlanet(pl,lang),et=e=>trElem(e,lang);
   // Gather top harmonious and challenging aspects
-  const harmAsp=pairs.filter(p=>p.asp&&p.asp.h>0).sort((a,b)=>b.asp.h*SW[`${b.pA}-${b.pB}`]||0-a.asp.h*SW[`${a.pA}-${a.pB}`]||0).slice(0,4);
-  const chalAsp=pairs.filter(p=>p.asp&&p.asp.h<0).sort((a,b)=>a.asp.h-b.asp.h).slice(0,3);
+  const harmAsp=pairs.filter(p=>p.asp&&p.asp.h>0).sort((a,b)=>(b.asp.h*(SW[`${b.pA}-${b.pB}`]||.4))-(a.asp.h*(SW[`${a.pA}-${a.pB}`]||.4))).slice(0,4);
+  const chalAsp=pairs.filter(p=>p.asp&&p.asp.h<0).sort((a,b)=>(a.asp.h*(SW[`${a.pA}-${a.pB}`]||.4))-(b.asp.h*(SW[`${b.pA}-${b.pB}`]||.4))).slice(0,3);
   const aspStr=p=>`${pn(p.pA)} ${trAspVerb(p.asp.name,lang)} ${pn(p.pB)}`;
   // Sun and Moon signs
   const sunA=chartA.pos.Sun.sign,moonA=chartA.pos.Moon.sign;
