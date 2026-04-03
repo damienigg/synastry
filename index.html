@@ -3556,16 +3556,9 @@ function toggleSec(hdr){hdr.classList.toggle('open');const b=hdr.nextElementSibl
 // ── Render tabs ──
 function renderNatal(){
   const{chartA,chartB,nameA,nameB}=STATE;
-  const posTable=(chart,cls)=>`<table class="tt"><thead><tr><th>Planet</th><th>Longitude</th><th>Sign</th><th>Degree</th></tr></thead><tbody>${[...PLANETS,'Ascendant'].map(p=>{const pos=chart.pos[p];if(!pos)return'';const slow=SLOW_P.has(p);return`<tr><td>${PSYM[p]||'↑'} ${p}${slow?` <span style="color:var(--amber);font-size:10px" title="±2-3° formula error">~</span>`:''}</td><td class="gdeg">${pos.lon.toFixed(4)}°</td><td>${pos.sym} ${pos.sign}</td><td class="${cls}">${pos.deg}° ${pos.sign}</td></tr>`}).join('')}</tbody></table>`;
   let html='';
-  if(chartA){
-    html+=`<div class="tsec"><div class="tsec-title" style="color:var(--rose)">${nameA} — Natal Positions</div>${posTable(chartA,'va')}</div>`;
-    html+=collapsibleSec(`${nameA} — Calculation Trace`,traceTable(chartA.trace,'va'),'var(--rose)');
-  }
-  if(chartB){
-    html+=`<div class="tsec"><div class="tsec-title" style="color:var(--azure)">${nameB} — Natal Positions</div>${posTable(chartB,'vb')}</div>`;
-    html+=collapsibleSec(`${nameB} — Calculation Trace`,traceTable(chartB.trace,'vb'),'var(--azure)');
-  }
+  if(chartA) html+=collapsibleSec(`${nameA} — Calculation Trace`,traceTable(chartA.trace,'va'),'var(--rose)');
+  if(chartB) html+=collapsibleSec(`${nameB} — Calculation Trace`,traceTable(chartB.trace,'vb'),'var(--azure)');
   document.getElementById('tab-natal').innerHTML=html;
 }
 function renderSynastry(){
