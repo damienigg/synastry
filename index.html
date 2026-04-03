@@ -1138,7 +1138,7 @@ function buildChart(dateStr,timeStr,tz,timeUnknown,lat,lon){
   tr('Julian Centuries T','T = (JD − 2451545.0) / 36525',T.toFixed(8));
   const sun=sunPos(T);pos.Sun=degSign(sun.lon);
   tr('Sun L₀','280.46646 + 36000.76983·T',`${sun.tL0}°`);tr('Sun M','357.52911 + 35999.05029·T',`${sun.tM}°`);
-  tr('Sun C','(1.9146−0.0048T)·sinM + …',`${sun.tC}°`);tr('Sun ☉',`L₀ + C`,`${sun.lon.toFixed(4)}° → ${pos.Sun.sign} ${pos.Sun.deg}°`);
+  tr('Sun C','(1.9146−0.0048T)·sinM + (0.0200−0.0001T)·sin2M + 0.0003·sin3M',`${sun.tC}°`);tr('Sun ☉',`L₀ + C`,`${sun.lon.toFixed(4)}° → ${pos.Sun.sign} ${pos.Sun.deg}°`);
   const moon=moonPos(T);pos.Moon=degSign(moon.lon);
   tr('Moon L₀ (Brown)','218.3164 + 481267.8812·T',`${moon.tL0}°`);tr('Moon ΣL (16 terms)','Σ periodic',`+${moon.tsL}°`);
   tr('Moon ☽','L₀ + ΣL/10⁶',`${moon.lon.toFixed(4)}° → ${pos.Moon.sign} ${pos.Moon.deg}°`);
