@@ -553,6 +553,7 @@ const I18N = {
     flagStdHigh:"High domain variance (σ=",
     flagStdSuffix:") — scores vary widely across domains, suggesting a complex or contradictory relational dynamic. No single score captures the full picture.",
     scoresNote:"Scores are derived from weighted aspect harmonics — they measure astronomical alignment patterns, not human compatibility. A low score does not mean a bad relationship; a high score does not guarantee one.",
+    weightsNote:"These weights are interpretive choices, not physical constants. They reflect astrological consensus on the relative importance of each planet pair in synastry, but the exact values are editorial. A pair not listed defaults to 0.4. Higher weight = more influence on the final score. Pairs are symmetric (A→B = B→A).",
     diagFlags:"DIAGNOSTIC FLAGS",
     ringLove:"Love",ringHarmony:"Harmony",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmic",
     compatTitles:["Stellar Union","Harmonious Bond","Complex Weave","Challenging Path","Deep Tension"],
@@ -680,6 +681,7 @@ const I18N = {
     flagStdHigh:"Forte variance inter-domaines (σ=",
     flagStdSuffix:") — les scores varient fortement entre domaines, suggérant une dynamique relationnelle complexe ou contradictoire. Aucun score unique ne capture la situation complète.",
     scoresNote:"Les scores sont dérivés d'harmoniques d'aspects pondérées — ils mesurent des motifs d'alignement astronomique, pas la compatibilité humaine. Un score bas ne signifie pas une mauvaise relation ; un score élevé n'en garantit pas une bonne.",
+    weightsNote:"Ces poids sont des choix interprétatifs, pas des constantes physiques. Ils reflètent un consensus astrologique sur l'importance relative de chaque paire de planètes en synastrie, mais les valeurs exactes sont éditoriales. Une paire non listée vaut 0,4 par défaut. Poids élevé = plus d'influence sur le score final. Les paires sont symétriques (A→B = B→A).",
     diagFlags:"DIAGNOSTICS",
     ringLove:"Amour",ringHarmony:"Harmonie",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmique",
     compatTitles:["Union Stellaire","Lien Harmonieux","Tissu Complexe","Chemin Difficile","Tension Profonde"],
@@ -807,6 +809,7 @@ const I18N = {
     flagStdHigh:"Alta varianza inter-domini (σ=",
     flagStdSuffix:") — i punteggi variano fortemente tra domini, suggerendo una dinamica relazionale complessa o contraddittoria. Nessun punteggio singolo cattura il quadro completo.",
     scoresNote:"I punteggi sono derivati da armoniche di aspetti ponderate — misurano modelli di allineamento astronomico, non la compatibilità umana. Un punteggio basso non significa una cattiva relazione; uno alto non ne garantisce una buona.",
+    weightsNote:"Questi pesi sono scelte interpretative, non costanti fisiche. Riflettono un consenso astrologico sull'importanza relativa di ogni coppia di pianeti in sinastria, ma i valori esatti sono editoriali. Una coppia non elencata vale 0,4 per difetto. Peso elevato = più influenza sul punteggio finale. Le coppie sono simmetriche (A→B = B→A).",
     diagFlags:"FLAG DIAGNOSTICI",
     ringLove:"Amore",ringHarmony:"Armonia",ringPassion:"Passione",ringMental:"Mentale",ringKarmic:"Karmico",
     compatTitles:["Unione Stellare","Legame Armonioso","Intreccio Complesso","Percorso Difficile","Tensione Profonda"],
@@ -3731,16 +3734,41 @@ function renderSynastry(){
     const fl=[];
     if(p.slowA||p.slowB)fl.push(`<span style="color:var(--silver);font-size:10px" title="Outer planet (JPL-fitted ≤0.25°)">~p</span>`);
     if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))fl.push(`<span style="color:var(--amber);font-size:10px" title="Time unknown">~t</span>`);
-    return`<tr><td class="va">${PSYM[p.pA]||'↑'} ${p.pA} <small style="color:var(--silver)">${p.sA}</small></td><td class="gdeg">${p.lA.toFixed(2)}°</td><td class="vb">${PSYM[p.pB]||'↑'} ${p.pB} <small style="color:var(--silver)">${p.sB}</small></td><td class="gdeg">${p.lB.toFixed(2)}°</td><td>${p.asp.diff}°</td><td>${aspChip(p.asp)}</td><td>${p.asp.orb_actual}°</td><td style="color:${p.asp.h>0?'var(--emerald)':'var(--rose)'}">${p.asp.h>0?'+':''}${p.asp.h}</td><td>${fl.join(' ')||'—'}</td></tr>`;
+    const w=SW[`${p.pA}-${p.pB}`]||.4;
+    const doms=SD_MAP.get(`${p.pA}-${p.pB}`);
+    const domBadges=doms?doms.map(d=>{const rd=RING_DEFS.find(r=>r.k===d);return`<span style="color:${rd?.c||'var(--silver)'};font-size:9px" title="${d}">${d.charAt(0).toUpperCase()}</span>`;}).join(' '):'';
+    return`<tr><td class="va">${PSYM[p.pA]||'↑'} ${p.pA} <small style="color:var(--silver)">${p.sA}</small></td><td class="gdeg">${p.lA.toFixed(2)}°</td><td class="vb">${PSYM[p.pB]||'↑'} ${p.pB} <small style="color:var(--silver)">${p.sB}</small></td><td class="gdeg">${p.lB.toFixed(2)}°</td><td>${p.asp.diff}°</td><td>${aspChip(p.asp)}</td><td>${p.asp.orb_actual}°</td><td style="color:${p.asp.h>0?'var(--emerald)':'var(--rose)'}">${p.asp.h>0?'+':''}${p.asp.h}</td><td class="gdeg">${w}</td><td>${domBadges||'—'}</td><td>${fl.join(' ')||'—'}</td></tr>`;
   }).join('');
-  document.getElementById('tab-synastry').innerHTML=`<div class="tsec"><div class="tsec-title">Synastry — ${nameA} × ${nameB}</div><table class="tt"><thead><tr><th>${nameA}</th><th>Lon</th><th>${nameB}</th><th>Lon</th><th>Δ°</th><th>Aspect</th><th>Orb</th><th>H</th><th>⚑</th></tr></thead><tbody>${rows}</tbody></table><div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;color:var(--silver);margin-top:10px">${syn.filter(p=>!p.asp).length} pairs without major aspect</div></div>`;
+  document.getElementById('tab-synastry').innerHTML=`<div class="tsec"><div class="tsec-title">Synastry — ${nameA} × ${nameB}</div><table class="tt"><thead><tr><th>${nameA}</th><th>Lon</th><th>${nameB}</th><th>Lon</th><th>Δ°</th><th>Aspect</th><th>Orb</th><th>H</th><th>W</th><th>Domains</th><th>⚑</th></tr></thead><tbody>${rows}</tbody></table><div style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;color:var(--silver);margin-top:10px">${syn.filter(p=>!p.asp).length} pairs without major aspect</div></div>`;
 }
 function renderScores(){
   const{scoreData}=STATE;
   const note=t('scoresNote');
-  const detRows=scoreData.details.map(d=>`<tr><td>${d.key}</td><td>${d.asp}</td><td style="color:${d.h>0?'var(--emerald)':'var(--rose)'}">${d.h}</td><td>${d.w}</td><td class="vn">${d.c}</td></tr>`).join('');
+  const weightsNote=t('weightsNote');
+  // Weighted aspects table
+  const detRows=scoreData.details.map(d=>{
+    const doms=SD_MAP.get(d.key);
+    const domBadges=doms?doms.map(dm=>{const rd=RING_DEFS.find(r=>r.k===dm);return`<span style="color:${rd?.c||'var(--silver)'}">${dm}</span>`;}).join(', '):'overall only';
+    return`<tr><td>${d.key}</td><td>${d.asp}</td><td style="color:${d.h>0?'var(--emerald)':'var(--rose)'}">${d.h}</td><td>${d.w}</td><td class="vn">${d.c}</td><td style="font-size:11px">${domBadges}</td></tr>`;
+  }).join('');
+  // Normalized scores
   const scRows=Object.entries(scoreData.scores).map(([k,v])=>`<tr><td style="text-transform:capitalize">${k}</td><td class="gdeg">${v}</td><td class="mono">((Σh·w / Σw) × 0.5 + 0.5) × 100</td></tr>`).join('');
-  document.getElementById('tab-scores').innerHTML=`<div style="font-family:'EB Garamond',serif;font-size:14px;color:var(--silver);font-style:italic;margin-bottom:18px;padding:12px;border:1px solid rgba(212,168,67,.15);background:rgba(212,168,67,.03);border-radius:var(--r)">${note}</div><div class="tsec"><div class="tsec-title">Weighted Aspects</div><table class="tt"><thead><tr><th>Pair</th><th>Aspect</th><th>Harmony h</th><th>Weight w</th><th>h·w</th></tr></thead><tbody>${detRows}</tbody></table></div><div class="tsec"><div class="tsec-title">Normalized Scores</div><table class="tt"><thead><tr><th>Domain</th><th>Score</th><th>Formula</th></tr></thead><tbody>${scRows}</tbody></table></div>`;
+  // Weight reference table (from _SW_HALF, grouped by tier)
+  const swEntries=Object.entries(_SW_HALF).filter(([k])=>!k.includes('-'+k.split('-')[0])).sort((a,b)=>b[1]-a[1]);
+  const swRows=swEntries.map(([k,w])=>{
+    const doms=SD_MAP.get(k);
+    const domTags=doms?doms.map(dm=>{const rd=RING_DEFS.find(r=>r.k===dm);return`<span style="color:${rd?.c||'var(--silver)'}">${dm}</span>`;}).join(', '):'—';
+    const tier=w>=1.4?'var(--gold)':w>=0.8?'var(--emerald)':w>=0.5?'var(--pale)':'var(--silver)';
+    return`<tr><td>${k}</td><td style="color:${tier};font-weight:600">${w}</td><td style="font-size:11px">${domTags}</td></tr>`;
+  }).join('');
+  document.getElementById('tab-scores').innerHTML=
+    `<div style="font-family:'EB Garamond',serif;font-size:14px;color:var(--silver);font-style:italic;margin-bottom:18px;padding:12px;border:1px solid rgba(212,168,67,.15);background:rgba(212,168,67,.03);border-radius:var(--r)">${note}</div>`+
+    `<div class="tsec"><div class="tsec-title">Weighted Aspects — This Chart</div><table class="tt"><thead><tr><th>Pair</th><th>Aspect</th><th>H</th><th>W</th><th>H×W</th><th>Domains</th></tr></thead><tbody>${detRows}</tbody></table></div>`+
+    `<div class="tsec"><div class="tsec-title">Normalized Scores</div><table class="tt"><thead><tr><th>Domain</th><th>Score</th><th>Formula</th></tr></thead><tbody>${scRows}</tbody></table></div>`+
+    collapsibleSec('Weight Reference Table — All Planet Pairs',
+      `<div style="font-family:'EB Garamond',serif;font-size:13px;color:var(--silver);font-style:italic;margin-bottom:14px;padding:10px;border:1px solid var(--border);background:rgba(0,0,0,.2);border-radius:var(--r)">${weightsNote}</div>`+
+      `<table class="tt"><thead><tr><th>Planet Pair</th><th>Weight</th><th>Domains</th></tr></thead><tbody>${swRows}</tbody></table>`,
+      'var(--silver)');
 }
 function renderRaw(){
   const{chartA,chartB,syn,scoreData,nameA,nameB}=STATE;
