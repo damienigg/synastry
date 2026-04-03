@@ -3887,7 +3887,19 @@ function renderReport(text){
     it:{Conjunction:'si fonde con',Trine:'fluisce in armonia con',Sextile:'coopera con',Square:'sfida',Opposition:'entra in tensione con',Quincunx:'fatica ad allinearsi con'}};
   const _needs=_evNeed[LANG]||_evNeed.en;
   const _verbs=_evVerb[LANG]||_evVerb.en;
-  const top=syn.filter(p=>p.asp&&p.asp.h!==0).sort((a,b)=>Math.abs(b.asp.h)-Math.abs(a.asp.h)).slice(0,6);
+  // Pick the strongest aspect of each type first, then fill remaining slots by strength
+  const _withAsp=syn.filter(p=>p.asp&&p.asp.h!==0);
+  const _byType=new Map();
+  for(const p of _withAsp){
+    const n=p.asp.name,score=Math.abs(p.asp.h)*(SW[`${p.pA}-${p.pB}`]||.4);
+    if(!_byType.has(n)||score>_byType.get(n)._score)_byType.set(n,{...p,_score:score});
+  }
+  const _picked=new Set();
+  const top=[..._byType.values()].sort((a,b)=>b._score-a._score);
+  for(const p of top)_picked.add(`${p.pA}-${p.pB}`);
+  // Fill remaining slots up to 6 with strongest unused aspects
+  const _rest=_withAsp.filter(p=>!_picked.has(`${p.pA}-${p.pB}`)).sort((a,b)=>Math.abs(b.asp.h)*(SW[`${b.pA}-${b.pB}`]||.4)-Math.abs(a.asp.h)*(SW[`${a.pA}-${a.pB}`]||.4));
+  while(top.length<6&&_rest.length)top.push(_rest.shift());
   document.getElementById('evcards').innerHTML=top.map(p=>{
     const fl=[];
     if(p.slowA||p.slowB)fl.push('<span style="color:var(--silver);font-size:10px">~p</span>');
