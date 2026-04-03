@@ -53,7 +53,7 @@ Planetary positions are computed entirely in JavaScript, client-side, using secu
 | Uranus | Secular elements + JPL-fitted perturbation (4 terms) | ≤ 0.12° vs JPL |
 | Neptune | Secular elements + JPL-fitted perturbation (1 term) | ≤ 0.09° vs JPL |
 | Pluto | Secular elements + JPL-fitted perturbation (5 terms) | ≤ 0.17° vs JPL |
-| Ascendant | GMST + obliquity + latitude | ≤ 0.01° vs Swiss Ephemeris |
+| Ascendant | GAST (nutation-corrected) + Laskar obliquity | ≤ 0.01° vs Swiss Ephemeris (≤ 0.64° at extreme latitudes) |
 
 All accuracy figures are verified by the automated test suite against 88 JPL Horizons positions per planet spanning 1920-2050 (total: 440+ reference points), plus Swiss Ephemeris for the Ascendant. All outer planets now achieve ≤ 0.25° accuracy — well within the 0.5° test tolerance.
 
