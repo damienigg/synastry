@@ -19,7 +19,7 @@ def test_engine_block(html_path, engine_js):
     'function buildSynastry', 'function scoreSyn', 'function computeConf',
     'function getAspect', 'function degSign', 'function ascPos',
     'function kepler', 'function vsopLBR',
-    'function jupPert', 'function satPert', 'function uraPert', 'function nepPert',
+    'function jupPert', 'function satPert', 'function uraPert', 'function nepPert', 'function pluPert',
     'const toJD', 'const toT', 'const m360',
     'const VSOP', 'const SECULAR', 'const ASPECTS',
     'const ZSIGNS', 'const ZSYMS', 'const SLOW_P', 'const SW', 'const SD',

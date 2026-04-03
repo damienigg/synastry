@@ -6,9 +6,9 @@
   "Mercury": 0.5,
   "Venus":   0.5,
   "Mars":    0.5,
-  "Jupiter": 2.0,
-  "Saturn":  3.0,
-  "Uranus":  2.0,
+  "Jupiter": 0.5,
+  "Saturn":  0.5,
+  "Uranus":  0.5,
   "Neptune": 0.5,
-  "Pluto":   2.0
+  "Pluto":   0.5
 }
