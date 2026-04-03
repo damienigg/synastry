@@ -3,17 +3,17 @@
 Bump the version across VERSION.md and index.html.
 
 Usage:
-    python3 bump_version.py 10.4.0          # set explicit version
-    python3 bump_version.py patch           # 10.3.0 → 10.3.1
-    python3 bump_version.py minor           # 10.3.0 → 10.4.0
-    python3 bump_version.py major           # 10.3.0 → 11.0.0
-    python3 bump_version.py                 # show current version
+    python3 scripts/bump_version.py 10.4.0  # set explicit version
+    python3 scripts/bump_version.py patch   # 10.3.0 → 10.3.1
+    python3 scripts/bump_version.py minor   # 10.3.0 → 10.4.0
+    python3 scripts/bump_version.py major   # 10.3.0 → 11.0.0
+    python3 scripts/bump_version.py         # show current version
 """
 
 import re, sys, datetime
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).resolve().parent.parent
 VERSION_MD = ROOT / 'VERSION.md'
 INDEX_HTML = ROOT / 'index.html'
 
