@@ -3984,14 +3984,27 @@ function renderReport(text){
   document.getElementById('rings').innerHTML=RING_DEFS.map(r=>ring(ringLabel(r),sc[r.k],r.c)).join('');
   document.getElementById('syn-charts').innerHTML=aspectHeatmap(syn,nameA,nameB);
   // Evidence cards — pair-specific descriptions using need/drive labels
-  const _evNeed={en:{Sun:'sense of identity',Moon:'emotional needs',Mercury:'way of thinking',Venus:'capacity for love',Mars:'drive and desire',Jupiter:'need for growth',Saturn:'need for structure',Uranus:'urge for freedom',Neptune:'idealism',Pluto:'need for transformation',Ascendant:'outward presence'},
-    fr:{Sun:'sens de l\'identité',Moon:'besoins émotionnels',Mercury:'manière de penser',Venus:'capacité d\'aimer',Mars:'élan et désir',Jupiter:'besoin de croissance',Saturn:'besoin de structure',Uranus:'besoin de liberté',Neptune:'idéalisme',Pluto:'besoin de transformation',Ascendant:'présence extérieure'},
-    it:{Sun:'senso di identità',Moon:'bisogni emotivi',Mercury:'modo di pensare',Venus:'capacità di amare',Mars:'slancio e desiderio',Jupiter:'bisogno di crescita',Saturn:'bisogno di struttura',Uranus:'bisogno di libertà',Neptune:'idealismo',Pluto:'bisogno di trasformazione',Ascendant:'presenza esteriore'}};
+  // Evidence cards — need labels with proper articles per language
+  // FR/IT: [article, noun] to handle le/la/l'/les/il/lo/la/i
+  const _evNeed={
+    en:{Sun:'sense of identity',Moon:'emotional needs',Mercury:'way of thinking',Venus:'capacity for love',Mars:'drive and desire',Jupiter:'need for growth',Saturn:'need for structure',Uranus:'urge for freedom',Neptune:'idealism',Pluto:'need for transformation',Ascendant:'outward presence'},
+    fr:{Sun:['le','sens de l\'identité'],Moon:['les','besoins émotionnels'],Mercury:['la','manière de penser'],Venus:['la','capacité d\'aimer'],Mars:['l\'','élan et le désir'],Jupiter:['le','besoin de croissance'],Saturn:['le','besoin de structure'],Uranus:['le','besoin de liberté'],Neptune:['l\'','idéalisme'],Pluto:['le','besoin de transformation'],Ascendant:['la','présence extérieure']},
+    it:{Sun:['il','senso di identità'],Moon:['i','bisogni emotivi'],Mercury:['il','modo di pensare'],Venus:['la','capacità di amare'],Mars:['lo','slancio e il desiderio'],Jupiter:['il','bisogno di crescita'],Saturn:['il','bisogno di struttura'],Uranus:['il','bisogno di libertà'],Neptune:['l\'','idealismo'],Pluto:['il','bisogno di trasformazione'],Ascendant:['la','presenza esteriore']},
+  };
   const _evVerb={en:{Conjunction:'merges with',Trine:'flows harmoniously with',Sextile:'cooperates with',Square:'challenges',Opposition:'stands in tension with',Quincunx:'struggles to align with'},
     fr:{Conjunction:'fusionne avec',Trine:'s\'harmonise avec',Sextile:'coopère avec',Square:'défie',Opposition:'entre en tension avec',Quincunx:'peine à s\'aligner avec'},
     it:{Conjunction:'si fonde con',Trine:'fluisce in armonia con',Sextile:'coopera con',Square:'sfida',Opposition:'entra in tensione con',Quincunx:'fatica ad allinearsi con'}};
-  const _needs=_evNeed[LANG]||_evNeed.en;
+  const _needsRaw=_evNeed[LANG]||_evNeed.en;
   const _verbs=_evVerb[LANG]||_evVerb.en;
+  // Build "article + noun + de + name" per language
+  function _evPhrase(planet,name){
+    const raw=_needsRaw[planet];
+    if(!raw)return planet;
+    if(typeof raw==='string')return`${name}'s ${raw}`; // EN
+    const[art,noun]=raw;
+    // FR/IT: capitalize article at start, handle elision
+    return`${art.endsWith('\'')?art:art+' '}${noun} de ${name}`;
+  }
   // Pick the strongest aspect of each type first, then fill remaining slots by strength
   const _withAsp=syn.filter(p=>p.asp&&p.asp.h!==0);
   const _byType=new Map();
@@ -4009,10 +4022,11 @@ function renderReport(text){
     const fl=[];
     if(p.slowA||p.slowB)fl.push('<span style="color:var(--silver);font-size:10px">~p</span>');
     if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))fl.push('<span style="color:var(--amber);font-size:10px">~t</span>');
-    const nA=_needs[p.pA]||p.pA,nB=_needs[p.pB]||p.pB;
     const verb=_verbs[p.asp.name]||p.asp.name;
     const pnA=trPlanet(p.pA,LANG),pnB=trPlanet(p.pB,LANG);
-    const desc={en:`${nameA}'s ${nA} ${verb} ${nameB}'s ${nB}`,fr:`Le ${nA} de ${nameA} ${verb} le ${nB} de ${nameB}`,it:`Il ${nA} di ${nameA} ${verb} il ${nB} di ${nameB}`}[LANG]||`${nameA}'s ${nA} ${verb} ${nameB}'s ${nB}`;
+    const phA=_evPhrase(p.pA,nameA),phB=_evPhrase(p.pB,nameB);
+    // Capitalize first letter of phrase A
+    const desc=(phA.charAt(0).toUpperCase()+phA.slice(1))+' '+verb+' '+phB;
     return`<div class="evcard"><div class="eva">${aspChip(p.asp)} <span style="color:var(--silver);font-size:12px;margin-left:6px">${PSYM[p.pA]||'↑'}${pnA} × ${PSYM[p.pB]||'↑'}${pnB}</span> ${fl.join(' ')}</div><div class="evd">${desc}</div></div>`;
   }).join('');
   document.getElementById('rbody').innerHTML=fmtHTML(text);
