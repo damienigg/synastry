@@ -4,6 +4,17 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.7.1] — 2026-04-05
+
+### Added
+- **City suggestions in Ideal Match Solver** — when no city is specified and the "Suggest best cities" checkbox is ticked (default), the solver runs a two-phase search: Phase 1 sweeps all dates with Partner A's city to find the top 20 candidates, then Phase 2 refines those dates across 42 major world cities covering all timezones and latitudes (Reykjavik to Auckland, Anchorage to São Paulo). Results now include a City column showing the optimal date+city combination.
+- Built-in `SOLVER_CITIES` constant with 42 curated cities spanning UTC-10 to UTC+12 and latitudes from 64°N to 37°S.
+- "Suggest best cities" checkbox in solver modal (EN/FR/IT).
+- Phase 2 progress indicator with dedicated I18N messages.
+- Clicking a result row now populates Partner B's city, latitude, longitude, and timezone alongside the date.
+
+---
+
 ## [10.7.0] — 2026-04-05
 
 ### Added

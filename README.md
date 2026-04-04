@@ -1,4 +1,4 @@
-# Synastria v10.7.0
+# Synastria v10.7.1
 
 **Astrological Oracle — Natal Profiles & Traceable Synastral Analysis**
 
@@ -22,7 +22,7 @@ Synastria computes astrological charts from birth data and generates human-reada
 - Compatibility scores across 6 domains: Overall, Love, Passion, Harmony, Mental, Karmic
 - Oracle compatibility report with evidence cards and domain rings
 - Both natal profiles available alongside the compatibility analysis
-- **Ideal Match Solver** — find the birth dates that maximize compatibility with Partner A
+- **Ideal Match Solver** — find the birth dates and cities that maximize compatibility with Partner A
 
 ---
 
@@ -32,7 +32,7 @@ Synastria computes astrological charts from birth data and generates human-reada
 2. Enter a birth date (type `DD/MM/YYYY` or use the calendar picker)
 3. Optionally enter birth time (improves Moon accuracy and enables Ascendant)
 4. Optionally select a birth city (for UTC offset and latitude)
-5. For synastry, fill in a second person's data — or click the **⊕** symbol between the two cards to open the **Ideal Match Solver** and find optimal dates automatically
+5. For synastry, fill in a second person's data — or click the **⊕** symbol between the two cards to open the **Ideal Match Solver** and find optimal dates and cities automatically
 6. Click **Cast the Charts**
 7. Use **Reset** to clear everything, or **Export PDF** to save a print-ready report
 

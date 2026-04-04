@@ -360,6 +360,12 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
         </div>
         <div style="font-size:12px;color:var(--silver);margin-top:2px;font-style:italic" data-i18n="solverCityNote"></div>
       </div>
+      <div class="solver-fg full" style="margin-top:-6px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:9px">
+          <input type="checkbox" id="solver-suggest-cities" checked style="width:auto;accent-color:var(--gold)">
+          <span data-i18n="solverSuggestCities"></span>
+        </label>
+      </div>
     </div>
     <button class="solver-run" id="solver-run-btn" onclick="runSolver()" data-i18n="solverRun"></button>
     <div class="solver-prog" id="solver-prog">
@@ -372,6 +378,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
         <thead><tr>
           <th data-i18n="solverRank"></th>
           <th data-i18n="solverDate"></th>
+          <th data-i18n="solverCityCol"></th>
           <th data-i18n="solverOverall"></th>
           <th data-i18n="solverLove"></th>
           <th data-i18n="solverHarmony"></th>
@@ -593,7 +600,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 // ═══════════════════════════════════════════════════
 // VERSION — single source of truth
 // ═══════════════════════════════════════════════════
-const APP_VERSION='10.7.0';
+const APP_VERSION='10.7.1';
 document.title=`Synastria v${APP_VERSION}`;
 document.getElementById('ver-badge').textContent=`v${APP_VERSION}`;
 document.getElementById('ver-header').textContent=`VERSION ${APP_VERSION}`;
@@ -733,11 +740,14 @@ const I18N = {
     solverSub:"Find the birth dates that maximize synastry compatibility with Partner A.",
     solverFrom:"Year from",solverTo:"Year to",
     solverCity:"Birth city for Partner B",
-    solverCityNote:"Uses Partner A's city if left empty.",
+    solverCityNote:"Fix a specific city, or leave empty and tick the box below to search worldwide.",
+    solverSuggestCities:"Also suggest best cities (40 world cities across all timezones)",
     solverRun:"Find Ideal Dates",solverStop:"Stop",
-    solverScanning:"Scanning {0} dates…",solverDone:"Done — {0} dates scanned.",
+    solverScanning:"Phase 1 — scanning dates… {0}",solverDone:"Done — {0} dates scanned.",
+    solverPhase2:"Phase 2 — refining top dates across {0} cities…",
+    solverDoneFull:"Done — {0} dates × {1} cities explored.",
     solverOverall:"Overall",solverLove:"Love",solverHarmony:"Harmony",solverPassion:"Passion",solverMental:"Mental",solverKarmic:"Karmic",
-    solverDate:"Date",solverRank:"#",
+    solverDate:"Date",solverCityCol:"City",solverRank:"#",
     solverApply:"Click a row to populate Partner B",
     solverNeedA:"Please fill in Partner A's birth date and city first.",
     solverNoResults:"No dates scored above 50% in this range.",
@@ -874,11 +884,14 @@ const I18N = {
     solverSub:"Trouver les dates de naissance qui maximisent la compatibilité synastrique avec le Partenaire A.",
     solverFrom:"Année de début",solverTo:"Année de fin",
     solverCity:"Ville de naissance pour le Partenaire B",
-    solverCityNote:"Utilise la ville du Partenaire A si vide.",
+    solverCityNote:"Fixez une ville précise, ou laissez vide et cochez la case ci-dessous pour une recherche mondiale.",
+    solverSuggestCities:"Suggérer aussi les meilleures villes (40 villes mondiales, tous fuseaux)",
     solverRun:"Trouver les Dates Idéales",solverStop:"Arrêter",
-    solverScanning:"Analyse de {0} dates…",solverDone:"Terminé — {0} dates analysées.",
+    solverScanning:"Phase 1 — analyse des dates… {0}",solverDone:"Terminé — {0} dates analysées.",
+    solverPhase2:"Phase 2 — affinage des meilleures dates sur {0} villes…",
+    solverDoneFull:"Terminé — {0} dates × {1} villes explorées.",
     solverOverall:"Global",solverLove:"Amour",solverHarmony:"Harmonie",solverPassion:"Passion",solverMental:"Mental",solverKarmic:"Karmique",
-    solverDate:"Date",solverRank:"#",
+    solverDate:"Date",solverCityCol:"Ville",solverRank:"#",
     solverApply:"Cliquez sur une ligne pour remplir le Partenaire B",
     solverNeedA:"Veuillez d'abord remplir la date et la ville de naissance du Partenaire A.",
     solverNoResults:"Aucune date au-dessus de 50 % dans cette plage.",
@@ -1015,11 +1028,14 @@ const I18N = {
     solverSub:"Trova le date di nascita che massimizzano la compatibilità sinastriale con il Partner A.",
     solverFrom:"Anno di inizio",solverTo:"Anno di fine",
     solverCity:"Città di nascita per il Partner B",
-    solverCityNote:"Usa la città del Partner A se vuoto.",
+    solverCityNote:"Fissa una città specifica, oppure lascia vuoto e spunta la casella qui sotto per cercare nel mondo.",
+    solverSuggestCities:"Suggerisci anche le città migliori (40 città mondiali, tutti i fusi orari)",
     solverRun:"Trova le Date Ideali",solverStop:"Fermare",
-    solverScanning:"Analisi di {0} date…",solverDone:"Completato — {0} date analizzate.",
+    solverScanning:"Fase 1 — analisi delle date… {0}",solverDone:"Completato — {0} date analizzate.",
+    solverPhase2:"Fase 2 — affinamento delle date migliori su {0} città…",
+    solverDoneFull:"Completato — {0} date × {1} città esplorate.",
     solverOverall:"Globale",solverLove:"Amore",solverHarmony:"Armonia",solverPassion:"Passione",solverMental:"Mentale",solverKarmic:"Karmico",
-    solverDate:"Data",solverRank:"#",
+    solverDate:"Data",solverCityCol:"Città",solverRank:"#",
     solverApply:"Clicca su una riga per compilare il Partner B",
     solverNeedA:"Compila prima la data e la città di nascita del Partner A.",
     solverNoResults:"Nessuna data sopra il 50% in questo intervallo.",
@@ -4440,6 +4456,52 @@ function _helpEsc(e){if(e.key==='Escape')closeHelp();}
 // ── SOLVER ──
 let _solverAbort=false;
 
+// 40 world cities covering all major timezones and latitudes
+const SOLVER_CITIES=[
+  {name:'Reykjavik',lat:64.15,lon:-21.94,iana:'Atlantic/Reykjavik'},
+  {name:'London',lat:51.51,lon:-0.13,iana:'Europe/London'},
+  {name:'Dakar',lat:14.69,lon:-17.44,iana:'Africa/Dakar'},
+  {name:'Paris',lat:48.86,lon:2.35,iana:'Europe/Paris'},
+  {name:'Madrid',lat:40.42,lon:-3.70,iana:'Europe/Madrid'},
+  {name:'Rome',lat:41.89,lon:12.50,iana:'Europe/Rome'},
+  {name:'Berlin',lat:52.52,lon:13.41,iana:'Europe/Berlin'},
+  {name:'Stockholm',lat:59.33,lon:18.07,iana:'Europe/Stockholm'},
+  {name:'Lagos',lat:6.52,lon:3.38,iana:'Africa/Lagos'},
+  {name:'Athens',lat:37.98,lon:23.73,iana:'Europe/Athens'},
+  {name:'Cairo',lat:30.04,lon:31.24,iana:'Africa/Cairo'},
+  {name:'Johannesburg',lat:-26.20,lon:28.04,iana:'Africa/Johannesburg'},
+  {name:'Cape Town',lat:-33.93,lon:18.42,iana:'Africa/Johannesburg'},
+  {name:'Istanbul',lat:41.01,lon:28.98,iana:'Europe/Istanbul'},
+  {name:'Moscow',lat:55.76,lon:37.62,iana:'Europe/Moscow'},
+  {name:'Nairobi',lat:-1.29,lon:36.82,iana:'Africa/Nairobi'},
+  {name:'Dubai',lat:25.20,lon:55.27,iana:'Asia/Dubai'},
+  {name:'Mumbai',lat:19.08,lon:72.88,iana:'Asia/Kolkata'},
+  {name:'Delhi',lat:28.61,lon:77.21,iana:'Asia/Kolkata'},
+  {name:'Colombo',lat:6.93,lon:79.85,iana:'Asia/Colombo'},
+  {name:'Bangkok',lat:13.76,lon:100.50,iana:'Asia/Bangkok'},
+  {name:'Jakarta',lat:-6.21,lon:106.85,iana:'Asia/Jakarta'},
+  {name:'Singapore',lat:1.35,lon:103.82,iana:'Asia/Singapore'},
+  {name:'Hong Kong',lat:22.32,lon:114.17,iana:'Asia/Hong_Kong'},
+  {name:'Beijing',lat:39.90,lon:116.41,iana:'Asia/Shanghai'},
+  {name:'Seoul',lat:37.57,lon:126.98,iana:'Asia/Seoul'},
+  {name:'Tokyo',lat:35.68,lon:139.69,iana:'Asia/Tokyo'},
+  {name:'Sydney',lat:-33.87,lon:151.21,iana:'Australia/Sydney'},
+  {name:'Melbourne',lat:-37.81,lon:144.96,iana:'Australia/Melbourne'},
+  {name:'Auckland',lat:-36.85,lon:174.76,iana:'Pacific/Auckland'},
+  {name:'Honolulu',lat:21.31,lon:-157.86,iana:'Pacific/Honolulu'},
+  {name:'Anchorage',lat:61.22,lon:-149.90,iana:'America/Anchorage'},
+  {name:'Los Angeles',lat:34.05,lon:-118.24,iana:'America/Los_Angeles'},
+  {name:'Denver',lat:39.74,lon:-104.98,iana:'America/Denver'},
+  {name:'Mexico City',lat:19.43,lon:-99.13,iana:'America/Mexico_City'},
+  {name:'Chicago',lat:41.88,lon:-87.63,iana:'America/Chicago'},
+  {name:'New York',lat:40.71,lon:-74.01,iana:'America/New_York'},
+  {name:'Toronto',lat:43.65,lon:-79.38,iana:'America/Toronto'},
+  {name:'Bogota',lat:4.71,lon:-74.07,iana:'America/Bogota'},
+  {name:'Lima',lat:-12.05,lon:-77.04,iana:'America/Lima'},
+  {name:'São Paulo',lat:-23.55,lon:-46.63,iana:'America/Sao_Paulo'},
+  {name:'Buenos Aires',lat:-34.60,lon:-58.38,iana:'America/Argentina/Buenos_Aires'},
+];
+
 function openSolver(){
   const dA=document.getElementById('dateA').value;
   const csA=document.getElementById('cs-A').value.trim();
@@ -4479,9 +4541,16 @@ async function runSolver(){
 
   // Person B location: use solver city if filled, else Person A's
   const csSolver=document.getElementById('cs-solver').value.trim();
-  const latB=csSolver?parseFloat(document.getElementById('latsolver').value)||42:latA;
-  const lonB=csSolver?parseFloat(document.getElementById('lonsolver').value)||0:lonA;
-  const ianaB=csSolver?(document.getElementById('ianasolver').value||'UTC'):ianaA;
+  const fixedCity=csSolver?{
+    name:csSolver,
+    lat:parseFloat(document.getElementById('latsolver').value)||42,
+    lon:parseFloat(document.getElementById('lonsolver').value)||0,
+    iana:document.getElementById('ianasolver').value||'UTC'
+  }:null;
+  const suggestCities=!fixedCity&&document.getElementById('solver-suggest-cities').checked;
+
+  // Phase 1 reference city
+  const refCity=fixedCity||{name:document.getElementById('cs-A').value,lat:latA,lon:lonA,iana:ianaA};
 
   const yrFrom=parseInt(document.getElementById('solver-yr-from').value)||1990;
   const yrTo=parseInt(document.getElementById('solver-yr-to').value)||2000;
@@ -4502,7 +4571,6 @@ async function runSolver(){
 
   const total=dates.length;
   const btn=document.getElementById('solver-run-btn');
-  btn.disabled=true;
   btn.textContent=t('solverStop');
   btn.onclick=()=>{_solverAbort=true;};
   btn.disabled=false;
@@ -4513,53 +4581,95 @@ async function runSolver(){
   prog.style.display='block';
   document.getElementById('solver-results').style.display='none';
 
-  // Top-N tracker (keep best 10)
-  const TOP_N=10;
+  // Top-N tracker (keep best entries)
+  const PHASE1_N=suggestCities?20:10;
   const top=[];
 
-  function insertTop(entry){
-    // Binary insert into sorted-descending array
-    let lo=0,hi=top.length;
-    while(lo<hi){const mid=(lo+hi)>>1;if(top[mid].scores.overall>=entry.scores.overall)lo=mid+1;else hi=mid;}
-    top.splice(lo,0,entry);
-    if(top.length>TOP_N)top.length=TOP_N;
+  function insertTop(arr,entry,maxN){
+    let lo=0,hi=arr.length;
+    while(lo<hi){const mid=(lo+hi)>>1;if(arr[mid].scores.overall>=entry.scores.overall)lo=mid+1;else hi=mid;}
+    arr.splice(lo,0,entry);
+    if(arr.length>maxN)arr.length=maxN;
   }
 
+  // ── Phase 1: sweep dates with reference city ──
   const CHUNK=60;
   for(let i=0;i<total;i+=CHUNK){
     if(_solverAbort)break;
     const end=Math.min(i+CHUNK,total);
     for(let j=i;j<end;j++){
       const ds=dates[j];
-      const tzB_d=ianaOffsetAtDate(ianaB,ds,'12:00');
-      const cB=buildChart(ds,'12:00',tzB_d,true,latB,lonB);
+      const tz=ianaOffsetAtDate(refCity.iana,ds,'12:00');
+      const cB=buildChart(ds,'12:00',tz,true,refCity.lat,refCity.lon);
       const pairs=buildSynastry(chartA,cB);
       const{scores}=scoreSyn(pairs);
-      if(top.length<TOP_N||scores.overall>top[top.length-1].scores.overall){
-        insertTop({date:ds,scores});
+      if(top.length<PHASE1_N||scores.overall>top[top.length-1].scores.overall){
+        insertTop(top,{date:ds,city:refCity.name,lat:refCity.lat,lon:refCity.lon,iana:refCity.iana,scores},PHASE1_N);
       }
     }
-    const pct=Math.round(end/total*100);
+    const pct=suggestCities?Math.round(end/total*80):Math.round(end/total*100);
     pbar.style.width=pct+'%';
     plog.textContent=t('solverScanning').replace('{0}',end+'/'+total);
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   }
 
+  // ── Phase 2: refine top dates across world cities ──
+  let finalTop;
+  if(suggestCities&&!_solverAbort){
+    plog.textContent=t('solverPhase2').replace('{0}',SOLVER_CITIES.length);
+    finalTop=[];
+    const topDates=top.map(e=>e.date);
+    const phase2Total=topDates.length*SOLVER_CITIES.length;
+    let phase2Done=0;
+    for(const ds of topDates){
+      if(_solverAbort)break;
+      for(const city of SOLVER_CITIES){
+        const tz=ianaOffsetAtDate(city.iana,ds,'12:00');
+        const cB=buildChart(ds,'12:00',tz,true,city.lat,city.lon);
+        const pairs=buildSynastry(chartA,cB);
+        const{scores}=scoreSyn(pairs);
+        if(finalTop.length<10||scores.overall>finalTop[finalTop.length-1].scores.overall){
+          insertTop(finalTop,{date:ds,city:city.name,lat:city.lat,lon:city.lon,iana:city.iana,scores},10);
+        }
+        phase2Done++;
+      }
+      const pct=80+Math.round(phase2Done/phase2Total*20);
+      pbar.style.width=pct+'%';
+      plog.textContent=t('solverPhase2').replace('{0}',SOLVER_CITIES.length);
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    }
+    // Also keep phase-1 winners that may still beat phase-2 results
+    for(const e of top){
+      if(finalTop.length<10||e.scores.overall>finalTop[finalTop.length-1].scores.overall){
+        insertTop(finalTop,e,10);
+      }
+    }
+  } else {
+    finalTop=top.slice(0,10);
+  }
+
   pbar.style.width='100%';
-  plog.textContent=t(_solverAbort?'solverScanning':'solverDone').replace('{0}',total);
+  if(suggestCities&&!_solverAbort){
+    plog.textContent=t('solverDoneFull').replace('{0}',total).replace('{1}',SOLVER_CITIES.length);
+  } else {
+    plog.textContent=t(_solverAbort?'solverScanning':'solverDone').replace('{0}',total);
+  }
 
   // Show results
   const res=document.getElementById('solver-results');
   const tbody=document.getElementById('solver-tbody');
-  if(top.length===0){
-    tbody.innerHTML=`<tr><td colspan="8" class="solver-none">${t('solverNoResults')}</td></tr>`;
+  const showCity=suggestCities||fixedCity;
+  if(finalTop.length===0){
+    tbody.innerHTML=`<tr><td colspan="9" class="solver-none">${t('solverNoResults')}</td></tr>`;
   } else {
-    tbody.innerHTML=top.map((e,i)=>{
+    tbody.innerHTML=finalTop.map((e,i)=>{
       const s=e.scores;
       const fmtDate=e.date.split('-').reverse().join('/');
-      return`<tr class="solver-row" onclick="applySolverResult('${e.date}')">
+      const esc=e.city.replace(/'/g,"\\'");
+      return`<tr class="solver-row" onclick="applySolverResult('${e.date}','${esc}',${e.lat},${e.lon},'${e.iana}')">
         <td>${i+1}</td>
         <td>${fmtDate}</td>
+        <td>${e.city}</td>
         <td class="score-overall">${s.overall}%<span class="score-bar" style="width:${s.overall*0.4}px"></span></td>
         <td>${s.love}%</td>
         <td>${s.harmony}%</td>
@@ -4576,7 +4686,7 @@ async function runSolver(){
   btn.onclick=runSolver;
 }
 
-function applySolverResult(dateStr){
+function applySolverResult(dateStr,cityName,lat,lon,iana){
   // Populate Partner B fields
   const[y,m,d]=dateStr.split('-');
   document.getElementById('dateB').value=dateStr;
@@ -4584,21 +4694,12 @@ function applySolverResult(dateStr){
   document.getElementById('timeB').value='12:00';
   document.getElementById('tuB').checked=true;
 
-  // Copy solver city to B (or A's city if solver city empty)
-  const csSolver=document.getElementById('cs-solver').value.trim();
-  if(csSolver){
-    document.getElementById('cs-B').value=csSolver;
-    document.getElementById('tzB').value=document.getElementById('tzsolver').value;
-    document.getElementById('latB').value=document.getElementById('latsolver').value;
-    document.getElementById('lonB').value=document.getElementById('lonsolver').value;
-    document.getElementById('ianaB').value=document.getElementById('ianasolver').value;
-  } else {
-    document.getElementById('cs-B').value=document.getElementById('cs-A').value;
-    document.getElementById('tzB').value=document.getElementById('tzA').value;
-    document.getElementById('latB').value=document.getElementById('latA').value;
-    document.getElementById('lonB').value=document.getElementById('lonA').value;
-    document.getElementById('ianaB').value=document.getElementById('ianaA').value;
-  }
+  document.getElementById('cs-B').value=cityName;
+  document.getElementById('latB').value=lat;
+  document.getElementById('lonB').value=lon;
+  document.getElementById('ianaB').value=iana;
+  const tz=ianaOffsetAtDate(iana,dateStr,'12:00');
+  document.getElementById('tzB').value=tz;
 
   // Set time unknown
   toggleTU('B');
