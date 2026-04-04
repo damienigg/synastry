@@ -3945,8 +3945,9 @@ function aspectHeatmap(syn,nameA,nameB){
   // Partner name labels
   labels+=`<text x="${pad-5}" y="${pad-22}" text-anchor="end" fill="var(--rose)" font-family="Cinzel,serif" font-size="9" letter-spacing=".2em">${nameA}</text>`;
   labels+=`<text x="${pad+planets.length*cellSize/2}" y="${pad-26}" text-anchor="middle" fill="var(--azure)" font-family="Cinzel,serif" font-size="9" letter-spacing=".2em">${nameB}</text>`;
-  const _dot=c=>`<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${c};vertical-align:middle;margin-right:4px"></span>`;
-  const legend=`<div style="display:flex;justify-content:center;gap:16px;margin-top:8px;font-family:Cinzel,serif;font-size:8px;letter-spacing:.15em;color:var(--silver)"><span>${_dot('rgba(74,184,154,.5)')}${t('hmHarmonious')}</span><span>${_dot('rgba(196,96,122,.5)')}${t('hmChallenging')}</span><span>${_dot('rgba(180,140,255,.04);border:1px solid rgba(180,140,255,.15)')}${t('hmNoAspect')}</span></div>`;
+  const _dot=c=>`<span style="display:inline-block;width:10px;height:10px;border-radius:2px;${c};vertical-align:middle;margin-right:4px"></span>`;
+  const _grad=c=>`<span style="display:inline-block;width:30px;height:10px;border-radius:2px;background:linear-gradient(90deg,${c.replace('X','.25')},${c.replace('X','.7')});vertical-align:middle;margin-right:4px"></span>`;
+  const legend=`<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:8px;font-family:Cinzel,serif;font-size:8px;letter-spacing:.15em;color:var(--silver)"><span>${_grad('rgba(74,184,154,X)')}${t('hmHarmonious')}</span><span>${_grad('rgba(196,96,122,X)')}${t('hmChallenging')}</span><span>${_dot('background:rgba(180,140,255,.04);border:1px solid rgba(180,140,255,.15)')}${t('hmNoAspect')}</span></div>`;
   return`<div style="text-align:center;overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${cells}${labels}</svg>${legend}</div>`;
 }
 
