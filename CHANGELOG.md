@@ -15,7 +15,7 @@ All notable changes to Synastria are documented in this file.
 
 ### Changed
 - **Evidence cards diversified** — one per aspect type (best conjunction, best trine, etc.) then filled by strength, instead of showing 6 cards of the same type.
-- **Evidence card text** — now describes human needs/drives ("Le sens de l'identité de Damien fusionne avec les besoins émotionnels de Laure") instead of repeating planet names already shown in the card header.
+- **Evidence card text** — now describes human needs/drives ("Le sens d'identité de A fusionne avec les besoins émotionnels de B") instead of repeating planet names already shown in the card header.
 - **Elemental compatibility** — expanded from 4 categories to 7 distinct pairings (Fire+Water, Fire+Earth, Air+Water, Air+Earth each with specific descriptions).
 - **Synastry report sections** rewritten for depth and clarity (EN/FR/IT) — Moon signs in Love, Mars signs in Challenges, all 5 domain scores in Synthesis, closing disclaimer about scores vs. fate.
 
