@@ -3993,22 +3993,29 @@ function renderReport(text){
   // FR/IT: [article, noun] to handle le/la/l'/les/il/lo/la/i
   const _evNeed={
     en:{Sun:'sense of identity',Moon:'emotional needs',Mercury:'way of thinking',Venus:'capacity for love',Mars:'drive and desire',Jupiter:'need for growth',Saturn:'need for structure',Uranus:'urge for freedom',Neptune:'idealism',Pluto:'need for transformation',Ascendant:'outward presence'},
-    fr:{Sun:['le','sens d\'identité'],Moon:['les','besoins émotionnels'],Mercury:['la','manière de penser'],Venus:['la','capacité d\'aimer'],Mars:['l\'','élan et le désir'],Jupiter:['le','besoin de croissance'],Saturn:['le','besoin de structure'],Uranus:['le','besoin de liberté'],Neptune:['l\'','idéalisme'],Pluto:['le','besoin de transformation'],Ascendant:['la','présence extérieure']},
-    it:{Sun:['il','senso di identità'],Moon:['i','bisogni emotivi'],Mercury:['il','modo di pensare'],Venus:['la','capacità di amare'],Mars:['lo','slancio e il desiderio'],Jupiter:['il','bisogno di crescita'],Saturn:['il','bisogno di struttura'],Uranus:['il','bisogno di libertà'],Neptune:['l\'','idealismo'],Pluto:['il','bisogno di trasformazione'],Ascendant:['la','presenza esteriore']},
+    // [article, noun, plural] — plural flag controls verb conjugation
+    fr:{Sun:['le','sens d\'identité'],Moon:['les','besoins émotionnels',1],Mercury:['la','manière de penser'],Venus:['la','capacité d\'aimer'],Mars:['l\'','élan et le désir'],Jupiter:['le','besoin de croissance'],Saturn:['le','besoin de structure'],Uranus:['le','besoin de liberté'],Neptune:['l\'','idéalisme'],Pluto:['le','besoin de transformation'],Ascendant:['la','présence extérieure']},
+    it:{Sun:['il','senso di identità'],Moon:['i','bisogni emotivi',1],Mercury:['il','modo di pensare'],Venus:['la','capacità di amare'],Mars:['lo','slancio e il desiderio'],Jupiter:['il','bisogno di crescita'],Saturn:['il','bisogno di struttura'],Uranus:['il','bisogno di libertà'],Neptune:['l\'','idealismo'],Pluto:['il','bisogno di trasformazione'],Ascendant:['la','presenza esteriore']},
   };
+  // Verbs: [singular, plural] for FR/IT
   const _evVerb={en:{Conjunction:'merges with',Trine:'flows harmoniously with',Sextile:'cooperates with',Square:'challenges',Opposition:'stands in tension with',Quincunx:'struggles to align with'},
-    fr:{Conjunction:'fusionne avec',Trine:'s\'harmonise avec',Sextile:'coopère avec',Square:'défie',Opposition:'entre en tension avec',Quincunx:'peine à s\'aligner avec'},
-    it:{Conjunction:'si fonde con',Trine:'fluisce in armonia con',Sextile:'coopera con',Square:'sfida',Opposition:'entra in tensione con',Quincunx:'fatica ad allinearsi con'}};
+    fr:{Conjunction:['fusionne avec','fusionnent avec'],Trine:['s\'harmonise avec','s\'harmonisent avec'],Sextile:['coopère avec','coopèrent avec'],Square:['défie','défient'],Opposition:['entre en tension avec','entrent en tension avec'],Quincunx:['peine à s\'aligner avec','peinent à s\'aligner avec']},
+    it:{Conjunction:['si fonde con','si fondono con'],Trine:['fluisce in armonia con','fluiscono in armonia con'],Sextile:['coopera con','cooperano con'],Square:['sfida','sfidano'],Opposition:['entra in tensione con','entrano in tensione con'],Quincunx:['fatica ad allinearsi con','faticano ad allinearsi con']}};
   const _needsRaw=_evNeed[LANG]||_evNeed.en;
-  const _verbs=_evVerb[LANG]||_evVerb.en;
-  // Build "article + noun + de + name" per language
+  const _verbsRaw=_evVerb[LANG]||_evVerb.en;
+  // Build "article + noun + de + name" per language; returns {text, plural}
   function _evPhrase(planet,name){
     const raw=_needsRaw[planet];
-    if(!raw)return planet;
-    if(typeof raw==='string')return`${name}'s ${raw}`; // EN
-    const[art,noun]=raw;
-    // FR/IT: capitalize article at start, handle elision
-    return`${art.endsWith('\'')?art:art+' '}${noun} de ${name}`;
+    if(!raw)return{text:planet,plural:false};
+    if(typeof raw==='string')return{text:`${name}'s ${raw}`,plural:false}; // EN
+    const[art,noun,pl]=raw;
+    return{text:`${art.endsWith('\'')?art:art+' '}${noun} de ${name}`,plural:!!pl};
+  }
+  function _evGetVerb(aspName,plural){
+    const v=_verbsRaw[aspName];
+    if(!v)return aspName;
+    if(typeof v==='string')return v; // EN — no plural forms
+    return plural?v[1]:v[0];
   }
   // Pick the strongest aspect of each type first, then fill remaining slots by strength
   const _withAsp=syn.filter(p=>p.asp&&p.asp.h!==0);
@@ -4027,11 +4034,10 @@ function renderReport(text){
     const fl=[];
     if(p.slowA||p.slowB)fl.push('<span style="color:var(--silver);font-size:10px">~p</span>');
     if((p.pA==='Moon'&&chartA.timeUnknown)||(p.pB==='Moon'&&chartB.timeUnknown))fl.push('<span style="color:var(--amber);font-size:10px">~t</span>');
-    const verb=_verbs[p.asp.name]||p.asp.name;
     const pnA=trPlanet(p.pA,LANG),pnB=trPlanet(p.pB,LANG);
     const phA=_evPhrase(p.pA,nameA),phB=_evPhrase(p.pB,nameB);
-    // Capitalize first letter of phrase A
-    const desc=(phA.charAt(0).toUpperCase()+phA.slice(1))+' '+verb+' '+phB;
+    const verb=_evGetVerb(p.asp.name,phA.plural);
+    const desc=(phA.text.charAt(0).toUpperCase()+phA.text.slice(1))+' '+verb+' '+phB.text;
     return`<div class="evcard"><div class="eva">${aspChip(p.asp)} <span style="color:var(--silver);font-size:12px;margin-left:6px">${PSYM[p.pA]||'↑'}${pnA} × ${PSYM[p.pB]||'↑'}${pnB}</span> ${fl.join(' ')}</div><div class="evd">${desc}</div></div>`;
   }).join('');
   document.getElementById('rbody').innerHTML=fmtHTML(text);
