@@ -4,6 +4,28 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.6.2] — 2026-04-04
+
+### Fixed
+- Radar chart label clipping — removed text labels (color-coded dots suffice), enlarged chart (R=120, viewBox 300×290).
+- Heatmap empty cells nearly invisible — increased base opacity, added gradient legend showing intensity encoding.
+- Heatmap legend hardcoded in English — now uses I18N keys (hmHarmonious/hmChallenging/hmNoAspect) in EN/FR/IT.
+- Gauge div had visible border/background edge — removed radial-gradient and border-radius from gauge wrapper.
+- Evidence card grammar — French/Italian articles now correct (le/la/l'/les/il/lo/la/l') per noun gender and elision rules.
+- French typo: "sens de l'identité" → "sens d'identité".
+- Removed personal names from CHANGELOG examples.
+
+### Changed
+- Radar chart placed side-by-side with compatibility gauge in the banner (flexbox layout).
+- Heatmap enlarged (cell size 28→38px, fonts scaled up).
+- Natal oracle report body uses `.rbody` class for consistent Cormorant Garamond styling (was inline EB Garamond).
+- Evidence cards diversified: one per aspect type first, then filled by strength.
+- Evidence card text uses human need/drive labels with proper per-language grammar instead of repeating planet names.
+- Synastry report sections rewritten for depth (Moon signs in Love, Mars in Challenges, all 5 scores in Synthesis, closing disclaimer).
+- Elemental compatibility expanded from 4 to 7 distinct pairings with specific descriptions.
+
+---
+
 ## [10.6.1] — 2026-04-04
 
 ### Added
