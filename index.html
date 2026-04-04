@@ -4087,8 +4087,20 @@ function aspectHeatmap(syn,nameA,nameB){
   labels+=`<text x="${pad+planets.length*cellSize/2}" y="${pad-26}" text-anchor="middle" fill="var(--azure)" font-family="Cinzel,serif" font-size="9" letter-spacing=".2em">${nameB}</text>`;
   const _dot=c=>`<span style="display:inline-block;width:10px;height:10px;border-radius:2px;${c};vertical-align:middle;margin-right:4px"></span>`;
   const _grad=c=>`<span style="display:inline-block;width:30px;height:10px;border-radius:2px;background:linear-gradient(90deg,${c.replace('X','.25')},${c.replace('X','.7')});vertical-align:middle;margin-right:4px"></span>`;
-  const legend=`<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:8px;font-family:Cinzel,serif;font-size:8px;letter-spacing:.15em;color:var(--silver)"><span>${_grad('rgba(74,184,154,X)')}${t('hmHarmonious')}</span><span>${_grad('rgba(196,96,122,X)')}${t('hmChallenging')}</span><span>${_dot('background:rgba(180,140,255,.04);border:1px solid rgba(180,140,255,.15)')}${t('hmNoAspect')}</span></div>`;
-  return`<div style="text-align:center;overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${cells}${labels}</svg>${legend}</div>`;
+  const colorLegend=`<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:8px;font-family:Cinzel,serif;font-size:8px;letter-spacing:.15em;color:var(--silver)"><span>${_grad('rgba(74,184,154,X)')}${t('hmHarmonious')}</span><span>${_grad('rgba(196,96,122,X)')}${t('hmChallenging')}</span><span>${_dot('background:rgba(180,140,255,.04);border:1px solid rgba(180,140,255,.15)')}${t('hmNoAspect')}</span></div>`;
+  // Symbol legend — aspect glyphs with trilingual names
+  const lang=typeof LANG!=='undefined'?LANG:'en';
+  const symLegend=ASPECTS.map(a=>{
+    const name=(ASP_VERB[lang]&&ASP_VERB[lang][a.name])||a.name;
+    const hColor=a.h>0?'var(--emerald)':'var(--rose)';
+    return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="font-size:16px;width:20px;text-align:center;color:var(--star);opacity:.8">${a.sym}</span>
+      <span style="font-family:Cinzel,serif;font-size:9px;letter-spacing:.12em;color:var(--pale);text-transform:capitalize">${name}</span>
+      <span style="font-family:'EB Garamond',serif;font-size:11px;color:${hColor}">${a.h>0?'+':''}${a.h}</span>
+    </div>`;
+  }).join('');
+  const symPanel=`<div style="display:flex;flex-direction:column;justify-content:center;padding:12px 0 12px 16px;border-left:1px solid var(--border);margin-left:12px;min-width:140px">${symLegend}</div>`;
+  return`<div style="display:flex;justify-content:center;align-items:start;overflow-x:auto;gap:0"><div style="text-align:center;flex-shrink:0"><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${cells}${labels}</svg>${colorLegend}</div>${symPanel}</div>`;
 }
 
 function renderReport(text){
