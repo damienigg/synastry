@@ -4,6 +4,17 @@ All notable changes to Synastria are documented in this file.
 
 ---
 
+## [10.7.0] — 2026-04-05
+
+### Added
+- **Ideal Match Solver** — click the ⊕ symbol between the two partner cards to open a solver that finds the birth dates maximizing synastry compatibility with Partner A. Sweeps every day across a configurable year range (up to 50 years), computes full synastry scores for each candidate, and displays the top 10 results ranked by Overall score with all 6 domain breakdowns (Overall, Love, Harmony, Passion, Mental, Karmic). Click any result row to auto-populate Partner B's fields.
+- Solver modal with dedicated city search for Partner B (falls back to Partner A's city if left empty).
+- Progress bar with real-time scanning feedback; stoppable mid-search.
+- Full I18N support for the solver (EN/FR/IT) — all labels, messages, and domain names translated.
+- ⊕ symbol now interactive — hover glow effect, scale animation, pointer cursor.
+
+---
+
 ## [10.6.2] — 2026-04-04
 
 ### Fixed

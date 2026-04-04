@@ -1,4 +1,4 @@
-# Synastria v10.6.2
+# Synastria v10.7.0
 
 **Astrological Oracle — Natal Profiles & Traceable Synastral Analysis**
 
@@ -22,6 +22,7 @@ Synastria computes astrological charts from birth data and generates human-reada
 - Compatibility scores across 6 domains: Overall, Love, Passion, Harmony, Mental, Karmic
 - Oracle compatibility report with evidence cards and domain rings
 - Both natal profiles available alongside the compatibility analysis
+- **Ideal Match Solver** — find the birth dates that maximize compatibility with Partner A
 
 ---
 
@@ -31,7 +32,7 @@ Synastria computes astrological charts from birth data and generates human-reada
 2. Enter a birth date (type `DD/MM/YYYY` or use the calendar picker)
 3. Optionally enter birth time (improves Moon accuracy and enables Ascendant)
 4. Optionally select a birth city (for UTC offset and latitude)
-5. For synastry, fill in a second person's data
+5. For synastry, fill in a second person's data — or click the **⊕** symbol between the two cards to open the **Ideal Match Solver** and find optimal dates automatically
 6. Click **Cast the Charts**
 7. Use **Reset** to clear everything, or **Export PDF** to save a print-ready report
 
@@ -194,7 +195,7 @@ Language can be switched at any time. Built-in reports re-render immediately.
 
 ## Architecture
 
-The application is a **single HTML file** (~3,700 lines). No build tools, no npm, no backend, no external APIs for interpretation.
+The application is a **single HTML file** (~4,600 lines). No build tools, no npm, no backend, no external APIs for interpretation.
 
 ```
 synastry/
@@ -236,14 +237,14 @@ index.html
 ├── CSS (inline <style>)
 │   └── @media print stylesheet for PDF export
 ├── HTML structure
-│   ├── Input panel (birth data, city search, calendar picker)
+│   ├── Input panel (birth data, city search, calendar picker, solver modal)
 │   ├── Results (reports, confidence, traces)
 │   └── Action buttons (Reset, Export PDF)
 └── JavaScript (inline <script>)
     ├── I18N (EN/FR/IT — all labels, tooltips, interpretations)
     ├── Astronomy engine (VSOP87, Brown, secular elements, Kepler)
     ├── Natal profile (aspects, dignities, retrogrades, lunar phase)
-    ├── Synastry engine (pair matrix, weighted scoring, 5 domains)
+    ├── Synastry engine (pair matrix, weighted scoring, 5 domains, solver)
     ├── Interpretation engine (990 bespoke entries, 100% coverage)
     ├── Confidence engine (natal + synastry composite scores)
     └── UI (calendar, city search, collapsible panels, SVG rings)

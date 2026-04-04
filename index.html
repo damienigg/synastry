@@ -47,7 +47,40 @@ h1{font-family:'Cinzel',serif;font-size:clamp(26px,5vw,44px);font-weight:400;let
 .plabel{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.35em;text-transform:uppercase;margin-bottom:16px}
 .pa .plabel{color:var(--rose)}.pb .plabel{color:var(--azure)}
 .pa{border-color:rgba(196,96,122,.2)}.pb{border-color:rgba(74,143,212,.2)}
-.conjsym{text-align:center;font-size:30px;color:var(--gold);filter:drop-shadow(0 0 10px rgba(212,168,67,.6));align-self:center;padding-top:18px}
+.conjsym{text-align:center;font-size:30px;color:var(--gold);filter:drop-shadow(0 0 10px rgba(212,168,67,.6));align-self:center;padding-top:18px;cursor:pointer;transition:transform .2s,filter .2s;user-select:none}
+.conjsym:hover{transform:scale(1.25);filter:drop-shadow(0 0 16px rgba(212,168,67,.9))}
+.conjsym:active{transform:scale(1.1)}
+/* SOLVER MODAL */
+.solver-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,3,10,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-y:auto}
+.solver-overlay.open{display:flex;justify-content:center;align-items:flex-start;padding:40px 20px 60px}
+.solver-panel{position:relative;width:100%;max-width:620px;background:linear-gradient(135deg,rgba(26,21,53,.97),rgba(10,8,24,.99));border:1px solid var(--border-hi);border-radius:var(--r);padding:36px 40px 40px;box-shadow:0 24px 80px rgba(0,0,0,.6);animation:helpIn .25s ease}
+.solver-close{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--silver);font-size:22px;cursor:pointer;transition:color .2s;line-height:1;padding:4px}
+.solver-close:hover{color:var(--gold)}
+.solver-title{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);letter-spacing:.15em;margin:0 0 6px;font-weight:400;text-align:center}
+.solver-sub{font-family:'EB Garamond',serif;font-size:14px;color:var(--silver);text-align:center;margin-bottom:22px;line-height:1.5}
+.solver-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.solver-fg{display:flex;flex-direction:column;gap:4px}
+.solver-fg.full{grid-column:1/-1}
+.solver-fg label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--silver)}
+.solver-fg input,.solver-fg select{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:var(--r);color:var(--star);font-family:'EB Garamond',serif;font-size:15px;padding:9px 12px;outline:none;transition:border-color .2s}
+.solver-fg input:focus{border-color:var(--border-hi);box-shadow:0 0 0 3px var(--glow)}
+.solver-run{display:block;margin:0 auto 16px;padding:10px 32px;background:linear-gradient(135deg,rgba(212,168,67,.15),rgba(212,168,67,.05));border:1px solid var(--gold-dim);border-radius:var(--r);color:var(--gold);font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.solver-run:hover{border-color:var(--gold);background:rgba(212,168,67,.2)}
+.solver-run:disabled{opacity:.4;cursor:not-allowed}
+.solver-prog{display:none;margin-bottom:16px}
+.solver-prog .pbar-wrap{height:4px;background:rgba(180,140,255,.08);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.solver-prog .pbar{height:100%;width:0;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:2px;transition:width .15s}
+.solver-prog .plog{font-family:'EB Garamond',serif;font-size:13px;color:var(--silver);text-align:center}
+.solver-results{display:none}
+.solver-results table{width:100%;border-collapse:collapse;font-family:'EB Garamond',serif;font-size:14px}
+.solver-results th{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.15em;color:var(--silver);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);font-weight:400}
+.solver-results td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--pale)}
+.solver-results tr.solver-row{cursor:pointer;transition:background .15s}
+.solver-results tr.solver-row:hover{background:rgba(212,168,67,.1)}
+.solver-results tr.solver-row:hover td{color:var(--gold)}
+.solver-results .score-overall{color:var(--gold);font-weight:600}
+.solver-results .score-bar{display:inline-block;height:6px;border-radius:3px;background:var(--gold);opacity:.6;vertical-align:middle;margin-left:4px}
+.solver-none{font-family:'EB Garamond',serif;font-size:14px;color:var(--silver);text-align:center;padding:16px;font-style:italic}
 .fg{margin-bottom:16px}
 .fg label{display:block;font-family:'Cinzel',serif;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--silver);margin-bottom:5px}
 input[type=text],input[type=date],input[type=time],input[type=number],input[type=password],select,textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:var(--r);color:var(--star);font-family:'EB Garamond',serif;font-size:15px;padding:9px 12px;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none;appearance:none}
@@ -211,7 +244,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 /* PRINT / PDF */
 @media print{
   body{background:#fff!important;color:#1a1a2e!important;font-size:12pt}
-  #sf,.lang-bar,.ver-badge,.ctabtn,.action-bar,.pbar-wrap,.plog,#prog,.box-chevron,.tip-icon,#tip-global,.city-list,.date-cal,.help-overlay{display:none!important}
+  #sf,.lang-bar,.ver-badge,.ctabtn,.action-bar,.pbar-wrap,.plog,#prog,.box-chevron,.tip-icon,#tip-global,.city-list,.date-cal,.help-overlay,.solver-overlay{display:none!important}
   .w{max-width:100%;padding:0 20px}
   .panel,.pcard,.confpanel,.evcard,.ccard{background:#fff!important;border:1px solid #ccc!important;break-inside:avoid;page-break-inside:avoid}
   .panel::before{display:none}
@@ -274,7 +307,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 .help-body a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(212,168,67,.3);transition:border-color .2s}
 .help-body a:hover{border-bottom-color:var(--gold)}
 /* RESPONSIVE */
-@media(max-width:640px){.couple-grid,.confgrid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}.action-bar{flex-direction:column;align-items:center}.help-panel{padding:24px 18px 28px}}
+@media(max-width:640px){.couple-grid,.confgrid{grid-template-columns:1fr}.conjsym{padding:0}.lang-bar{position:static;justify-content:center;margin-bottom:12px}.action-bar{flex-direction:column;align-items:center}.help-panel{padding:24px 18px 28px}.solver-panel{padding:24px 18px 28px}.solver-form{grid-template-columns:1fr}.solver-results table{font-size:12px}.solver-results th,.solver-results td{padding:5px 4px}}
 </style>
 </head>
 <body>
@@ -296,6 +329,59 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
     <button class="help-close" onclick="closeHelp()" title="Close">&times;</button>
     <div class="help-tabs" id="help-tabs"></div>
     <div class="help-body" id="help-body"></div>
+  </div>
+</div>
+
+<!-- SOLVER MODAL -->
+<div class="solver-overlay" id="solver-overlay" onclick="if(event.target===this)closeSolver()">
+  <div class="solver-panel">
+    <button class="solver-close" onclick="closeSolver()" title="Close">&times;</button>
+    <div class="solver-title" data-i18n="solverTitle"></div>
+    <div class="solver-sub" data-i18n="solverSub"></div>
+    <div class="solver-form">
+      <div class="solver-fg">
+        <label data-i18n="solverFrom"></label>
+        <input type="number" id="solver-yr-from" min="1920" max="2050" value="1990">
+      </div>
+      <div class="solver-fg">
+        <label data-i18n="solverTo"></label>
+        <input type="number" id="solver-yr-to" min="1920" max="2050" value="2000">
+      </div>
+      <div class="solver-fg full">
+        <label data-i18n="solverCity"></label>
+        <div class="city-wrap" id="cw-solver">
+          <span class="city-search-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><line x1="9" y1="9" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+          <input type="text" class="city-search" id="cs-solver" autocomplete="off" data-i18n-ph="cityPh" oninput="filterCities('solver')" onfocus="openCityList('solver')" onkeydown="cityKey(event,'solver')">
+          <input type="hidden" id="tzsolver">
+          <input type="hidden" id="latsolver">
+          <input type="hidden" id="lonsolver">
+          <input type="hidden" id="ianasolver" value="UTC">
+          <div class="city-list" id="cl-solver"></div>
+        </div>
+        <div style="font-size:12px;color:var(--silver);margin-top:2px;font-style:italic" data-i18n="solverCityNote"></div>
+      </div>
+    </div>
+    <button class="solver-run" id="solver-run-btn" onclick="runSolver()" data-i18n="solverRun"></button>
+    <div class="solver-prog" id="solver-prog">
+      <div class="pbar-wrap"><div class="pbar" id="solver-pbar"></div></div>
+      <div class="plog" id="solver-plog"></div>
+    </div>
+    <div class="solver-results" id="solver-results">
+      <div style="font-size:12px;color:var(--silver);text-align:center;margin-bottom:8px;font-style:italic" data-i18n="solverApply"></div>
+      <table>
+        <thead><tr>
+          <th data-i18n="solverRank"></th>
+          <th data-i18n="solverDate"></th>
+          <th data-i18n="solverOverall"></th>
+          <th data-i18n="solverLove"></th>
+          <th data-i18n="solverHarmony"></th>
+          <th data-i18n="solverPassion"></th>
+          <th data-i18n="solverMental"></th>
+          <th data-i18n="solverKarmic"></th>
+        </tr></thead>
+        <tbody id="solver-tbody"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -351,7 +437,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
         </div>
       </div>
     </div>
-    <div class="conjsym">⊕</div>
+    <div class="conjsym" onclick="openSolver()" title="Find ideal match">⊕</div>
     <div class="pcard pb">
       <div class="plabel">✦ <span data-i18n="partnerB"></span></div>
       <div class="fg">
@@ -507,7 +593,7 @@ table.tt{width:100%;border-collapse:collapse;font-size:13px}
 // ═══════════════════════════════════════════════════
 // VERSION — single source of truth
 // ═══════════════════════════════════════════════════
-const APP_VERSION='10.6.2';
+const APP_VERSION='10.7.0';
 document.title=`Synastria v${APP_VERSION}`;
 document.getElementById('ver-badge').textContent=`v${APP_VERSION}`;
 document.getElementById('ver-header').textContent=`VERSION ${APP_VERSION}`;
@@ -643,6 +729,18 @@ const I18N = {
 <li>Print-ready PDF export</li>
 </ul>
 <p><em>Made with &hearts; by Damien</em></p>`,
+    solverTitle:"Ideal Match Solver",
+    solverSub:"Find the birth dates that maximize synastry compatibility with Partner A.",
+    solverFrom:"Year from",solverTo:"Year to",
+    solverCity:"Birth city for Partner B",
+    solverCityNote:"Uses Partner A's city if left empty.",
+    solverRun:"Find Ideal Dates",solverStop:"Stop",
+    solverScanning:"Scanning {0} dates…",solverDone:"Done — {0} dates scanned.",
+    solverOverall:"Overall",solverLove:"Love",solverHarmony:"Harmony",solverPassion:"Passion",solverMental:"Mental",solverKarmic:"Karmic",
+    solverDate:"Date",solverRank:"#",
+    solverApply:"Click a row to populate Partner B",
+    solverNeedA:"Please fill in Partner A's birth date and city first.",
+    solverNoResults:"No dates scored above 50% in this range.",
   },
   fr:{
     tagline:"Oracle Astrologique — Profils Nataux & Analyse Synastrique Traçable",
@@ -772,6 +870,18 @@ const I18N = {
 <li>Export PDF prêt à imprimer</li>
 </ul>
 <p><em>Fait avec &hearts; par Damien</em></p>`,
+    solverTitle:"Solveur de Compatibilité Idéale",
+    solverSub:"Trouver les dates de naissance qui maximisent la compatibilité synastrique avec le Partenaire A.",
+    solverFrom:"Année de début",solverTo:"Année de fin",
+    solverCity:"Ville de naissance pour le Partenaire B",
+    solverCityNote:"Utilise la ville du Partenaire A si vide.",
+    solverRun:"Trouver les Dates Idéales",solverStop:"Arrêter",
+    solverScanning:"Analyse de {0} dates…",solverDone:"Terminé — {0} dates analysées.",
+    solverOverall:"Global",solverLove:"Amour",solverHarmony:"Harmonie",solverPassion:"Passion",solverMental:"Mental",solverKarmic:"Karmique",
+    solverDate:"Date",solverRank:"#",
+    solverApply:"Cliquez sur une ligne pour remplir le Partenaire B",
+    solverNeedA:"Veuillez d'abord remplir la date et la ville de naissance du Partenaire A.",
+    solverNoResults:"Aucune date au-dessus de 50 % dans cette plage.",
   },
   it:{
     tagline:"Oracolo Astrologico — Profili Natali & Analisi Sinastriale Tracciabile",
@@ -901,6 +1011,18 @@ const I18N = {
 <li>Esportazione PDF pronta per la stampa</li>
 </ul>
 <p><em>Fatto con &hearts; da Damien</em></p>`,
+    solverTitle:"Risolutore di Compatibilità Ideale",
+    solverSub:"Trova le date di nascita che massimizzano la compatibilità sinastriale con il Partner A.",
+    solverFrom:"Anno di inizio",solverTo:"Anno di fine",
+    solverCity:"Città di nascita per il Partner B",
+    solverCityNote:"Usa la città del Partner A se vuoto.",
+    solverRun:"Trova le Date Ideali",solverStop:"Fermare",
+    solverScanning:"Analisi di {0} date…",solverDone:"Completato — {0} date analizzate.",
+    solverOverall:"Globale",solverLove:"Amore",solverHarmony:"Armonia",solverPassion:"Passione",solverMental:"Mentale",solverKarmic:"Karmico",
+    solverDate:"Data",solverRank:"#",
+    solverApply:"Clicca su una riga per compilare il Partner B",
+    solverNeedA:"Compila prima la data e la città di nascita del Partner A.",
+    solverNoResults:"Nessuna data sopra il 50% in questo intervallo.",
   }
 };
 
@@ -3660,7 +3782,9 @@ function _tryCommitDate(p,v){
 
 function toggleTU(p){
   const timeInp=document.getElementById(`time${p}`);
-  const unknown=document.getElementById(`tu${p}`).checked;
+  const tuEl=document.getElementById(`tu${p}`);
+  if(!timeInp||!tuEl)return;
+  const unknown=tuEl.checked;
   // Disable only the time field
   timeInp.disabled=unknown;
   // City field stays fully active — latitude is always needed for Ascendant
@@ -4312,6 +4436,175 @@ function closeHelp(){
 }
 
 function _helpEsc(e){if(e.key==='Escape')closeHelp();}
+
+// ── SOLVER ──
+let _solverAbort=false;
+
+function openSolver(){
+  const dA=document.getElementById('dateA').value;
+  const csA=document.getElementById('cs-A').value.trim();
+  if(!dA||!csA){alert(t('solverNeedA'));return;}
+  applyI18N();
+  document.getElementById('solver-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',_solverEsc);
+  // Reset state
+  document.getElementById('solver-prog').style.display='none';
+  document.getElementById('solver-results').style.display='none';
+  document.getElementById('solver-run-btn').disabled=false;
+  document.getElementById('solver-run-btn').textContent=t('solverRun');
+}
+
+function closeSolver(){
+  _solverAbort=true;
+  document.getElementById('solver-overlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.removeEventListener('keydown',_solverEsc);
+}
+
+function _solverEsc(e){if(e.key==='Escape')closeSolver();}
+
+async function runSolver(){
+  _solverAbort=false;
+  const dA=document.getElementById('dateA').value;
+  const tuA=document.getElementById('tuA').checked;
+  const ianaA=document.getElementById('ianaA').value||'UTC';
+  const timeStrA=document.getElementById('timeA').value||'12:00';
+  const tzA=tuA?0:ianaOffsetAtDate(ianaA,dA,timeStrA);
+  const latA=parseFloat(document.getElementById('latA').value)||42;
+  const lonA=parseFloat(document.getElementById('lonA').value)||0;
+
+  // Build Person A's chart
+  const chartA=buildChart(dA,timeStrA,tzA,tuA,latA,lonA);
+
+  // Person B location: use solver city if filled, else Person A's
+  const csSolver=document.getElementById('cs-solver').value.trim();
+  const latB=csSolver?parseFloat(document.getElementById('latsolver').value)||42:latA;
+  const lonB=csSolver?parseFloat(document.getElementById('lonsolver').value)||0:lonA;
+  const ianaB=csSolver?(document.getElementById('ianasolver').value||'UTC'):ianaA;
+
+  const yrFrom=parseInt(document.getElementById('solver-yr-from').value)||1990;
+  const yrTo=parseInt(document.getElementById('solver-yr-to').value)||2000;
+  if(yrFrom>yrTo){alert('Year from must be ≤ year to.');return;}
+  if(yrTo-yrFrom>50){alert('Maximum range is 50 years.');return;}
+
+  // Build date list
+  const dates=[];
+  for(let y=yrFrom;y<=yrTo;y++){
+    for(let m=1;m<=12;m++){
+      const daysInMonth=new Date(y,m,0).getDate();
+      for(let d=1;d<=daysInMonth;d++){
+        const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        dates.push(ds);
+      }
+    }
+  }
+
+  const total=dates.length;
+  const btn=document.getElementById('solver-run-btn');
+  btn.disabled=true;
+  btn.textContent=t('solverStop');
+  btn.onclick=()=>{_solverAbort=true;};
+  btn.disabled=false;
+
+  const prog=document.getElementById('solver-prog');
+  const pbar=document.getElementById('solver-pbar');
+  const plog=document.getElementById('solver-plog');
+  prog.style.display='block';
+  document.getElementById('solver-results').style.display='none';
+
+  // Top-N tracker (keep best 10)
+  const TOP_N=10;
+  const top=[];
+
+  function insertTop(entry){
+    // Binary insert into sorted-descending array
+    let lo=0,hi=top.length;
+    while(lo<hi){const mid=(lo+hi)>>1;if(top[mid].scores.overall>=entry.scores.overall)lo=mid+1;else hi=mid;}
+    top.splice(lo,0,entry);
+    if(top.length>TOP_N)top.length=TOP_N;
+  }
+
+  const CHUNK=60;
+  for(let i=0;i<total;i+=CHUNK){
+    if(_solverAbort)break;
+    const end=Math.min(i+CHUNK,total);
+    for(let j=i;j<end;j++){
+      const ds=dates[j];
+      const tzB_d=ianaOffsetAtDate(ianaB,ds,'12:00');
+      const cB=buildChart(ds,'12:00',tzB_d,true,latB,lonB);
+      const pairs=buildSynastry(chartA,cB);
+      const{scores}=scoreSyn(pairs);
+      if(top.length<TOP_N||scores.overall>top[top.length-1].scores.overall){
+        insertTop({date:ds,scores});
+      }
+    }
+    const pct=Math.round(end/total*100);
+    pbar.style.width=pct+'%';
+    plog.textContent=t('solverScanning').replace('{0}',end+'/'+total);
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  }
+
+  pbar.style.width='100%';
+  plog.textContent=t(_solverAbort?'solverScanning':'solverDone').replace('{0}',total);
+
+  // Show results
+  const res=document.getElementById('solver-results');
+  const tbody=document.getElementById('solver-tbody');
+  if(top.length===0){
+    tbody.innerHTML=`<tr><td colspan="8" class="solver-none">${t('solverNoResults')}</td></tr>`;
+  } else {
+    tbody.innerHTML=top.map((e,i)=>{
+      const s=e.scores;
+      const fmtDate=e.date.split('-').reverse().join('/');
+      return`<tr class="solver-row" onclick="applySolverResult('${e.date}')">
+        <td>${i+1}</td>
+        <td>${fmtDate}</td>
+        <td class="score-overall">${s.overall}%<span class="score-bar" style="width:${s.overall*0.4}px"></span></td>
+        <td>${s.love}%</td>
+        <td>${s.harmony}%</td>
+        <td>${s.passion}%</td>
+        <td>${s.mental}%</td>
+        <td>${s.karmic}%</td>
+      </tr>`;
+    }).join('');
+  }
+  res.style.display='block';
+
+  btn.disabled=false;
+  btn.textContent=t('solverRun');
+  btn.onclick=runSolver;
+}
+
+function applySolverResult(dateStr){
+  // Populate Partner B fields
+  const[y,m,d]=dateStr.split('-');
+  document.getElementById('dateB').value=dateStr;
+  document.getElementById('dlabel-B').value=`${d}/${m}/${y}`;
+  document.getElementById('timeB').value='12:00';
+  document.getElementById('tuB').checked=true;
+
+  // Copy solver city to B (or A's city if solver city empty)
+  const csSolver=document.getElementById('cs-solver').value.trim();
+  if(csSolver){
+    document.getElementById('cs-B').value=csSolver;
+    document.getElementById('tzB').value=document.getElementById('tzsolver').value;
+    document.getElementById('latB').value=document.getElementById('latsolver').value;
+    document.getElementById('lonB').value=document.getElementById('lonsolver').value;
+    document.getElementById('ianaB').value=document.getElementById('ianasolver').value;
+  } else {
+    document.getElementById('cs-B').value=document.getElementById('cs-A').value;
+    document.getElementById('tzB').value=document.getElementById('tzA').value;
+    document.getElementById('latB').value=document.getElementById('latA').value;
+    document.getElementById('lonB').value=document.getElementById('lonA').value;
+    document.getElementById('ianaB').value=document.getElementById('ianaA').value;
+  }
+
+  // Set time unknown
+  toggleTU('B');
+
+  closeSolver();
+}
 
 // ── INIT ──
 (function init(){
