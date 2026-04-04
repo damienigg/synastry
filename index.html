@@ -554,6 +554,7 @@ const I18N = {
     flagStdSuffix:") — scores vary widely across domains, suggesting a complex or contradictory relational dynamic. No single score captures the full picture.",
     scoresNote:"Scores are derived from weighted aspect harmonics — they measure astronomical alignment patterns, not human compatibility. A low score does not mean a bad relationship; a high score does not guarantee one.",
     weightsNote:"These weights are interpretive choices, not physical constants. They reflect astrological consensus on the relative importance of each planet pair in synastry, but the exact values are editorial. A pair not listed defaults to 0.4. Higher weight = more influence on the final score. Pairs are symmetric (A→B = B→A).",
+    hmHarmonious:"harmonious",hmChallenging:"challenging",hmNoAspect:"no aspect",
     diagFlags:"DIAGNOSTIC FLAGS",
     ringLove:"Love",ringHarmony:"Harmony",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmic",
     compatTitles:["Stellar Union","Harmonious Bond","Complex Weave","Challenging Path","Deep Tension"],
@@ -682,6 +683,7 @@ const I18N = {
     flagStdSuffix:") — les scores varient fortement entre domaines, suggérant une dynamique relationnelle complexe ou contradictoire. Aucun score unique ne capture la situation complète.",
     scoresNote:"Les scores sont dérivés d'harmoniques d'aspects pondérées — ils mesurent des motifs d'alignement astronomique, pas la compatibilité humaine. Un score bas ne signifie pas une mauvaise relation ; un score élevé n'en garantit pas une bonne.",
     weightsNote:"Ces poids sont des choix interprétatifs, pas des constantes physiques. Ils reflètent un consensus astrologique sur l'importance relative de chaque paire de planètes en synastrie, mais les valeurs exactes sont éditoriales. Une paire non listée vaut 0,4 par défaut. Poids élevé = plus d'influence sur le score final. Les paires sont symétriques (A→B = B→A).",
+    hmHarmonious:"harmonieux",hmChallenging:"tendu",hmNoAspect:"sans aspect",
     diagFlags:"DIAGNOSTICS",
     ringLove:"Amour",ringHarmony:"Harmonie",ringPassion:"Passion",ringMental:"Mental",ringKarmic:"Karmique",
     compatTitles:["Union Stellaire","Lien Harmonieux","Tissu Complexe","Chemin Difficile","Tension Profonde"],
@@ -810,6 +812,7 @@ const I18N = {
     flagStdSuffix:") — i punteggi variano fortemente tra domini, suggerendo una dinamica relazionale complessa o contraddittoria. Nessun punteggio singolo cattura il quadro completo.",
     scoresNote:"I punteggi sono derivati da armoniche di aspetti ponderate — misurano modelli di allineamento astronomico, non la compatibilità umana. Un punteggio basso non significa una cattiva relazione; uno alto non ne garantisce una buona.",
     weightsNote:"Questi pesi sono scelte interpretative, non costanti fisiche. Riflettono un consenso astrologico sull'importanza relativa di ogni coppia di pianeti in sinastria, ma i valori esatti sono editoriali. Una coppia non elencata vale 0,4 per difetto. Peso elevato = più influenza sul punteggio finale. Le coppie sono simmetriche (A→B = B→A).",
+    hmHarmonious:"armonioso",hmChallenging:"teso",hmNoAspect:"senza aspetto",
     diagFlags:"FLAG DIAGNOSTICI",
     ringLove:"Amore",ringHarmony:"Armonia",ringPassion:"Passione",ringMental:"Mentale",ringKarmic:"Karmico",
     compatTitles:["Unione Stellare","Legame Armonioso","Intreccio Complesso","Percorso Difficile","Tensione Profonda"],
@@ -3942,7 +3945,8 @@ function aspectHeatmap(syn,nameA,nameB){
   // Partner name labels
   labels+=`<text x="${pad-5}" y="${pad-22}" text-anchor="end" fill="var(--rose)" font-family="Cinzel,serif" font-size="9" letter-spacing=".2em">${nameA}</text>`;
   labels+=`<text x="${pad+planets.length*cellSize/2}" y="${pad-26}" text-anchor="middle" fill="var(--azure)" font-family="Cinzel,serif" font-size="9" letter-spacing=".2em">${nameB}</text>`;
-  const legend=`<div style="display:flex;justify-content:center;gap:16px;margin-top:8px;font-family:Cinzel,serif;font-size:8px;letter-spacing:.15em;color:var(--silver)"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(74,184,154,.5);vertical-align:middle;margin-right:4px"></span>harmonious</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(196,96,122,.5);vertical-align:middle;margin-right:4px"></span>challenging</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(180,140,255,.04);border:1px solid rgba(180,140,255,.15);vertical-align:middle;margin-right:4px"></span>no aspect</span></div>`;
+  const _dot=c=>`<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${c};vertical-align:middle;margin-right:4px"></span>`;
+  const legend=`<div style="display:flex;justify-content:center;gap:16px;margin-top:8px;font-family:Cinzel,serif;font-size:8px;letter-spacing:.15em;color:var(--silver)"><span>${_dot('rgba(74,184,154,.5)')}${t('hmHarmonious')}</span><span>${_dot('rgba(196,96,122,.5)')}${t('hmChallenging')}</span><span>${_dot('rgba(180,140,255,.04);border:1px solid rgba(180,140,255,.15)')}${t('hmNoAspect')}</span></div>`;
   return`<div style="text-align:center;overflow-x:auto"><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${cells}${labels}</svg>${legend}</div>`;
 }
 
